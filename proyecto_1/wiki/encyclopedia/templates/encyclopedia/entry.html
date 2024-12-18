@@ -1,0 +1,35 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">{{ title }}</h1>
+        <div class="card">
+            <div class="card-body p-0">
+                <pre class="code-content"><code>{{ content|safe }}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .code-content {
+            background-color: #f8f9fa;
+            border-radius: 0.25rem;
+            padding: 1rem;
+            margin-bottom: 0;
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.875rem;
+            color: #212529;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+{% endblock %}
+
