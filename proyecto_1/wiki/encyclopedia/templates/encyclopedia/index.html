@@ -27,13 +27,17 @@
                             <a href="{% url 'encyclopedia:entry' title=entry %}" class="btn btn-outline-primary btn-sm">
                                 Read More
                             </a>
+                            <a href="{% url 'encyclopedia:edit_page' title=entry %}" class="btn btn-outline-warning btn-sm">
+                                Edit page
+                            </a>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
     </div>
-
+   
+    
     <style>
         .card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;

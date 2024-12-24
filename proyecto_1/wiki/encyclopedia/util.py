@@ -1,8 +1,9 @@
 import re
-
+import os,shutil
+import markdown2
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-
+from markdown2 import Markdown
 
 def list_entries():
     """
@@ -24,6 +25,16 @@ def save_entry(title, content):
         default_storage.delete(filename)
     default_storage.save(filename, ContentFile(content))
 
+def delete_entry(title):
+    """
+    Deletes an encyclopedia entry by its title. If no such
+    entry exists.
+    """
+    filename = f"entries/{title}.md"
+    if default_storage.exists(filename):
+        default_storage.delete(filename)
+   
+
 
 def get_entry(title):
     """
@@ -35,3 +46,16 @@ def get_entry(title):
         return f.read().decode("utf-8")
     except FileNotFoundError:
         return None
+    
+def validate_markdown(content):
+    """
+    Valida si el contenido proporcionado es válido Markdown.
+    Retorna True si es válido, lanza una excepción si no.
+    """
+    markdown = Markdown()
+    try:
+        markdown.convert(content)
+        return True
+    except Exception as e:
+        raise ValueError("Invalid Markdown format")
+    
