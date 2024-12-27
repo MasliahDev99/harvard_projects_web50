@@ -1,0 +1,12 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if auctions %}
+        {% for auction in auctions %}
+        <h2>Listings: {{auction.title}}</h2>
+        <h3>Categorie: {{auction.category}}</h3>
+        {% endfor%}
+    {% else %}
+    TODO
+    {% endif %}
+{% endblock %}
