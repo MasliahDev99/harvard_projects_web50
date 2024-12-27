@@ -23,17 +23,17 @@
             {% if user.is_authenticated %}
             
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'auctions:index' %}">Categories</a>
+                    <a class="nav-link" href="{% url 'auctions:categories' %}">Categories</a>
                 </li>
             
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'auctions:index' %}">
+                    <a class="nav-link" href="{% url 'auctions:watchlist'%}">
                         Watchlist
-                        <span class="badge badge-secondary">1</span></h1>
+                        <span class="badge badge-secondary">{{watchlist_count}}</span></h1>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'auctions:index' %}">Create Listing</a>
+                    <a class="nav-link" href="{% url 'auctions:create' %}">Create Listing</a>
                 </li>
 
                 <li class="nav-item">

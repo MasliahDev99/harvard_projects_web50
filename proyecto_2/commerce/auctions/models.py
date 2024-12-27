@@ -61,6 +61,10 @@ class Watchlist(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     auction = models.ForeignKey(Auction, on_delete=models.CASCADE, related_name="watchlisted_by")
     added_at = models.DateTimeField(auto_now_add=True)
+    #cantidad de subastas en la lista de seguimiento
+  
+    
+  
 
     def __str__(self):
         return f"{self.user.username} - {self.auction.title}"

@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>Watchlist</h2>
+    
+    {% if watchlists %}
+        {% for watchlist in watchlists %}
+            <h2>Titulo: {{watchlist.auction.title}}</h2>
+            <h3>Id: {{watchlist.auction.id}}</h3>
+            <hr>
+        {% endfor %}
+    {% endif%}
+
+{% endblock %}
+
+
+# queda pendiente mejorar la paginad del seguimiento de subastas y agregar botones para ver detalle y eliminar

@@ -2,11 +2,24 @@
 
 {% block body %}
     {% if auctions %}
+    <div class="container-fluid">
         {% for auction in auctions %}
-        <h2>Listings: {{auction.title}}</h2>
-        <h3>Categorie: {{auction.category}}</h3>
+        <div class="card mb-2">
+            <img src="{{auction.image_url}}" class="card-img-top" alt="Imagen de la subasta: {{auction.title}}">
+            <div class="card-body mb-2">
+                <h5 class="card-title">{{auction.title}}</h5>
+                <p class="card-text">{{auction.description}}</p>
+                <p class="card-text">Creador: {{auction.created_by.username}}</p>
+                <p class="card-text">Fecha de Finalización: {{auction.end_date}} {{auction.end_time}}</p>
+                <div class="mb-2">
+                <a href="{% url 'auctions:add_to_watchlist' auction_id=auction.id %}" class="btn  btn-sm btn-primary">Agregar a la lista</a>
+                </div>
+            </div>
+
+        </div>
         {% endfor%}
+    </div>
     {% else %}
-    TODO
+    <h1 class="text-center">No Hay Subastas.</h1>
     {% endif %}
 {% endblock %}

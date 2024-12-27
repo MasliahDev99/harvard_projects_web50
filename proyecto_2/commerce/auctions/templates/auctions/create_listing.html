@@ -1,0 +1,45 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h1 class="text-center">Create Auction</h1>
+<hr>
+<form action="{% url 'auctions:create' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+        <input class="form-control" type="text" name="title" id="title" placeholder="Title" required>
+    </div>
+    <div class="form-group">
+        <input class="form-control" type="text" name="description" id="description" placeholder="Description" required>
+    </div>
+    <div class="form-group">
+        <input class="form-control" type="number" name="starting_bid" id="starting_bid" placeholder="Starting Bid" required>
+    </div>
+    <div class="form-group">
+        <input class="form-control" type="text" name="image_url" id="image_url" placeholder="Image URL" required>
+    </div>
+    <div class="form-group">
+        <select class="form-control" name="category" id="category" required>
+            <option value="" disabled selected>Select Category</option>
+             {% for categorie in categories %}
+             <option value="{{categorie.name}}">{{categorie.name}}</option>
+             {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <input class="form-control" type="date" name="end_date" id="end_date" required>
+    </div>
+    <div class="form-group">
+        <input class="form-control" type="time" name="end_time" id="end_time" required>
+    </div>
+    <div class="form-group">
+        <input class="form-control" type="text" name="contact" id="contact" placeholder="Contact" required>
+    </div>
+    
+    <div class="mb-3">
+        <div class="d-flex flex-row">
+            <button class="btn btn-primary mr-2">Create Listing</button>
+            <button class="btn btn-secondary">Cancel</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

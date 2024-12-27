@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h1>Subastas en la categoría: {{ category_name }}</h1>
+
+    {% if auctions %}
+        <div class="container-fluid">
+            {% for auction in auctions %}
+                <div class="card mb-3">
+                    <img src="{{ auction.image_url }}" class="card-img-top" alt="Imagen de la subasta: {{ auction.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ auction.title }}</h5>
+                        <p class="card-text">{{ auction.description }}</p>
+                        <p class="card-text"><strong>Creador:</strong> {{ auction.created_by.username }}</p>
+                        <p class="card-text"><strong>Fecha de Finalización:</strong> {{ auction.end_date }} {{ auction.end_time }}</p>
+                        <a href="#" class="btn btn-primary">Ver Detalles</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No hay subastas en esta categoría.</p>
+    {% endif %}
+{% endblock %}

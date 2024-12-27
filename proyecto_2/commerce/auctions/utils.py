@@ -93,3 +93,26 @@ def place_bid(auction, user, amount):
 
 
 
+def add_to_watchlist(auction,user):
+    watchlist = Watchlist(auction=auction,user=user)
+    watchlist.save()
+    return watchlist
+    
+def remove_from_watchlist(auction,user):
+    watchlist = Watchlist.objects.get(auction=auction,user=user)
+    watchlist.delete()
+    return True
+
+
+def search_auctions_in_watchlist(user, auction):
+    return Watchlist.objects.filter(user=user, auction=auction).first()
+
+def get_watchlist(user):
+    return Watchlist.objects.filter(user=user)
+    
+
+
+
+
+
+
