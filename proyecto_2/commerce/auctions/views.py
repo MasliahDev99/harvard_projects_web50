@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render , redirect,get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
 from .models import User
@@ -13,8 +14,10 @@ from . import utils
 
 def index(request):
     user = request.user
-    watchlist_count = len(utils.get_watchlist(user)) 
-    return render(request, "auctions/index.html",{
+    watchlist_count = 0
+    if user.is_authenticated:
+        watchlist_count = len(utils.get_watchlist(user))
+    return render(request, "auctions/index.html", {
         "auctions": utils.get_all_auctions(),
         "watchlist_count": watchlist_count,
     })
@@ -41,6 +44,7 @@ def login_view(request):
 
 
 #funciona
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('auctions:index')
@@ -73,7 +77,7 @@ def register(request):
         return render(request, "auctions/register.html")
     
 
-
+@login_required
 def create(request):
     # obtenemos todas las categorias para una subasta
     categories = Category.objects.all()
@@ -106,6 +110,11 @@ def wathclist_view(request):
 
     
 def add_to_watchlist(request, auction_id):
+
+    # si el usuario no esta authenticado redirigimos al login
+    if not request.user.is_authenticated:
+        return redirect('auctions:login')
+
     # Obtén la subasta o lanza un error 404 si no existe
     auction = utils.get_auctions_by(id=auction_id).first()
     if not auction:

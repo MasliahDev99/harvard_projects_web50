@@ -1,45 +1,66 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-<h1 class="text-center">Create Auction</h1>
-<hr>
-<form action="{% url 'auctions:create' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-group">
-        <input class="form-control" type="text" name="title" id="title" placeholder="Title" required>
-    </div>
-    <div class="form-group">
-        <input class="form-control" type="text" name="description" id="description" placeholder="Description" required>
-    </div>
-    <div class="form-group">
-        <input class="form-control" type="number" name="starting_bid" id="starting_bid" placeholder="Starting Bid" required>
-    </div>
-    <div class="form-group">
-        <input class="form-control" type="text" name="image_url" id="image_url" placeholder="Image URL" required>
-    </div>
-    <div class="form-group">
-        <select class="form-control" name="category" id="category" required>
-            <option value="" disabled selected>Select Category</option>
-             {% for categorie in categories %}
-             <option value="{{categorie.name}}">{{categorie.name}}</option>
-             {% endfor %}
-        </select>
-    </div>
-    <div class="form-group">
-        <input class="form-control" type="date" name="end_date" id="end_date" required>
-    </div>
-    <div class="form-group">
-        <input class="form-control" type="time" name="end_time" id="end_time" required>
-    </div>
-    <div class="form-group">
-        <input class="form-control" type="text" name="contact" id="contact" placeholder="Contact" required>
-    </div>
-    
-    <div class="mb-3">
-        <div class="d-flex flex-row">
-            <button class="btn btn-primary mr-2">Create Listing</button>
-            <button class="btn btn-secondary">Cancel</button>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm mt-5">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Create Auction</h2>
+                    
+                    <form action="{% url 'auctions:create' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="title" name="title" placeholder="Enter auction title" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="starting_bid" class="form-label">Starting Bid</label>
+                                <input type="number" class="form-control" id="starting_bid" name="starting_bid" placeholder="Enter starting bid" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Describe your auction item" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image_url" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="image_url" name="image_url" placeholder="Enter image URL" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="" disabled selected>Select Category</option>
+                                    {% for categorie in categories %}
+                                    <option value="{{categorie.name}}">{{categorie.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="contact" class="form-label">Contact</label>
+                                <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter contact information" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="end_date" name="end_date" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="end_time" class="form-label">End Time</label>
+                                <input type="time" class="form-control" id="end_time" name="end_time" required>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Create Listing</button>
+                            <a href="{% url 'auctions:index' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-</form>
+</div>
 {% endblock %}

@@ -83,7 +83,7 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'auctions.User'
-
+LOGIN_URL = '/login/'  # Cambia esta URL según corresponda
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 

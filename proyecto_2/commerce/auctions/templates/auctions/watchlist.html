@@ -1,18 +1,37 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-
-    <h2>Watchlist</h2>
+<div class="container mt-4">
+    <h2 class="mb-4">Your Watchlist</h2>
     
     {% if watchlists %}
-        {% for watchlist in watchlists %}
-            <h2>Titulo: {{watchlist.auction.title}}</h2>
-            <h3>Id: {{watchlist.auction.id}}</h3>
-            <hr>
-        {% endfor %}
-    {% endif%}
-
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for watchlist in watchlists %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ watchlist.auction.title }}</h5>
+                            <p class="card-text">ID: {{ watchlist.auction.id }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="#" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-eye me-1"></i>View Details
+                                </a>
+                                <form action="#" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash-alt me-1"></i>Remove
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Your watchlist is empty. Start adding items to keep track of your favorite auctions!
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
-
-
-# queda pendiente mejorar la paginad del seguimiento de subastas y agregar botones para ver detalle y eliminar
