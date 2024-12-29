@@ -1,0 +1,234 @@
+{% extends 'ganaderia/layout.html'%}
+
+
+
+{% block body %}
+
+    <!-- dashboard con 4 cartas  scroleable
+    1) total ovejas 
+        1.1) total corderos y corderas
+        1.2) total borregos y borregas
+    ( muestra una tabla con los datos de los corderos y corderas y borregos y borregas)
+   
+    2) total de ventas 
+    (muestra una tabla con los datos de las ventas)
+    3) planteletas
+     (muestra una tabla con los datos de las planteletas)
+        3.1) planteleta de exposicion
+        3.2) planteleta a ventas
+
+    4) arbol genealogico 
+     ( muestra una tabla con todos las ovejas con opcion de ver descendencia)
+    ----------------------------
+
+    segunda parte
+
+
+    -->
+    <div class="container min-vh-100">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="display-4 text-center">Dashboard</h1>
+                
+            </div>
+
+        </div>
+        
+        <div class="row">
+            <!-- 1) -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total de ovejas</h5>
+                        <p class="card-text">Total de ovejas en el establecimiento</p>
+                        <ul>
+                            <li>Total de corderos y corderas: 10</li>
+                            <li>Total de borregos y borregas: 20</li>
+                        </ul>
+                        <a href="{% url 'ganaderia:ovejas'%}" class="btn btn-primary">Ver detalles</a>
+
+                    </div>
+                </div>
+            </div>
+            <!-- 2) -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total de ventas</h5>
+                        <p class="card-text">Total de ventas establecimiento</p>
+                        <ul>
+                            <li>Total de ventas individual: $500</li>
+                            <li>Total de ventas en remates: $20000</li>
+                            <li>Total de ventas por frigorifico: $200</li>
+                        </ul>
+                        <p class="card-text">Total: $20700</p>
+                        <a href="{% url 'ganaderia:ventas' %}" class="btn btn-primary">Ver detalles</a>
+
+                    </div>
+                </div>
+            </div>
+            <!-- 3) -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Planteletas</h5>
+                        <p class="card-text">Plantel de venta y exposicion</p>
+                        <ul>
+                            <li><a href="#">Plantel de exposicion</a></li>
+                            <li><a href="#">Plantel de venta</a></li>
+                        </ul>
+                        <a href="{% url 'ganaderia:planteletas'%}" class="btn btn-primary">Ver detalles</a>
+                    </div>
+                </div>
+            </div>
+            <!-- 4) -->
+
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Arbol genealogico</h5>
+                        <p class="card-text">Descendencia de ovinos</p>
+                        <a href="{% url 'ganaderia:index'%}" class="btn btn-primary">Ver detalles</a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <hr class="mt-5">
+        <!-- seccion de analisis de datos -->
+         <div class="row">
+            <div class="col-md-12">
+                <h1 class="display-4 text-center mt-2">Analisis de datos</h1>
+            </div>
+
+            <div class="col-md-8">
+                <!-- grafica de torta -->
+                <div class="container bg-light">
+                    <h3 class="text-center">Ventas</h3>
+                    <canvas id="myChart" width="100" height="100" class="mb-5">
+
+                    </canvas>
+                </div>
+               
+
+            </div>
+            <div class="col-md-4">
+                <div class="container bg-light mb-2">
+                    <h3 class="text-center">Ovinos Top 🏆</h3>
+                    <!-- mini tabla en vertical  -->
+                     <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Numero</th>
+                                <th>Peso(kg)</th>
+                                <th>Edad</th>
+                                <th>Pedigree</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>300</td>
+                                <td>74</td>
+                                <td>2 meses</td>
+                                <td>SI</td>
+                            </tr>
+                            <tr>
+                                <td>299</td>
+                                <td>73</td>
+                                <td>2 meses</td>
+                                <td>SI</td>
+                            </tr>
+                            <tr>
+                                <td>303</td>
+                                <td>75</td>
+                                <td>2 meses</td>
+                                <td>SI</td>
+                            </tr>
+                     </table>
+                </div>
+                <!-- grafica total de ovejas -->
+                <div class="container bg-light">
+                    <h3 class="text-center">Total Ovinos</h3>
+                    <canvas id="myChartOvinos" width="100" height="100" class="mb-5"></canvas>
+                </div>  
+            </div>
+        </div>
+        <hr>
+    </div>
+
+    {% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Obtener el contexto del canvas
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        // Crear la gráfica de torta (pie chart)
+        var myChart = new Chart(ctx, {
+            type: 'pie', // Tipo de gráfico: 'pie' para gráfica de torta
+            data: {
+                labels: ['Remates', 'Individuales', 'Frigorífico'], // Etiquetas para las categorías
+                datasets: [{
+                    data: [70, 10, 20], // Datos de las ventas por cada categoría
+                    backgroundColor: ['#28a745', '#ffc107', '#dc3545'], // Colores: verde, amarillo, rojo
+                    borderColor: ['#28a745', '#ffc107', '#dc3545'], // Colores del borde (opcional)
+                    borderWidth: 1, // Grosor del borde
+                }]
+            },
+            options: {
+                responsive: true, // Para hacerlo adaptable al tamaño de la pantalla
+                plugins: {
+                    legend: {
+                        position: 'top', // Posición de la leyenda
+                    },
+                    tooltip: {
+                        enabled: true // Habilitar los tooltips al pasar el mouse
+                    }
+                }
+            }
+        });
+        // Obtener el contexto del canvas
+    var ctxOvinos = document.getElementById('myChartOvinos').getContext('2d');
+
+    // Crear la gráfica de torta (pie chart)
+    var myChartOvinos = new Chart(ctxOvinos, {
+        type: 'pie', // Tipo de gráfico: 'pie' para gráfica de torta
+        data: {
+            labels: ['Corderas', 'Borregas', 'Corderos', 'Borregos'], // Etiquetas de las categorías
+            datasets: [{
+                data: [50, 30, 40, 20], // Datos para cada categoría (actualiza con tus valores reales)
+                backgroundColor: ['#28a745', '#218838', '#ffc107', '#dc3545'], // Colores: verde, verde oscuro, amarillo, rojo
+                borderColor: ['#28a745', '#218838', '#ffc107', '#dc3545'], // Bordes (opcional)
+                borderWidth: 1, // Grosor del borde
+            }]
+        },
+        options: {
+            responsive: true, // Adaptable al tamaño de la pantalla
+            plugins: {
+                legend: {
+                    position: 'top', // Posición de la leyenda
+                },
+                tooltip: {
+                    enabled: true // Habilitar los tooltips al pasar el mouse
+                }
+            }
+        }
+    });
+
+
+
+
+
+
+
+
+    </script>
+    {% endblock %}
+
+    
+
+     
+
+
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'ganaderia/layout.html'%}
+
+
+
+{% block body %}
+    <div class="container min-vh-100">
+        <h3 class="display-4 text-center"> Ventas </h3>
+        
+        <hr>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Numero</th>
+                    <th>Peso(kg)</th>
+                    <th>Edad</th>
+                    <th>Pedigree</th>
+                    <th>Frigorífico</th>
+                    <th>Remate</th>
+                    <th>individual</th>
+                    <th>Fecha</th>
+                    <th>Valor(usd)</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                <tr>
+                    <td>303</td>
+                    <td>74</td>
+                    <td>2 meses</td>
+                    <td>SI</td>
+                    <td>No</td>
+                    <td>No</td>
+                    <td>SI</td>
+                    <td>28/12/24</td>
+                    <td>$600</td>
+                </tr>
+                
+         </table>
+
+         <a href="#" class="btn btn-success">＋ Agregar venta</a>
+         <a href="#" class="btn btn-danger"> - Eliminar</a>
+         <a href="#" class="btn btn-warning"> Modificar</a>
+         <a href="#" class="btn btn-secondary"> Descargar tabla</a>
+    </div>
+
+{% endblock%}

@@ -1,0 +1,45 @@
+{% extends 'ganaderia/layout.html'%}
+
+
+{% block body %}
+<div class="container min-vh-100">
+    <h3 class="display-4 text-center"> Ovejas </h3>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Numero</th>
+                <th>Alias(opcional)</th>
+                <th>Peso(kg)</th>
+                <th>Edad</th>
+                <th>Pedigree(si/no)</th>
+                <th>Raza</th>
+                <th>Genero</th>
+                <th>Tipo</th>
+                <th>Defectos</th>
+                
+            </tr>
+
+        </thead>
+        <tbody>
+            <tr>
+                <td>303</td>
+                <td>-</td>
+                <td>74</td>
+                <td>2 meses</td>
+                <td>SI</td>
+                <td>Texel</td>
+                <td>Macho</td>
+                <td>Cordero</td>
+                <td>No</td>
+            </tr>
+            
+     </table>
+
+     <a href="#" class="btn btn-success">＋ Agregar oveja</a>
+     <a href="#" class="btn btn-danger"> - Eliminar</a>
+     <a href="#" class="btn btn-warning"> Modificar</a>
+     <a href="#" class="btn btn-secondary"> Descargar tabla</a>
+
+</div>
+{% endblock %}
