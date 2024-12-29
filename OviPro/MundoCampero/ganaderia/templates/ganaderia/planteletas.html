@@ -1,30 +1,26 @@
 {% extends 'ganaderia/layout.html'%}
 
-
 {% block body %}
 
     <div class="container min-vh-100">
-        <h3 class="display-4 text-center"> Plantel </h3>
+        <h3 class="display-4 text-center">Plantel</h3>
 
         <div class="row">
-            <!-- plantel de exposicion -->
-            
+            <!-- Plantel de exposición -->
             <div class="col-md-6">
-                <h2 class="display-4 text-center">Plantel exposicion</h2>
-                <table class="table table-striped">
+                <h2 class="display-5 text-center">Plantel de exposición</h2>
+                <table class="table table-striped mb-4">
                     <thead>
                         <tr>
                             <th>Numero</th>
-                            <th>Alias(opcional)</th>
-                            <th>Peso(kg)</th>
+                            <th>Alias (opcional)</th>
+                            <th>Peso (kg)</th>
                             <th>Edad</th>
-                            <th>Pedigree(si/no)</th>
+                            <th>Pedigree (sí/no)</th>
                             <th>Raza</th>
-                            <th>Genero</th>
+                            <th>Género</th>
                             <th>Tipo</th>
-                            
                         </tr>
-        
                     </thead>
                     <tbody>
                         <tr>
@@ -32,33 +28,30 @@
                             <td>-</td>
                             <td>74</td>
                             <td>2 meses</td>
-                            <td>SI</td>
+                            <td>SÍ</td>
                             <td>Texel</td>
                             <td>Macho</td>
                             <td>Cordero</td>
                         </tr>
-                        
-                 </table>
+                    </tbody>
+                </table>
             </div>
-            <!-- plantel de ventas -->
-             <div class="col-md-6">
-                <h2 class="display-4 text-center">Plantel de ventas</h2>
-                <table class="table table-striped">
-
+            <!-- Plantel de ventas -->
+            <div class="col-md-6">
+                <h2 class="display-5 text-center">Plantel de ventas</h2>
+                <table class="table table-striped mb-4">
                     <thead>
                         <tr>
                             <th>Numero</th>
-                            <th>Alias(opcional)</th>
-                            <th>Peso(kg)</th>
+                            <th>Alias (opcional)</th>
+                            <th>Peso (kg)</th>
                             <th>Edad</th>
-                            <th>Pedigree(si/no)</th>
+                            <th>Pedigree (sí/no)</th>
                             <th>Raza</th>
-                            <th>Genero</th>
+                            <th>Género</th>
                             <th>Tipo</th>
                             <th>Defectos</th>
-                            
                         </tr>
-        
                     </thead>
                     <tbody>
                         <tr>
@@ -66,24 +59,24 @@
                             <td>-</td>
                             <td>74</td>
                             <td>2 meses</td>
-                            <td>SI</td>
+                            <td>SÍ</td>
                             <td>Texel</td>
                             <td>Macho</td>
                             <td>Cordero</td>
                             <td>No</td>
                         </tr>
-                        
-                 </table>
-    
-             </div>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        
 
-         <a href="#" class="btn btn-success">＋ Agregar oveja</a>
-         <a href="#" class="btn btn-danger"> - Eliminar</a>
-         <a href="#" class="btn btn-warning"> Modificar</a>
-         <a href="#" class="btn btn-secondary"> Descargar tabla</a>
-    
+        <!-- Botones de acciones -->
+        <div class="text-center mt-4">
+            <a href="#" class="btn btn-success">＋ Agregar oveja</a>
+            <a href="#" class="btn btn-danger">− Eliminar</a>
+            <a href="#" class="btn btn-warning">Modificar</a>
+            <a href="#" class="btn btn-secondary">Descargar tabla</a>
+        </div>
     </div>
 
 {% endblock %}
