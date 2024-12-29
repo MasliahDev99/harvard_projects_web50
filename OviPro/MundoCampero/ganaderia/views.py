@@ -8,6 +8,7 @@ from django.urls import reverse
 from .models import User
 from .models import *
 
+from .utils import crear_establecimiento
 # Create your views here.
 
 def index(request):
@@ -18,6 +19,31 @@ def index(request):
 
 
 def register_view(request):
+    if request.method == 'POST':
+        establecimiento = request.POST.get('username')
+        RUT = request.POST.get('RUT')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        password2 = request.POST.get('confirmation')
+
+        if password != password2:
+            return render(request,'ganaderia/register.html',{
+                "message" : 'Las contraseña deben coincidir',
+            })
+        
+        #procedemos a crear el usuario establecimiento
+        try:
+            nuevo_establecimiento = crear_establecimiento(
+                username=establecimiento,RUT=RUT,email=email,password=password)
+            nuevo_establecimiento.save()            
+
+        except IntegrityError as e:
+            return render(request,'ganaderia/register.html',{
+                "message" : 'Ya existe un establecimiento con esos datos',
+            })
+        login(request, nuevo_establecimiento)
+        return HttpResponseRedirect(reverse("ganaderia:index"))
+        
     return render(request, 'ganaderia/register.html')
 
 def login_view(request):
