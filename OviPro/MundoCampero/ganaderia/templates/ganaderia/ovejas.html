@@ -2,44 +2,164 @@
 
 
 {% block body %}
-<div class="container min-vh-100">
-    <h3 class="display-4 text-center"> Ovejas </h3>
-
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Numero</th>
-                <th>Alias(opcional)</th>
-                <th>Peso(kg)</th>
-                <th>Edad</th>
-                <th>Pedigree(si/no)</th>
-                <th>Raza</th>
-                <th>Genero</th>
-                <th>Tipo</th>
-                <th>Defectos</th>
-                
-            </tr>
-
-        </thead>
-        <tbody>
-            <tr>
-                <td>303</td>
-                <td>-</td>
-                <td>74</td>
-                <td>2 meses</td>
-                <td>SI</td>
-                <td>Texel</td>
-                <td>Macho</td>
-                <td>Cordero</td>
-                <td>No</td>
-            </tr>
+<div class="container-fluid py-4 min-vh-100">
+    <div class="row mb-4 align-items-center">
+        <div class="col-auto">
+            <a href="{% url 'ganaderia:dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
+        </div>
+        <div class="col">
+            <h1 class="display-4 text-center mb-0">Ovejas</h1>
+        </div>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <!-- en la columna del numero se va mostrar el BU en caso de que no tenga RP -->
+                            <th>Numero</th>
+                            <th>Alias(opcional)</th>
+                            <th>Peso(kg)</th>
+                            <th>Edad</th>
+                            <th>Pureza</th>
+                            <th>Raza</th>
+                            <th>Sexo</th>
+                            <th>Tipo</th>
+                            <th>Ver detalle</th>
+                            
+                        </tr>
             
-     </table>
+                    </thead>
+                    <tbody>
+                        <!-- iteramos renderizando cada columna  -->
+                        <tr>
+                            <td>303</td>
+                            <td>-</td>
+                            <td>74</td>
+                            <td>2 meses</td>
+                            <td>Pedigree</td>
+                            <td>Texel</td>
+                            <td>Macho</td>
+                            <td>Cordero</td>
+                            <td><a href="#" class="btn btn-sm btn-primary">ver detalle</a></td>
+                        </tr>
+                        
+                </table>
+            </div>
+        </div>
+    </div>
+  <!-- botones de accion -->
+    <div class="mt-4 d-flex justify-content-between align-items-center">
+        <div>
+            <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addOvinoModal">
+                <i class="fas fa-plus"></i> Agregar Oveja
+            </button>
+            <button class="btn btn-danger me-2" id="deleteSelectedBtn" disabled>
+                <i class="fas fa-trash"></i> Eliminar seleccionados
+            </button>
+            <button class="btn btn-warning me-2" id="modifySelectedBtn" disabled>
+                <i class="fas fa-edit"></i> Modificar seleccionado
+            </button>
+            <button class="btn btn-secondary me-2" id="modifySelectedBtn" >
+                <i class="fas fa-gear"></i> Ajustes
+                <!-- En este boton se podra seleccionar que columna mostrar y cuales no -->
+            </button>
+        </div>
+        <div>
+            <button class="btn btn-secondary" id="downloadTableBtn">
+                <i class="fas fa-download"></i> Descargar tabla
+            </button>
+        </div>
+    </div>
 
-     <a href="#" class="btn btn-success">＋ Agregar oveja</a>
-     <a href="#" class="btn btn-danger"> - Eliminar</a>
-     <a href="#" class="btn btn-warning"> Modificar</a>
-     <a href="#" class="btn btn-secondary"> Descargar tabla</a>
+    <!-- Modal  de gestion de ovejas -->
+    
+    <div class="modal fade" id="addOvinoModal" tabindex="-1" aria-labelledby="addOvinoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addOvinoModalLabel">Registrar nuevo ovino</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addOvinoForm">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="BuNumber" class="form-label">BU</label>
+                                <input type="number" class="form-control" id="BuNumber" name="BuNumber" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="RPnumber" class="form-label">RP (Registro Permanente)</label>
+                                <input type="number" class="form-control" id="RP" name="RP" placeholder="(opcional)">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="bornDate" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="bornDate" name="bornDate" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="pedigree" class="form-label">Calificador de pureza</label>
+                                <select class="form-select" id="pedigree" name="pedigree" required>
+                                    <option value="">Seleccionar</option>
+                                    <option value="PO">Puro Origen</option>
+                                    <option value="MO">Mestizo Ordinario</option>
+                                    <option value="Pe">Pedigree</option>
+                                    <option value="General">General</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="breed" class="form-label">Raza</label>
+                                <select class="form-select" id="breed" name="breed" required>
+                                    <option value="">Seleccionar raza</option>
+                                    <option value="texel">Texel</option>
+                                    <option value="merino">Merino</option>
+                                    <option value="dorper">Dorper</option>
+                                    <option value="suffolk">Suffolk</option>
+                                    <option value="hampshire">Hampshire</option>
+                                    <!-- Add more breeds as needed -->
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="gender" class="form-label">Sexo</label>
+                                <select class="form-select" id="gender" name="gender" required>
+                                    <option value="">Seleccionar el sexo</option>
+                                    <option value="macho">Macho</option>
+                                    <option value="hembra">Hembra</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="father" class="form-label">RP padre</label>
+                                <input type="text" class="form-control" id="father" name="father" placeholder="(opcional)">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="mother" class="form-label">RP madre</label>
+                                <input type="text" class="form-control" id="mother" name="mother" placeholder="(opcional)">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="origin" class="form-label">Origen</label>
+                                <input type="text" class="form-control" id="origin" name="origin" placeholder="Nombre del establecimiento" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" form="addOvinoForm" class="btn btn-primary">Guardar ovino</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
 
 </div>
+{% block script %}
+
+
+{% endblock %}
 {% endblock %}

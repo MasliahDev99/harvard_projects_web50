@@ -1,46 +1,133 @@
-{% extends 'ganaderia/layout.html'%}
-
-
+{% extends 'ganaderia/layout.html' %}
 
 {% block body %}
-    <div class="container min-vh-100">
-        <h3 class="display-4 text-center"> Ventas </h3>
-        
-        <hr>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Numero</th>
-                    <th>Peso(kg)</th>
-                    <th>Edad</th>
-                    <th>Pedigree</th>
-                    <th>Frigorífico</th>
-                    <th>Remate</th>
-                    <th>individual</th>
-                    <th>Fecha</th>
-                    <th>Valor(usd)</th>
-                </tr>
-
-            </thead>
-            <tbody>
-                <tr>
-                    <td>303</td>
-                    <td>74</td>
-                    <td>2 meses</td>
-                    <td>SI</td>
-                    <td>No</td>
-                    <td>No</td>
-                    <td>SI</td>
-                    <td>28/12/24</td>
-                    <td>$600</td>
-                </tr>
-                
-         </table>
-
-         <a href="#" class="btn btn-success">＋ Agregar venta</a>
-         <a href="#" class="btn btn-danger"> - Eliminar</a>
-         <a href="#" class="btn btn-warning"> Modificar</a>
-         <a href="#" class="btn btn-secondary"> Descargar tabla</a>
+<div class="container-fluid py-4 min-vh-100">
+    <div class="row mb-4 align-items-center">
+        <div class="col-auto">
+            <a href="{% url 'ganaderia:dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
+        </div>
+        <div class="col">
+            <h1 class="display-4 text-center mb-0">Ventas</h1>
+        </div>
     </div>
 
-{% endblock%}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Numero</th>
+                            <th>Peso(kg)</th>
+                            <th>Edad</th>
+                            <th>Pureza</th>
+                            <th>Frigorífico</th>
+                            <th>Remate</th>
+                            <th>Individual</th>
+                            <th>Fecha</th>
+                            <th>Valor(USD)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>303</td>
+                            <td>74</td>
+                            <td>2 meses</td>
+                            <td>Pedigree</td>
+                            <td>No</td>
+                            <td>No</td>
+                            <td>SI</td>
+                            <td>28/12/24</td>
+                            <td>$600</td>
+                        </tr>
+                      
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-between align-items-center">
+        <div>
+            <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addSaleModal">
+                <i class="fas fa-plus"></i> Agregar venta
+            </button>
+            <button class="btn btn-danger me-2" id="deleteSelectedBtn" disabled>
+                <i class="fas fa-trash"></i> Eliminar seleccionados
+            </button>
+            <button class="btn btn-warning me-2" id="modifySelectedBtn" disabled>
+                <i class="fas fa-edit"></i> Modificar seleccionado
+            </button>
+        </div>
+        <div>
+            <button class="btn btn-secondary" id="downloadTableBtn">
+                <i class="fas fa-download"></i> Descargar tabla
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Sale Modal -->
+<div class="modal fade" id="addSaleModal" tabindex="-1" aria-labelledby="addSaleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSaleModalLabel">Agregar nueva venta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               
+                <form id="addSaleForm">
+                    {% csrf_token %}
+                    <!-- Numero de la oveja a vender -->
+                    <div class="mb-3">
+                        <label for="saleNumber" class="form-label">Número</label>
+                        <input type="number" class="form-control" name="number" id="saleNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="saleValue" class="form-label">Valor</label>
+                        <input type="number" class="form-control" name="value" id="saleValue" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="saleDate" class="form-label">Fecha de venta</label>
+                        <input type="date" class="form-control" name="date" id="saleDate" required>
+                    </div>
+                   
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" form="addSaleForm" class="btn btn-primary">Guardar venta</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+   
+</script>
+{% endblock %}
+
+
+<!-- anotaciones -->
+<!-- 
+
+Si el animal se agrega en la tabla de ventas, entonces debe eliminarse 
+de la tabla de ovejas y en las planteletas de ventas u 
+exposicion en caso de estar presentes
+
+Si el anumal se elimina de la tabla de ventas por un error, entonces debe 
+volver a la tabla de ovejas y 
+en las plantillas de ventas o exposicion en caso de estar presentes
+
+El animal que este vendido (tabla de ventas) el numero BU puede ser reutilizado en la tabla de registros
+
+El Numero de animal que se ingresa en la tabla de ventas debe exisitir 
+en la tabla de registros (se usa el numero RP o BU en caso de que no este tatuada aun)
+
+   -->
