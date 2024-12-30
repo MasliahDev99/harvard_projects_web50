@@ -35,17 +35,21 @@
                     </thead>
                     <tbody>
                         <!-- iteramos renderizando cada columna  -->
+                    {% for oveja in ovejas %}
+                        {% if oveja %}
                         <tr>
-                            <td>303</td>
-                            <td>-</td>
-                            <td>74</td>
-                            <td>2 meses</td>
-                            <td>Pedigree</td>
-                            <td>Texel</td>
-                            <td>Macho</td>
-                            <td>Cordero</td>
+                            <td>{{oveja.RP}}</td>
+                            <td>{{oveja.nombre}}</td>
+                            <td>{{oveja.peso}}</td>
+                            <td>{{oveja.edad}}</td>
+                            <td>{{oveja.calificador_pureza}}</td>
+                            <td>{{oveja.raza}}</td>
+                            <td>{{oveja.sexo}}</td>
+                            <td>{{oveja.edad_clasificada}}</td>
                             <td><a href="#" class="btn btn-sm btn-primary">ver detalle</a></td>
                         </tr>
+                        {% endif %}
+                    {% endfor %}
                         
                 </table>
             </div>

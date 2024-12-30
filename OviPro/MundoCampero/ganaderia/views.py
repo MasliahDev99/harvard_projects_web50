@@ -8,7 +8,8 @@ from django.urls import reverse
 from .models import User
 from .models import *
 
-from .utils import crear_establecimiento
+
+from .utils import crear_establecimiento,obtener_nombre_con_rut,obtener_todas_las_ovejas,obtener_todos_tipos_cantidad
 # Create your views here.
 
 def index(request):
@@ -47,6 +48,18 @@ def register_view(request):
     return render(request, 'ganaderia/register.html')
 
 def login_view(request):
+    if request.method == 'POST':
+        RUT = request.POST.get('rut')
+        password = request.POST.get('password')
+
+        #obtenemos el nombre del establecimiento
+        username = obtener_nombre_con_rut(RUT)
+        if username:
+            establecimiento = authenticate(request,username=username, password = password)
+            if establecimiento is not None:
+                login(request,establecimiento)
+                return redirect('ganaderia:dashboard')
+            
     return render(request, 'ganaderia/login.html')
 
 @login_required
@@ -56,7 +69,17 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'ganaderia/dashboard.html')
+    ovejas = obtener_todas_las_ovejas()
+    #ventas = obtener_todas_las_ventas()
+    corderos,corderas,borregos,borregas,_,_,total_ovejas = obtener_todos_tipos_cantidad()
+    return render(request, 'ganaderia/dashboard.html',{
+        'ovejas' : ovejas,
+        'corderos':corderos,
+        'corderas': corderas,
+        'borregos': borregos,
+        'borregas' : borregas,
+        'total_ovejas': total_ovejas,
+    })
 
 @login_required
 def ventas(request):
@@ -64,7 +87,13 @@ def ventas(request):
 
 @login_required
 def ovejas(request):
-    return render(request, 'ganaderia/ovejas.html')
+    ovejas = Oveja.objects.all()
+    
+    # Clasificar las edades de las ovejas antes de pasarlas al template
+    for oveja in ovejas:
+        oveja.edad_clasificada = oveja.clasificar_edad()  # Asignamos la clasificación de edad a una nueva propiedad
+
+    return render(request, 'ganaderia/ovejas.html', {'ovejas': ovejas})
 
 @login_required
 def planteletas(request):

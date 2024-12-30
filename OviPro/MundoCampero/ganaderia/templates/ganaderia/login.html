@@ -20,7 +20,7 @@
                     <form action="{% url 'ganaderia:login' %}" method="POST">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="username" class="form-label">Rut</label>
+                            <label for="rut" class="form-label">Rut</label>
                             <input type="number" class="form-control" id="rut" name="rut" placeholder="Enter your RUT" required autofocus>
                         </div>
                         <div class="mb-3">

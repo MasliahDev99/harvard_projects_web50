@@ -14,17 +14,17 @@
                     <div class="mt-auto">
                         <div class="d-flex justify-content-between mb-2">
                             <span>Corderos:</span>
-                            <strong>3</strong>
+                            <strong>{{ corderos|default:0 }}</strong>
                             <span>Borregos:</span>
-                            <strong>6</strong>
+                            <strong>{{ borregos|default:0 }}</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-3">
                             <span>Corderas:</span>
-                            <strong>15</strong>
+                            <strong>{{ corderas|default:0 }}</strong>
                             <span>Borregas:</span>
-                            <strong>30</strong>
+                            <strong>{{ borregas|default:0 }}</strong>
                         </div>
-                        <a href="{% url 'ganaderia:ovejas'%}" class="btn btn-primary w-100">Ver detalles</a>
+                        <a href="{% url 'ganaderia:ovejas' %}" class="btn btn-primary w-100">Ver detalles</a>
                     </div>
                 </div>
             </div>

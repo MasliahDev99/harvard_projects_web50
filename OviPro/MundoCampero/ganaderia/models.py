@@ -20,9 +20,15 @@ class Raza(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50,unique=True)
 
+    def __str__(self):
+        return self.nombre 
+
 class CalificadorPureza(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50,unique=True)
+
+    def __str__(self):
+        return self.nombre 
 
 #User => Establecimiento
 class User(AbstractUser):
@@ -30,4 +36,32 @@ class User(AbstractUser):
     RUT = models.IntegerField(unique=True, null=True,blank=True ,validators=[MinValueValidator(1000000), MaxValueValidator(999999999999)])
     telefono = models.IntegerField(null=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
+    
 
+
+class Oveja(models.Model):
+    id = models.AutoField(primary_key=True)
+    BU = models.CharField(max_length=50, unique=True)
+    RP = models.CharField(max_length=50, unique=True)
+    nombre = models.CharField(max_length=100)
+    peso = models.FloatField()
+    raza = models.ForeignKey(Raza, on_delete=models.CASCADE)
+    edad = models.PositiveIntegerField()
+    fecha_nacimiento = models.DateField()
+    sexo = models.CharField(max_length=10, choices=(('Macho', 'Macho'), ('Hembra', 'Hembra')))
+    calificador_pureza = models.ForeignKey(CalificadorPureza, on_delete=models.SET_NULL, null=True, blank=True)
+    observaciones = models.TextField(null=True, blank=True)
+    oveja_padre = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='hijos_padre')
+    oveja_madre = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='hijos_madre')
+    establecimiento = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ovejas')  # Relación con el User (Establecimiento)
+
+    def __str__(self):
+        return self.nombre
+    
+    def clasificar_edad(self):
+        if self.edad <= 6:  # Cordero si tiene 6 meses o menos
+            return 'Cordero' if self.sexo == 'Macho' else 'Cordera'
+        elif self.edad <= 12:  # Borrego de 7 a 12 meses
+            return 'Borrego' if self.sexo == 'Macho' else 'Borrega'
+        else:  # Ovejas adultas (mayores de 12 meses)
+            return 'Borrego' if self.sexo == 'Macho' else 'Borrega'
