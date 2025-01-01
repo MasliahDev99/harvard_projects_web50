@@ -4,12 +4,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render , redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-
+from django.contrib import messages
+from django.utils import timezone
+from datetime import date
 from .models import User
 from .models import *
 
 
-from .utils import crear_establecimiento,obtener_nombre_con_rut,obtener_todas_las_ovejas,obtener_todos_tipos_cantidad
+from .utils import crear_establecimiento,obtener_nombre_con_rut,obtener_todas_las_ovejas,obtener_todos_tipos_cantidad,agregar_oveja
+from .utils import calcular_edad_por_fecha_nacimiento,obtener_padre_madre,existe_oveja,obtener_raza,obtener_calificador
 # Create your views here.
 
 def index(request):
@@ -69,15 +72,16 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    ovejas = obtener_todas_las_ovejas()
-    #ventas = obtener_todas_las_ventas()
-    corderos,corderas,borregos,borregas,_,_,total_ovejas = obtener_todos_tipos_cantidad()
-    return render(request, 'ganaderia/dashboard.html',{
-        'ovejas' : ovejas,
-        'corderos':corderos,
+    ovejas = obtener_todas_las_ovejas(request)
+    corderos, corderas, borregos, borregas, borregos_adultos, borregas_adultas, total_ovejas = obtener_todos_tipos_cantidad(request)
+    return render(request, 'ganaderia/dashboard.html', {
+        'ovejas': ovejas,
+        'corderos': corderos,
         'corderas': corderas,
         'borregos': borregos,
-        'borregas' : borregas,
+        'borregas': borregas,
+        'borregos_adultos': borregos_adultos,
+        'borregas_adultas': borregas_adultas,
         'total_ovejas': total_ovejas,
     })
 
@@ -85,15 +89,29 @@ def dashboard(request):
 def ventas(request):
     return render(request, 'ganaderia/ventas.html')
 
+
+
 @login_required
 def ovejas(request):
-    ovejas = Oveja.objects.all()
-    
-    # Clasificar las edades de las ovejas antes de pasarlas al template
-    for oveja in ovejas:
-        oveja.edad_clasificada = oveja.clasificar_edad()  # Asignamos la clasificación de edad a una nueva propiedad
+    ovejas = obtener_todas_las_ovejas(request)
+    if request.method == 'POST':
+        nueva_oveja = agregar_oveja(request)
+        if nueva_oveja:
+            print('Oveja registrada correctamente\n')
+            messages.success(request, 'Oveja registrada correctamente')
+            return redirect('ganaderia:ovejas')
+        else:
+            print('Error al registrar la oveja\n')
+            messages.error(request, 'Error al registrar la oveja')
+        return redirect('ganaderia:dashboard')
 
-    return render(request, 'ganaderia/ovejas.html', {'ovejas': ovejas})
+
+    for oveja in ovejas:
+        oveja.edad_clasificada = oveja.clasificar_edad()
+
+    return render(request, 'ganaderia/ovejas.html', {
+        'ovejas': ovejas,
+        })
 
 @login_required
 def planteletas(request):

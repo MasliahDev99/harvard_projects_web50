@@ -81,89 +81,159 @@
 
     <!-- Modal  de gestion de ovejas -->
     
+    <!-- Modal de gestión de ovejas -->
     <div class="modal fade" id="addOvinoModal" tabindex="-1" aria-labelledby="addOvinoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-success text-white">
                     <h5 class="modal-title" id="addOvinoModalLabel">Registrar nuevo ovino</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addOvinoForm">
+                    <form id="addOvinoForm" action="{% url 'ganaderia:ovejas' %}" method="POST">
                         {% csrf_token %}
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="BuNumber" class="form-label">BU</label>
-                                <input type="number" class="form-control" id="BuNumber" name="BuNumber" required>
+                                <label for="BU" class="form-label">BU</label>
+                                <input type="number" class="form-control" id="BU" name="BU"  required>
                             </div>
                             <div class="col-md-6">
-                                <label for="RPnumber" class="form-label">RP (Registro Permanente)</label>
+                                <label for="RP" class="form-label">RP (Registro Permanente)</label>
                                 <input type="number" class="form-control" id="RP" name="RP" placeholder="(opcional)">
                             </div>
                             <div class="col-md-6">
-                                <label for="bornDate" class="form-label">Fecha de nacimiento</label>
-                                <input type="date" class="form-control" id="bornDate" name="bornDate" required>
+                                <label for="peso" class="form-label">Peso (kg)</label>
+                                <input type="number" class="form-control" id="peso" name="peso" step="0.1" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="pedigree" class="form-label">Calificador de pureza</label>
-                                <select class="form-select" id="pedigree" name="pedigree" required>
+                                <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="calificador_pureza" class="form-label">Calificador de pureza</label>
+                                <select class="form-select" id="calificador_pureza" name="calificador_pureza" required>
                                     <option value="">Seleccionar</option>
                                     <option value="PO">Puro Origen</option>
                                     <option value="MO">Mestizo Ordinario</option>
-                                    <option value="Pe">Pedigree</option>
+                                    <option value="Pedigree">Pedigree</option>
                                     <option value="General">General</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="breed" class="form-label">Raza</label>
-                                <select class="form-select" id="breed" name="breed" required>
+                                <label for="raza" class="form-label">Raza</label>
+                                <select class="form-select" id="raza" name="raza" required>
                                     <option value="">Seleccionar raza</option>
-                                    <option value="texel">Texel</option>
-                                    <option value="merino">Merino</option>
-                                    <option value="dorper">Dorper</option>
-                                    <option value="suffolk">Suffolk</option>
-                                    <option value="hampshire">Hampshire</option>
-                                    <!-- Add more breeds as needed -->
+                                    <option value="Texel">Texel</option>
+                                    <option value="Merino">Merino</option>
+                                    <option value="Dorper">Dorper</option>
+                                    <option value="Suffolk">Suffolk</option>
+                                    <option value="Hampshire">Hampshire</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="gender" class="form-label">Sexo</label>
-                                <select class="form-select" id="gender" name="gender" required>
+                                <label for="sexo" class="form-label">Sexo</label>
+                                <select class="form-select" id="sexo" name="sexo" required>
                                     <option value="">Seleccionar el sexo</option>
-                                    <option value="macho">Macho</option>
-                                    <option value="hembra">Hembra</option>
+                                    <option value="Macho">Macho</option>
+                                    <option value="Hembra">Hembra</option>
                                 </select>
                             </div>
                             
-                            <div class="col-md-6">
-                                <label for="father" class="form-label">RP padre</label>
-                                <input type="text" class="form-control" id="father" name="father" placeholder="(opcional)">
+                            <div class="col-md-12">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="purchased" name="purchased">
+                                    <label class="form-check-label" for="purchased">¿Oveja comprada?</label>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="mother" class="form-label">RP madre</label>
-                                <input type="text" class="form-control" id="mother" name="mother" placeholder="(opcional)">
+                            
+                            <!-- Campos para RP padre y madre internos -->
+                            <div class="col-md-6 purchased-hidden">
+                                <label for="oveja_padre" class="form-label">RP padre</label>
+                                <input type="text" class="form-control" id="oveja_padre" name="oveja_padre" placeholder="(opcional)">
+                            </div>
+                            <div class="col-md-6 purchased-hidden">
+                                <label for="oveja_madre" class="form-label">RP madre</label>
+                                <input type="text" class="form-control" id="oveja_madre" name="oveja_madre" placeholder="(opcional)">
+                            </div>
+                            
+                            <!-- Campos para RP padre y madre externos -->
+                            <div class="col-md-6 purchased-visible" style="display: none;">
+                                <label for="rp_padre_externo" class="form-label">RP padre externo</label>
+                                <input type="text" class="form-control" id="rp_padre_externo" name="rp_padre_externo" placeholder="(opcional)">
+                            </div>
+                            <div class="col-md-6 purchased-visible" style="display: none;">
+                                <label for="rp_madre_externo" class="form-label">RP madre externo</label>
+                                <input type="text" class="form-control" id="rp_madre_externo" name="rp_madre_externo" placeholder="(opcional)">
                             </div>
 
-                            <div class="col-md-6">
-                                <label for="origin" class="form-label">Origen</label>
-                                <input type="text" class="form-control" id="origin" name="origin" placeholder="Nombre del establecimiento" required>
+                            <div class="col-md-12">
+                                <label for="establecimiento" class="form-label">Origen</label>
+                                <input type="text" class="form-control" id="establecimiento" name="establecimiento" placeholder="Nombre del establecimiento" required>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="obs" name="obs">
+                                    <label class="form-check-label" for="obs">¿Observaciones?</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12" id="observacionesContainer" style="display: none;">
+                                <label for="observaciones" class="form-label">Observaciones</label>
+                                <textarea class="form-control" id="observaciones" name="observaciones" rows="4" placeholder="Escribe tus observaciones aquí..."></textarea>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Guardar ovino</button>
+                        </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" form="addOvinoForm" class="btn btn-primary">Guardar ovino</button>
                 </div>
             </div>
         </div>
     </div>
+
+
     
     
 
 </div>
-{% block script %}
+    {% block script %}
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+    const obsCheckbox = document.getElementById('obs');
+    const observacionesContainer = document.getElementById('observacionesContainer');
+    const purchasedCheckbox = document.getElementById('purchased');
+    const purchasedHidden = document.querySelectorAll('.purchased-hidden');
+    const purchasedVisible = document.querySelectorAll('.purchased-visible');
+
+    obsCheckbox.addEventListener('change', function() {
+        observacionesContainer.style.display = this.checked ? 'block' : 'none';
+    });
+
+    purchasedCheckbox.addEventListener('change', function() {
+        const isChecked = this.checked;
+        purchasedHidden.forEach(field => {
+            field.style.display = isChecked ? 'none' : 'block';
+        });
+        purchasedVisible.forEach(field => {
+            field.style.display = isChecked ? 'block' : 'none';
+        });
+    });
+
+    // Validación del formulario
+    const addOvinoForm = document.getElementById('addOvinoForm');
+    addOvinoForm.addEventListener('submit', function(event) {
+        if (!addOvinoForm.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        addOvinoForm.classList.add('was-validated');
+    });
+});
 
 
-{% endblock %}
+    </script>
+
+    {% endblock %}
 {% endblock %}
