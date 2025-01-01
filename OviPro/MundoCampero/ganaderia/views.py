@@ -94,24 +94,28 @@ def ventas(request):
 @login_required
 def ovejas(request):
     ovejas = obtener_todas_las_ovejas(request)
-    if request.method == 'POST':
-        nueva_oveja = agregar_oveja(request)
-        if nueva_oveja:
-            print('Oveja registrada correctamente\n')
-            messages.success(request, 'Oveja registrada correctamente')
-            return redirect('ganaderia:ovejas')
-        else:
-            print('Error al registrar la oveja\n')
-            messages.error(request, 'Error al registrar la oveja')
-        return redirect('ganaderia:dashboard')
 
+    razas = Raza.objects.all()
+    calificadores = CalificadorPureza.objects.all()
+    
+    if request.method == 'POST':
+        nueva_oveja, mensaje = agregar_oveja(request)
+        if nueva_oveja:
+            messages.success(request, mensaje)
+        else:
+            messages.error(request, mensaje)
+        return redirect('ganaderia:ovejas')
 
     for oveja in ovejas:
         oveja.edad_clasificada = oveja.clasificar_edad()
 
     return render(request, 'ganaderia/ovejas.html', {
         'ovejas': ovejas,
-        })
+        'razas': razas,
+        'calificadores': calificadores,
+    })
+
+
 
 @login_required
 def planteletas(request):

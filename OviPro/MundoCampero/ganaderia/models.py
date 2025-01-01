@@ -56,7 +56,7 @@ class Oveja(models.Model):
     oveja_padre = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='hijos_padre')
     oveja_madre = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='hijos_madre')
 
-    
+
     establecimiento = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ovejas')  # Relación con el User (Establecimiento)
     
 
@@ -73,7 +73,7 @@ class Oveja(models.Model):
     rp_madre_externo = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
-        return self.nombre
+        return self.nombre if self.nombre else "Nombre no disponible"
     
     def clasificar_edad(self):
         if self.edad <= 6:  # Cordero si tiene 6 meses o menos

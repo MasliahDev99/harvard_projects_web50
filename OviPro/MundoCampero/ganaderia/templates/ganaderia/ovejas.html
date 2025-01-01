@@ -16,14 +16,14 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover" style="cursor:pointer;">
                     <thead class="table-light">
                         <tr>
                             <!-- en la columna del numero se va mostrar el BU en caso de que no tenga RP -->
-                            <th>Numero</th>
+                            <th>RP</th>
                             <th>Alias(opcional)</th>
                             <th>Peso(kg)</th>
-                            <th>Edad</th>
+                            <th>Edad(mese/s)</th>
                             <th>Pureza</th>
                             <th>Raza</th>
                             <th>Sexo</th>
@@ -37,9 +37,9 @@
                         <!-- iteramos renderizando cada columna  -->
                     {% for oveja in ovejas %}
                         {% if oveja %}
-                        <tr>
+                        <tr class="ovino_row" data-id="{{ oveja.id }}">
                             <td>{{oveja.RP}}</td>
-                            <td>{{oveja.nombre}}</td>
+                            <td>{{oveja.nombre|default:"Sin nombre"}}</td>
                             <td>{{oveja.peso}}</td>
                             <td>{{oveja.edad}}</td>
                             <td>{{oveja.calificador_pureza}}</td>
@@ -81,7 +81,6 @@
 
     <!-- Modal  de gestion de ovejas -->
     
-    <!-- Modal de gestión de ovejas -->
     <div class="modal fade" id="addOvinoModal" tabindex="-1" aria-labelledby="addOvinoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -95,11 +94,11 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="BU" class="form-label">BU</label>
-                                <input type="number" class="form-control" id="BU" name="BU"  required>
+                                <input type="text" class="form-control" id="BU" name="BU" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="RP" class="form-label">RP (Registro Permanente)</label>
-                                <input type="number" class="form-control" id="RP" name="RP" placeholder="(opcional)">
+                                <input type="text" class="form-control" id="RP" name="RP" placeholder="(opcional)">
                             </div>
                             <div class="col-md-6">
                                 <label for="peso" class="form-label">Peso (kg)</label>
@@ -110,24 +109,12 @@
                                 <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="calificador_pureza" class="form-label">Calificador de pureza</label>
-                                <select class="form-select" id="calificador_pureza" name="calificador_pureza" required>
-                                    <option value="">Seleccionar</option>
-                                    <option value="PO">Puro Origen</option>
-                                    <option value="MO">Mestizo Ordinario</option>
-                                    <option value="Pedigree">Pedigree</option>
-                                    <option value="General">General</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
                                 <label for="raza" class="form-label">Raza</label>
                                 <select class="form-select" id="raza" name="raza" required>
                                     <option value="">Seleccionar raza</option>
-                                    <option value="Texel">Texel</option>
-                                    <option value="Merino">Merino</option>
-                                    <option value="Dorper">Dorper</option>
-                                    <option value="Suffolk">Suffolk</option>
-                                    <option value="Hampshire">Hampshire</option>
+                                    {% for raza in razas %}
+                                        <option value="{{ raza.nombre }}">{{ raza.nombre }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -138,14 +125,22 @@
                                     <option value="Hembra">Hembra</option>
                                 </select>
                             </div>
-                            
+                            <div class="col-md-6">
+                                <label for="calificador_pureza" class="form-label">Calificador de pureza</label>
+                                <select class="form-select" id="calificador_pureza" name="calificador_pureza" required>
+                                    <option value="">Seleccionar</option>
+                                    {% for calificador in calificadores %}
+                                        <option value="{{ calificador.nombre }}">{{ calificador.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                             <div class="col-md-12">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" class="form-check-input" id="purchased" name="purchased">
                                     <label class="form-check-label" for="purchased">¿Oveja comprada?</label>
                                 </div>
                             </div>
-                            
+    
                             <!-- Campos para RP padre y madre internos -->
                             <div class="col-md-6 purchased-hidden">
                                 <label for="oveja_padre" class="form-label">RP padre</label>
@@ -155,7 +150,7 @@
                                 <label for="oveja_madre" class="form-label">RP madre</label>
                                 <input type="text" class="form-control" id="oveja_madre" name="oveja_madre" placeholder="(opcional)">
                             </div>
-                            
+    
                             <!-- Campos para RP padre y madre externos -->
                             <div class="col-md-6 purchased-visible" style="display: none;">
                                 <label for="rp_padre_externo" class="form-label">RP padre externo</label>
@@ -165,12 +160,7 @@
                                 <label for="rp_madre_externo" class="form-label">RP madre externo</label>
                                 <input type="text" class="form-control" id="rp_madre_externo" name="rp_madre_externo" placeholder="(opcional)">
                             </div>
-
-                            <div class="col-md-12">
-                                <label for="establecimiento" class="form-label">Origen</label>
-                                <input type="text" class="form-control" id="establecimiento" name="establecimiento" placeholder="Nombre del establecimiento" required>
-                            </div>
-
+    
                             <div class="col-md-12">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" class="form-check-input" id="obs" name="obs">
@@ -191,6 +181,8 @@
             </div>
         </div>
     </div>
+    
+    
 
 
     
