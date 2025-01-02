@@ -72,18 +72,19 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    ovejas = obtener_todas_las_ovejas(request)
-    corderos, corderas, borregos, borregas, borregos_adultos, borregas_adultas, total_ovejas = obtener_todos_tipos_cantidad(request)
-    return render(request, 'ganaderia/dashboard.html', {
-        'ovejas': ovejas,
+    corderos, corderas, borregos, borregas, carneros, ovejas, total_ovejas = obtener_todos_tipos_cantidad(request)
+    
+    context = {
         'corderos': corderos,
         'corderas': corderas,
         'borregos': borregos,
         'borregas': borregas,
-        'borregos_adultos': borregos_adultos,
-        'borregas_adultas': borregas_adultas,
+        'carneros': carneros,
+        'ovejas': ovejas,
         'total_ovejas': total_ovejas,
-    })
+    }
+    
+    return render(request, 'ganaderia/dashboard.html', context)
 
 @login_required
 def ventas(request):
@@ -113,6 +114,13 @@ def ovejas(request):
         'ovejas': ovejas,
         'razas': razas,
         'calificadores': calificadores,
+    })
+
+@login_required
+def ver_detalle(request, id_oveja):
+    oveja = get_object_or_404(Oveja, id=id_oveja)
+    return render(request, 'ganaderia/detalle.html',{
+        'oveja': oveja,
     })
 
 

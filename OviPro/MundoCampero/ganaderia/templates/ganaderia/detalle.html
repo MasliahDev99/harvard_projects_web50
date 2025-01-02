@@ -1,0 +1,50 @@
+{% extends 'ganaderia/layout.html' %}
+
+
+
+{% block body %}
+
+    <div class="container min-vh-100 mt-5">
+        <div class="row mb-4 align-items-center">
+            <div class="col-auto">
+                <a href="{% url 'ganaderia:ovejas' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                </a>
+            </div>
+            <div class="col">
+                <h1 class="display-4 text-center">Detalle del Ovino RP: {{oveja.RP}}</h1>
+            </div>
+        </div>
+            
+        <!-- mostramos informacion basica y datos fisicos -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <h2>informacion basica</h2>
+                    
+                    <div class="d-flex flex-column">
+                        <span><strong>RP: </strong>{{oveja.RP}}</span>
+                        <span><strong>BU: </strong>{{oveja.BU}}</span>
+                        <span><strong>Sexo: </strong>{{oveja.sexo}}</span>
+                        <span><strong>Raza: </strong>{{oveja.raza}}</span>
+                        <span><strong>Pureza: </strong>{{oveja.calificador_pureza}}</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <h2>Datos fisicos</h2>
+                    <div class="d-flex flex-column">
+                        <span><strong>Fecha nacimiento: </strong>{{oveja.fecha_nacimiento}}</span>
+                        <span><strong>Peso(kg): </strong>{{oveja.peso}}</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        
+    </div>
+
+
+
+
+{% endblock %}

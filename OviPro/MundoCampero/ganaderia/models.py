@@ -81,4 +81,4 @@ class Oveja(models.Model):
         elif self.edad <= 12:  # Borrego de 7 a 12 meses
             return 'Borrego' if self.sexo == 'Macho' else 'Borrega'
         else:  # Ovejas adultas (mayores de 12 meses)
-            return 'Borrego' if self.sexo == 'Macho' else 'Borrega'
+            return 'Carnero' if self.sexo == 'Macho' else 'Oveja'

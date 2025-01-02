@@ -13,219 +13,26 @@
             <h1 class="display-4 text-center mb-0">Ovejas</h1>
         </div>
     </div>
+    <!-- tabla de registro ovino -->
     <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover" style="cursor:pointer;">
-                    <thead class="table-light">
-                        <tr>
-                            <!-- en la columna del numero se va mostrar el BU en caso de que no tenga RP -->
-                            <th>RP</th>
-                            <th>Alias(opcional)</th>
-                            <th>Peso(kg)</th>
-                            <th>Edad(mese/s)</th>
-                            <th>Pureza</th>
-                            <th>Raza</th>
-                            <th>Sexo</th>
-                            <th>Tipo</th>
-                            <th>Ver detalle</th>
-                            
-                        </tr>
-            
-                    </thead>
-                    <tbody>
-                        <!-- iteramos renderizando cada columna  -->
-                    {% for oveja in ovejas %}
-                        {% if oveja %}
-                        <tr class="ovino_row" data-id="{{ oveja.id }}">
-                            <td>{{oveja.RP}}</td>
-                            <td>{{oveja.nombre|default:"Sin nombre"}}</td>
-                            <td>{{oveja.peso}}</td>
-                            <td>{{oveja.edad}}</td>
-                            <td>{{oveja.calificador_pureza}}</td>
-                            <td>{{oveja.raza}}</td>
-                            <td>{{oveja.sexo}}</td>
-                            <td>{{oveja.edad_clasificada}}</td>
-                            <td><a href="#" class="btn btn-sm btn-primary">ver detalle</a></td>
-                        </tr>
-                        {% endif %}
-                    {% endfor %}
-                        
-                </table>
-            </div>
-        </div>
+        <!-- incluimos la tabla de registro de los ovinos -->
+        {% include 'ganaderia/components/registro_ovino.html' %}
     </div>
+
   <!-- botones de accion -->
     <div class="mt-4 d-flex justify-content-between align-items-center">
-        <div>
-            <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addOvinoModal">
-                <i class="fas fa-plus"></i> Agregar Oveja
-            </button>
-            <button class="btn btn-danger me-2" id="deleteSelectedBtn" disabled>
-                <i class="fas fa-trash"></i> Eliminar seleccionados
-            </button>
-            <button class="btn btn-warning me-2" id="modifySelectedBtn" disabled>
-                <i class="fas fa-edit"></i> Modificar seleccionado
-            </button>
-            <button class="btn btn-secondary me-2" id="modifySelectedBtn" >
-                <i class="fas fa-gear"></i> Ajustes
-                <!-- En este boton se podra seleccionar que columna mostrar y cuales no -->
-            </button>
-        </div>
-        <div>
-            <button class="btn btn-secondary" id="downloadTableBtn">
-                <i class="fas fa-download"></i> Descargar tabla
-            </button>
-        </div>
+        <!-- incluimos los botones de accion -->
+        {% include 'ganaderia/components/botones_accion.html' %}
     </div>
 
     <!-- Modal  de gestion de ovejas -->
-    
     <div class="modal fade" id="addOvinoModal" tabindex="-1" aria-labelledby="addOvinoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="addOvinoModalLabel">Registrar nuevo ovino</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addOvinoForm" action="{% url 'ganaderia:ovejas' %}" method="POST">
-                        {% csrf_token %}
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="BU" class="form-label">BU</label>
-                                <input type="text" class="form-control" id="BU" name="BU" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="RP" class="form-label">RP (Registro Permanente)</label>
-                                <input type="text" class="form-control" id="RP" name="RP" placeholder="(opcional)">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="peso" class="form-label">Peso (kg)</label>
-                                <input type="number" class="form-control" id="peso" name="peso" step="0.1" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
-                                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="raza" class="form-label">Raza</label>
-                                <select class="form-select" id="raza" name="raza" required>
-                                    <option value="">Seleccionar raza</option>
-                                    {% for raza in razas %}
-                                        <option value="{{ raza.nombre }}">{{ raza.nombre }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="sexo" class="form-label">Sexo</label>
-                                <select class="form-select" id="sexo" name="sexo" required>
-                                    <option value="">Seleccionar el sexo</option>
-                                    <option value="Macho">Macho</option>
-                                    <option value="Hembra">Hembra</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="calificador_pureza" class="form-label">Calificador de pureza</label>
-                                <select class="form-select" id="calificador_pureza" name="calificador_pureza" required>
-                                    <option value="">Seleccionar</option>
-                                    {% for calificador in calificadores %}
-                                        <option value="{{ calificador.nombre }}">{{ calificador.nombre }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input" id="purchased" name="purchased">
-                                    <label class="form-check-label" for="purchased">¿Oveja comprada?</label>
-                                </div>
-                            </div>
-    
-                            <!-- Campos para RP padre y madre internos -->
-                            <div class="col-md-6 purchased-hidden">
-                                <label for="oveja_padre" class="form-label">RP padre</label>
-                                <input type="text" class="form-control" id="oveja_padre" name="oveja_padre" placeholder="(opcional)">
-                            </div>
-                            <div class="col-md-6 purchased-hidden">
-                                <label for="oveja_madre" class="form-label">RP madre</label>
-                                <input type="text" class="form-control" id="oveja_madre" name="oveja_madre" placeholder="(opcional)">
-                            </div>
-    
-                            <!-- Campos para RP padre y madre externos -->
-                            <div class="col-md-6 purchased-visible" style="display: none;">
-                                <label for="rp_padre_externo" class="form-label">RP padre externo</label>
-                                <input type="text" class="form-control" id="rp_padre_externo" name="rp_padre_externo" placeholder="(opcional)">
-                            </div>
-                            <div class="col-md-6 purchased-visible" style="display: none;">
-                                <label for="rp_madre_externo" class="form-label">RP madre externo</label>
-                                <input type="text" class="form-control" id="rp_madre_externo" name="rp_madre_externo" placeholder="(opcional)">
-                            </div>
-    
-                            <div class="col-md-12">
-                                <div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input" id="obs" name="obs">
-                                    <label class="form-check-label" for="obs">¿Observaciones?</label>
-                                </div>
-                            </div>
-                            <div class="col-md-12" id="observacionesContainer" style="display: none;">
-                                <label for="observaciones" class="form-label">Observaciones</label>
-                                <textarea class="form-control" id="observaciones" name="observaciones" rows="4" placeholder="Escribe tus observaciones aquí..."></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary">Guardar ovino</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        {% include 'ganaderia/components/modals/agregar_ovino.html' %}
     </div>
-    
-    
-
-
-    
     
 
 </div>
     {% block script %}
-    <script>
-        
-        document.addEventListener('DOMContentLoaded', function() {
-    const obsCheckbox = document.getElementById('obs');
-    const observacionesContainer = document.getElementById('observacionesContainer');
-    const purchasedCheckbox = document.getElementById('purchased');
-    const purchasedHidden = document.querySelectorAll('.purchased-hidden');
-    const purchasedVisible = document.querySelectorAll('.purchased-visible');
-
-    obsCheckbox.addEventListener('change', function() {
-        observacionesContainer.style.display = this.checked ? 'block' : 'none';
-    });
-
-    purchasedCheckbox.addEventListener('change', function() {
-        const isChecked = this.checked;
-        purchasedHidden.forEach(field => {
-            field.style.display = isChecked ? 'none' : 'block';
-        });
-        purchasedVisible.forEach(field => {
-            field.style.display = isChecked ? 'block' : 'none';
-        });
-    });
-
-    // Validación del formulario
-    const addOvinoForm = document.getElementById('addOvinoForm');
-    addOvinoForm.addEventListener('submit', function(event) {
-        if (!addOvinoForm.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        addOvinoForm.classList.add('was-validated');
-    });
-});
-
-
-    </script>
-
+    
     {% endblock %}
 {% endblock %}

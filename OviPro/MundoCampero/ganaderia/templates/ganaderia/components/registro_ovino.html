@@ -1,0 +1,40 @@
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-hover" style="cursor:pointer;">
+            <thead class="table-light">
+                <tr>
+                    <!-- en la columna del numero se va mostrar el BU en caso de que no tenga RP -->
+                    <th>RP</th>
+                    <th>BU</th>
+                    <th>Peso(kg)</th>
+                    <th>Edad(mese/s)</th>
+                    <th>Pureza</th>
+                    <th>Raza</th>
+                    <th>Sexo</th>
+                    <th>Tipo</th>
+                    <th>Ver detalle</th>
+                    
+                </tr>
+    
+            </thead>
+            <tbody>
+                <!-- iteramos renderizando cada columna  -->
+            {% for oveja in ovejas %}
+                {% if oveja %}
+                <tr class="ovino_row" data-id="{{ oveja.id }}">
+                    <td>{{oveja.RP}}</td>
+                    <td>{{oveja.BU}}</td>
+                    <td>{{oveja.peso}}</td>
+                    <td>{{oveja.edad}}</td>
+                    <td>{{oveja.calificador_pureza}}</td>
+                    <td>{{oveja.raza}}</td>
+                    <td>{{oveja.sexo}}</td>
+                    <td>{{oveja.edad_clasificada}}</td>
+                    <td><a href="{% url 'ganaderia:ver_detalle' oveja.id %}" class="btn btn-sm btn-primary">ver detalle</a></td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+                
+        </table>
+    </div>
+</div>

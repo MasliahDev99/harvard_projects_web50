@@ -37,11 +37,11 @@ def obtener_nombre_con_rut(RUT):
 # utils -> raza y calificadores de pureza
 
 def obtener_raza(raza_nombre):
-    print("Entro al metodo obtener_raza\n\n")
+  
     return Raza.objects.get(nombre=raza_nombre)
 
 def obtener_calificador(calificador_nombre):
-    print("Entro al metodo obtener_calificador\n\n")
+   
     return CalificadorPureza.objects.get(nombre = calificador_nombre)
 
 
@@ -56,15 +56,15 @@ def obtener_todos_tipos_cantidad(request):
     
     corderos = user_ovejas.filter(edad__lte=6, sexo='Macho').count()
     corderas = user_ovejas.filter(edad__lte=6, sexo='Hembra').count()
-    borregos = user_ovejas.filter(edad__gte=7, edad__lte=12, sexo='Macho').count()
-    borregas = user_ovejas.filter(edad__gte=7, edad__lte=12, sexo='Hembra').count()
+    borregos = user_ovejas.filter(edad__gt=6, edad__lte=12, sexo='Macho').count()
+    borregas = user_ovejas.filter(edad__gt=6, edad__lte=12, sexo='Hembra').count()
     
-    borregos_adultos = user_ovejas.filter(edad__gt=12, sexo='Macho').count()
-    borregas_adultas = user_ovejas.filter(edad__gt=12, sexo='Hembra').count()
+    carneros = user_ovejas.filter(edad__gt=12, sexo='Macho').count()
+    ovejas = user_ovejas.filter(edad__gt=12, sexo='Hembra').count()
     
     total_ovejas = user_ovejas.count()
 
-    return corderos, corderas, borregos, borregas, borregos_adultos, borregas_adultas, total_ovejas
+    return corderos, corderas, borregos, borregas, carneros, ovejas, total_ovejas
 
 
 def obtener_oveja(rp=None, bu=None, id=None):
@@ -119,6 +119,12 @@ def obtener_padre_madre(rp_padre, rp_madre):
     madre = Oveja.objects.filter(rp=rp_madre).first() if rp_madre else None
     return padre, madre
 
+def set_padre_madre_externo(padre_externo,madre_externo,oveja):
+    # seteamos los valores de padre externo y madre a una oveja
+    oveja.rp_padre_externo = padre_externo
+    oveja.rp_madre_externo = madre_externo
+    oveja.save()
+
 
 def validar_padre_madre(oveja_padre, oveja_madre,RP):
     """
@@ -129,10 +135,14 @@ def validar_padre_madre(oveja_padre, oveja_madre,RP):
     if oveja_padre == oveja_madre or RP in [oveja_padre, oveja_madre]:
             return None, None
     
+    #buscamos en la base de datos de ovejas
     padre = obtener_oveja(rp=oveja_padre)
     madre = obtener_oveja(rp=oveja_madre)
 
     if not padre or not madre:
+        #si no lo encontro en la base de datos, se busca en la base de datos de ARU
+        # y registra los padres  como padre externo y madre externo
+
         return None, None
 
     return padre, madre
@@ -171,7 +181,10 @@ def agregar_oveja(request):
         oveja_madre = request.POST.get('oveja_madre')
         # Validamos que oveja padre y madre existan y validamos que madre y padre no sean iguales
         oveja_padre, oveja_madre = validar_padre_madre(oveja_padre, oveja_madre, RP)
-        if not oveja_padre or not oveja_madre:
+        if oveja_padre is None and oveja_madre is None:
+            # Si no hay padres, no mostramos un error por el momento
+            pass
+        elif not oveja_padre or not oveja_madre:
             return None, "Oveja padre o madre no encontrada"
 
     fecha_nacimiento = date.fromisoformat(fecha_nacimiento)
