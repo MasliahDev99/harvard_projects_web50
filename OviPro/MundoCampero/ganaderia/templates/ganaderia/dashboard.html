@@ -7,63 +7,13 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4 mb-4">
         <!-- Total de ovejas -->
         <div class="col">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Total de ovinos</h5>
-                    <p class="card-text">Total en el establecimiento <strong>{{total_ovejas|default:0}}</strong></p>
-                    <div class="mt-auto">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Corderos:</span>
-                            <strong>{{ corderos|default:0 }}</strong>
-                            <span>Corderas:</span>
-                            <strong>{{ corderas|default:0 }}</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Borregos:</span>
-                            <strong>{{ borregos|default:0 }}</strong>
-                            <span>Borregas:</span>
-                            <strong>{{ borregas|default:0 }}</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Carneros:</span>
-                            <strong>{{ carneros|default:0 }}</strong>
-                            <span>Ovejas:</span>
-                            <strong>{{ ovejas|default:0 }}</strong>
-                        </div>
-                        <a href="{% url 'ganaderia:ovejas' %}" class="btn btn-primary w-100">Ver detalles</a>
-                    </div>
-                </div>
-            </div>
+           {% include 'ganaderia/components/dashboard/resumen_ovino.html'%}
         </div>
         
 
         <!-- Total de ventas -->
         <div class="col">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Total de ventas</h5>
-                    <p class="card-text">Resumen de ventas</p>
-                    <div class="mt-auto">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Individual:</span>
-                            <strong>$500</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Remates:</span>
-                            <strong>$20,000</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Frigorífico:</span>
-                            <strong>$200</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Total:</span>
-                            <strong class="text-primary">$20,700</strong>
-                        </div>
-                        <a href="{% url 'ganaderia:ventas' %}" class="btn btn-primary w-100">Ver detalles</a>
-                    </div>
-                </div>
-            </div>
+            {% include 'ganaderia/components/dashboard/resumen_venta.html'%}
         </div>
 
         <!-- Planteletas -->
@@ -111,41 +61,7 @@
         </div>
         <div class="col-md-4">
             <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h5 class="card-title text-center mb-3">Ovinos Top 🏆</h5>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Número</th>
-                                    <th>Peso(kg)</th>
-                                    <th>Edad</th>
-                                    <th>Pureza</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>300</td>
-                                    <td>74</td>
-                                    <td>2 meses</td>
-                                    <td>Pedigree</td>
-                                </tr>
-                                <tr>
-                                    <td>299</td>
-                                    <td>73</td>
-                                    <td>2 meses</td>
-                                    <td>Pedigree</td>
-                                </tr>
-                                <tr>
-                                    <td>303</td>
-                                    <td>75</td>
-                                    <td>2 meses</td>
-                                    <td>Pedigree</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                {% include 'ganaderia/components/dashboard/ranking.html'%}
             </div>
             <div class="card shadow-sm">
                 <div class="card-body">

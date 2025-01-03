@@ -11,8 +11,9 @@ from .models import User
 from .models import *
 
 
+
 from .utils import crear_establecimiento,obtener_nombre_con_rut,obtener_todas_las_ovejas,obtener_todos_tipos_cantidad,agregar_oveja
-from .utils import calcular_edad_por_fecha_nacimiento,obtener_padre_madre,existe_oveja,obtener_raza,obtener_calificador
+from .utils import calcular_edad_por_fecha_nacimiento,obtener_padre_madre,existe_oveja,obtener_raza,obtener_calificador,informacion_de_ventas
 # Create your views here.
 
 def index(request):
@@ -72,7 +73,10 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
+    #obtenemos el resumen de los ovinos que tiene el establecimiento
     corderos, corderas, borregos, borregas, carneros, ovejas, total_ovejas = obtener_todos_tipos_cantidad(request)
+    #obtenemos el resumen de las ventas del establecimiento 
+    ventas = informacion_de_ventas(request) #diccionario
     
     context = {
         'corderos': corderos,
@@ -82,13 +86,26 @@ def dashboard(request):
         'carneros': carneros,
         'ovejas': ovejas,
         'total_ovejas': total_ovejas,
+        'ventas': ventas,   
     }
     
     return render(request, 'ganaderia/dashboard.html', context)
 
 @login_required
 def ventas(request):
-    return render(request, 'ganaderia/ventas.html')
+    #obtenemos las ventas del establecimiento
+    ventas = Venta.objects.filter(establecimiento=request.user)
+    #obtenemos todos los ovinos que tiene el establecimiento registrado
+    lista_ovejas = Oveja.objects.filter(establecimiento=request.user)
+
+    for venta in ventas:
+        for oveja in venta.ovejas.all():
+            oveja.edad_clasificada = oveja.clasificar_edad()
+
+    return render(request, 'ganaderia/ventas.html',{
+        'ventas': ventas,
+        'lista_ovejas': lista_ovejas,
+    })
 
 
 

@@ -19,8 +19,8 @@
         <!-- mostramos informacion basica y datos fisicos -->
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-12">
-                    <h2>informacion basica</h2>
+                <div class="col-md-6 col-12 mb-2">
+                    <h2><strong>informacion basica</strong></h2>
                     
                     <div class="d-flex flex-column">
                         <span><strong>RP: </strong>{{oveja.RP}}</span>
@@ -30,16 +30,49 @@
                         <span><strong>Pureza: </strong>{{oveja.calificador_pureza}}</span>
                     </div>
                 </div>
-                <div class="col-md-6 col-12">
-                    <h2>Datos fisicos</h2>
+                <div class="col-md-6 col-12 mb-2">
+                    <h2><strong>Datos fisicos</strong></h2>
                     <div class="d-flex flex-column">
                         <span><strong>Fecha nacimiento: </strong>{{oveja.fecha_nacimiento}}</span>
-                        <span><strong>Peso(kg): </strong>{{oveja.peso}}</span>
+                        <span><strong>Peso: </strong>{{oveja.peso}} kg</span>
                     </div>
                 </div>
             </div>
+
+            <!-- informacion genealogica y observaciones -->
+            <div class="row mt-4">
+                <div class="col-md-6 col-12">
+                    <h2><strong>Informacion genealogica</strong></h2>
+                    <div class="d-flex flex-column">
+                        <span><strong>Padre: </strong>{{oveja.padre|default:"No fue registrado"}}</span>
+                        <span><strong>Madre: </strong>{{oveja.madre|default:"No fue registrado"}}</span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <h2><strong>observaciones</strong></h2>
+                    <div class="d-flex flex-column">
+                        <span>{{oveja.observaciones|default:"No hay observaciones"}}</span>   
+                    </div>
+                </div>
+
+            </div>
+
+            <!--  -->
+            <div class="d-flex flex-row gap-2">
+                <button class="btn btn-outline-primary mt-5">Descargar Hoja de vida</button>
+                <button class="btn btn-outline-primary mt-5">Descargar Certificado de pureza</button>
+                <!-- editar -->
+                <a href="#" class="btn btn-outline-primary mt-5">Editar</a>
+                <button class="btn btn-outline-danger mt-5">Eliminar Ovino</button>
+            </div>
+            
+            
+
             
         </div>
+        
+
 
         
     </div>

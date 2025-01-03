@@ -4,41 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title%} Tu Ovino {% endblock%}</title>
+    <title>{% block title %} Tu Ovino {% endblock %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{% static 'ganaderia/css/styles.css' %}">
 </head>
-    
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'ganaderia:index'%}">Tu Ovino</a>
+            <a class="navbar-brand" href="{% url 'ganaderia:index' %}">Tu Ovino</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                {% if not user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'ganaderia:login' %}">Login</a>
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i>
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'ganaderia:dashboard' %}">Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'ganaderia:logout' %}">Cerrar sesión</a></li>
+                        </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'ganaderia:index' %}">{{user.username}}</a>
+                        <a class="nav-link" href="{% url 'ganaderia:login' %}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>
+                            Iniciar sesión
+                        </a>
+                    </li>
+                {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/MasliahDev99/">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Acerca de
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'ganaderia:logout' %}">Logout</a>
-                    </li>
-                {% endif %} 
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://github.com/MasliahDev99/">Acerca de</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#foot">Contacto</a>
+                        <a class="nav-link" href="#foot">
+                            <i class="bi bi-envelope me-1"></i>
+                            Contacto
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -52,7 +64,6 @@
     </div>
 
     <!-- Footer -->
-
     <footer class="bg-light mt-auto" id="foot">
         <div class="container">
             <div class="row">
@@ -70,7 +81,7 @@
                 </div>
                 <div class="col-md-4">
                     <h5>Contacto</h5>
-                    <p>Email: felipe.masliah99@gmail.com<br>Teléfono: (+598) 95-111-111 </p>
+                    <p>Email: felipe.masliah99@gmail.com<br>Teléfono: (+598) 95-111-111</p>
                 </div>
             </div>
             <hr>
@@ -81,16 +92,10 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-   <!-- javascript para las graficas  -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
     <script src="{%static 'ganaderia/js/dashboard.js' %}"></script>
     <script src="{%static 'ganaderia/js/ovejas.js' %}"></script>
-    <!-- javascript para  -->
-     
     {% block script %}
-
     {% endblock %}
-    
 </body>
 </html>

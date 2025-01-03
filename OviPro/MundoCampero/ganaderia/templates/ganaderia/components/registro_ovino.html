@@ -32,6 +32,10 @@
                     <td>{{oveja.edad_clasificada}}</td>
                     <td><a href="{% url 'ganaderia:ver_detalle' oveja.id %}" class="btn btn-sm btn-primary">ver detalle</a></td>
                 </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" class="text-center">No hay ovejas registradas</td>
+                </tr>
                 {% endif %}
             {% endfor %}
                 

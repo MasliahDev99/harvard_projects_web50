@@ -1,8 +1,8 @@
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
-from .models import User,Raza,CalificadorPureza,Oveja
+from .models import User,Raza,CalificadorPureza,Oveja,Venta
 from datetime import date,datetime
-
+from django.db.models import Sum
 
 
 def crear_establecimiento(username,RUT,email,password):
@@ -225,3 +225,67 @@ def agregar_oveja(request):
         return nueva_oveja, "Oveja registrada correctamente"
     except IntegrityError as e:
         return None, f"Error al registrar la oveja: {str(e)}"
+
+
+
+
+# ventas, metodo de ventas
+
+
+def informacion_de_ventas(request)->dict:
+    """
+        Retorna un diccionario con la informacion de ventas del establecimiento
+
+        cantidad_vendida: cantidad de ventas realizadas
+        total_ventas: total de ventas realizadas
+
+        cantodad_ventas_por_remate: cantidad de ventas por remate
+        cantidad_ventas_por_frigorifico: cantidad de ventas por frigorifico
+        cantidad_ventas_por_individual: cantidad de ventas por individual
+        cantidad_donaciones: cantidad de donaciones realizadas
+
+        total_ventas_por_remate: total de ventas por remate
+        total_ventas_por_frigorifico: total de ventas por frigorifico
+        total_ventas_por_individual: total de ventas por individual
+        total_donaciones: total de donaciones realizadas
+
+    """
+     
+    
+
+    # Obtenemos la cantidad de ventas por cada  tipo de venta 
+    cantidad_ventas_por_remate = int(Venta.objects.filter(tipo_venta='remate', establecimiento=request.user).count())
+    cantidad_ventas_por_frigorifico = int(Venta.objects.filter(tipo_venta='frigorifico', establecimiento=request.user).count())
+    cantidad_ventas_por_individual = int(Venta.objects.filter(tipo_venta='individual', establecimiento=request.user).count())
+    cantidad_donaciones = int(Venta.objects.filter(tipo_venta='donacion', establecimiento=request.user).count())
+    # obtenemos las ventas del establecimiento de cada tipo de venta
+    # seteadas en 0 todas
+
+      # Totales monetarios por cada tipo
+    total_ventas_remate = Venta.objects.filter(establecimiento=request.user, tipo_venta='remate').aggregate(Sum('valor'))['valor__sum'] or 0
+    total_ventas_frigorifico = Venta.objects.filter(establecimiento=request.user, tipo_venta='frigorifico').aggregate(Sum('valor'))['valor__sum'] or 0
+    total_ventas_individual = Venta.objects.filter(establecimiento=request.user, tipo_venta='individual').aggregate(Sum('valor'))['valor__sum'] or 0
+    total_donaciones = Venta.objects.filter(establecimiento=request.user, tipo_venta='donacion').aggregate(Sum('valor'))['valor__sum'] or 0
+    
+
+   
+    # Total general
+    cantidad_vendida = cantidad_ventas_por_remate + cantidad_ventas_por_frigorifico + cantidad_ventas_por_individual + cantidad_donaciones
+    total_ventas = total_ventas_remate + total_ventas_frigorifico + total_ventas_individual + total_donaciones
+  
+
+
+
+    resumen_ventas = {
+        'cantidad_vendida': cantidad_vendida,
+        'total_ventas': total_ventas,
+        'cantidad_ventas_por_remate': cantidad_ventas_por_remate,
+        'cantidad_ventas_por_frigorifico': cantidad_ventas_por_frigorifico,
+        'cantidad_ventas_por_individual': cantidad_ventas_por_individual,
+        'cantidad_donaciones': cantidad_donaciones,
+        'total_ventas_remate': total_ventas_remate,
+        'total_ventas_frigorifico': total_ventas_frigorifico,
+        'total_ventas_individual': total_ventas_individual,
+        'total_donaciones': total_donaciones,
+    }
+    return resumen_ventas
