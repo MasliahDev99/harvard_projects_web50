@@ -1,0 +1,120 @@
+{% extends 'ganaderia/layout.html'%}
+
+{% load static %}
+{% block title %}Ovino Hub{% endblock %}
+
+
+{% block body %}
+
+<div class="container min-vh-100">
+    <h3 class="text-center mt-4">Bienvenido a Tu Ovino </h3>
+    <p class="text-center">La solución integral para la gestión de plantel ovino.</p>
+    <!-- Primera fila del menu Ovino -->
+    <div class="row mt-5">
+        <!-- Acciones rapidas-->
+        <div class="col-md-8 ">
+            <!-- card borde color verde, texto negro "Acciones rapidas" y abajo 4 botones -->
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h4 class="card-title fs-1">Acciones rápidas</h4>
+                    <p class="fs-3">Usos frecuentes</p>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-6 mb-2 d-flex justify-content-center">
+                            <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-success text-white w-100">Dashboard</a>
+                        </div>
+                        <div class="col-6 mb-2 d-flex justify-content-center">
+                            <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-success text-white w-100">Reportes</a>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-6 mb-2 d-flex justify-content-center">
+                            <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-success text-white w-100">Arbol genealógico</a>
+                        </div>
+                        <div class="col-6 mb-2 d-flex justify-content-center">
+                            <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-success text-white w-100">Documentacion</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actividades recientes  -->
+        <div class="col-md-4 ">
+            <!-- card de color verde -->
+             <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h4 class="card-title fs-1">Actividades recientes</h4>
+                    <p>Últimas acciones realizadas</p>
+                </div>
+                <div class="card-body">
+                    <ul class="">
+                        <li class="">Registro de ovejas</li>
+                        <li class="">Modifico plantel exposicion</li>
+                    </ul>
+             </div>
+        </div>
+    </div>
+
+    <!-- segunda fila del menu -->
+    <div class="row mt-3">
+        <!--   -->
+        <div class="col-12">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h4 class="card-title">Precio Frigorifico Hoy</h4>
+                    <p>Ultima actualizacion</p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <h6 class="fs-1">Carniceria Canelo</h6>
+                            <p>Cordero 4.18 us$/kg</p>
+                            <p>Carnero 3.98 us$/kg</p>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="fs-1">Carniceria pepito</h6>
+                            <p>Cordero 4.15 us$/kg</p>
+                            <p>Carnero 3.98 us$/kg</p>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- tercera fila -->
+     <!-- fila para precio de lana actualizado -->
+
+     <!-- cuarta fila -->
+     <!-- para documentacion en la aru  -->
+
+
+     <!-- quinta fila -->
+      <!--  -->
+</div>
+
+
+
+
+{% endblock %}  
+
+
+
+
+
+<!-- 
+
+    icono para reportes 
+    <i class="fa-solid fa-chart-line"></i>
+    icono para dashboard
+    <i class="fa-solid fa-columns"></i>
+    icono para descargas
+    <i class="fa-solid fa-download"></i>
+    icono para documentacion
+    <i class="fa-solid fa-file-alt"></i>
+
+
+
+-->

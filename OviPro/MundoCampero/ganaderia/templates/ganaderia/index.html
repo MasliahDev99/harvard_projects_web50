@@ -11,7 +11,7 @@
                 <div class="col-md-6">
                     <h1 class="display-4 fw-bold">Bienvenido a Tu Ovino</h1>
                     <p class="lead">La solución integral para la gestión de plantel ovino.</p>
-                    <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-primary btn-lg">Comenzar ahora</a>
+                    <a href="{% url 'ganaderia:hub'%}" class="btn btn-primary btn-lg">Comenzar ahora</a>
                 </div>
                 <div class="col-md-6">
                     <img src="{%static 'ganaderia/images/gc.png'%}" alt="Oveja en el campo" class="img-fluid rounded" style="background-image: cover;">
@@ -26,23 +26,23 @@
             <div id="featuresCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="/placeholder.svg?height=400&width=800" class="d-block w-100" alt="Gestión de ovejas">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>Gestión eficiente de ovejas</h5>
+                        <img src="{%static 'ganaderia/images/eficiencia.jpg'%}"  class="img-fluid w-100 img-fluid" alt="Gestión de ovejas">
+                        <div class="carousel-caption d-none d-md-block text-black">
+                            <h5 class="display-4">Gestión eficiente de ovejas</h5>
                             <p>Administra tu plantel ovino con facilidad y precisión.</p>
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img src="/placeholder.svg?height=400&width=800" class="d-block w-100" alt="Seguimiento genealógico">
+                        <img src="{%static 'ganaderia/images/genealogia.jpg'%}"  class="d-block w-100 img-fluid" alt="Seguimiento genealógico">
                         <div class="carousel-caption d-none d-md-block">
-                            <h5>Seguimiento genealógico</h5>
+                            <h5 class="display-4">Seguimiento genealógico</h5>
                             <p>Mantén un registro detallado del linaje de tus ovejas.</p>
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img src="/placeholder.svg?height=400&width=800" class="d-block w-100" alt="Análisis y reportes">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>Análisis y reportes</h5>
+                        <img  src="{%static 'ganaderia/images/reporte.jpg'%}"  class="d-block w-100 img-fluid" alt="Análisis y reportes">
+                        <div class="carousel-caption d-none d-md-block text-black">
+                            <h5 class="display-4">Análisis y reportes</h5>
                             <p>Obtén insights valiosos sobre tu plantel ovino.</p>
                         </div>
                     </div>

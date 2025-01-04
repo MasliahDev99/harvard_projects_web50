@@ -145,3 +145,8 @@ def ver_detalle(request, id_oveja):
 @login_required
 def planteletas(request):
     return render(request, 'ganaderia/planteletas.html')
+
+
+@login_required
+def hub(request):
+    return render(request, 'ganaderia/OvinoHub.html')

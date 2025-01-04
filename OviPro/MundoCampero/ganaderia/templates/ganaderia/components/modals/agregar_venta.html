@@ -1,0 +1,85 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="addSaleModalLabel">Registrar Nueva Venta de Ovinos</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="addSaleForm">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="saleType" class="form-label">Tipo de Venta</label>
+                    <select class="form-select" id="saleType" required>
+                        <option value="">Seleccione el tipo de venta</option>
+                        <option value="frigorifico">Frigorífico</option>
+                        <option value="remate">Remate</option>
+                        <option value="individual">Venta Individual</option>
+                        <option value="donacion">Donación</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="batchSale">
+                        <label class="form-check-label" for="batchSale">
+                            Venta por Lote (máximo 10 animales)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="animalSelect" class="form-label">Seleccionar ovinos</label>
+                    <select class="form-select" id="animalSelect" multiple>
+                        <!-- Options will be populated dynamically -->
+                         {% for ovejas in lista_ovejas %}
+                            <option value="{{ ovejas.RP }}">{{ ovejas.RP }}</option>
+                         {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Animales Seleccionados</label>
+                    <ul id="selectedAnimals" class="list-group">
+                        <!-- Selected animals will be displayed here -->
+                    </ul>
+                </div>
+
+                <div id="frigorificoFields" style="display: none;">
+                    <div class="mb-3">
+                        <label for="totalWeight" class="form-label">Peso Total (kg)</label>
+                        <input type="number" class="form-control" id="totalWeight" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pricePerKg" class="form-label">Precio por kg ($)</label>
+                        <input type="number" class="form-control" id="pricePerKg" step="0.01" required>
+                    </div>
+                </div>
+
+                <div id="remateFields" style="display: none;">
+                    <div class="mb-3">
+                        <label for="remateTotal" class="form-label">Valor Total del Remate ($)</label>
+                        <input type="number" class="form-control" id="remateTotal" step="0.01" required>
+                    </div>
+                </div>
+
+                <div id="individualFields" style="display: none;">
+                    <!-- Individual sale prices will be dynamically added here -->
+                </div>
+
+                <div class="mb-3">
+                    <label for="saleDate" class="form-label">Fecha de Venta</label>
+                    <input type="date" class="form-control" id="saleDate" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="totalSaleValue" class="form-label">Valor Total de la Venta ($)</label>
+                    <input type="number" class="form-control" id="totalSaleValue" readonly>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="confirmSale">Confirmar Venta</button>
+        </div>
+    </div>
+</div>
