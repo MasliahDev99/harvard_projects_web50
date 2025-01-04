@@ -3,118 +3,152 @@
 {% load static %}
 {% block title %}Ovino Hub{% endblock %}
 
-
 {% block body %}
-
-<div class="container min-vh-100">
-    <h3 class="text-center mt-4">Bienvenido a Tu Ovino </h3>
-    <p class="text-center">La solución integral para la gestión de plantel ovino.</p>
-    <!-- Primera fila del menu Ovino -->
-    <div class="row mt-5">
-        <!-- Acciones rapidas-->
-        <div class="col-md-8 ">
-            <!-- card borde color verde, texto negro "Acciones rapidas" y abajo 4 botones -->
-            <div class="card border-success">
-                <div class="card-header bg-success text-white">
-                    <h4 class="card-title fs-1">Acciones rápidas</h4>
-                    <p class="fs-3">Usos frecuentes</p>
-                </div>
-                <div class="card-body">
-                    <div class="row justify-content-center">
-                        <div class="col-6 mb-2 d-flex justify-content-center">
-                            <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-success text-white w-100">Dashboard</a>
-                        </div>
-                        <div class="col-6 mb-2 d-flex justify-content-center">
-                            <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-success text-white w-100">Reportes</a>
+<div class="container-fluid bg-light min-vh-100 py-5">
+    <div class="container">
+        <h1 class="text-center mb-2 text-success">Bienvenido a Tu Ovino</h1>
+        <p class="text-center mb-5 text-muted">La solución integral para la gestión de plantel ovino.</p>
+        
+        <div class="row g-4">
+            <!-- Acciones rápidas -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="card-title mb-0">Acciones rápidas</h2>
+                        <p class="mb-0 mt-1 opacity-75">Usos frecuentes</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-outline-success w-100 py-3 d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-columns me-2"></i> Dashboard
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-outline-success w-100 py-3 d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-chart-line me-2"></i> Reportes
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-outline-success w-100 py-3 d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-sitemap me-2"></i> Árbol genealógico
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-outline-success w-100 py-3 d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-file-alt me-2"></i> Documentación
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <div class="row justify-content-center">
-                        <div class="col-6 mb-2 d-flex justify-content-center">
-                            <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-success text-white w-100">Arbol genealógico</a>
-                        </div>
-                        <div class="col-6 mb-2 d-flex justify-content-center">
-                            <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-success text-white w-100">Documentacion</a>
+                </div>
+            </div>
+
+            <!-- Actividades recientes -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="card-title mb-0">Actividades recientes</h2>
+                        <p class="mb-0 mt-1 opacity-75">Últimas acciones realizadas</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-sheep me-3 text-success"></i>
+                                Registro de ovejas
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-edit me-3 text-success"></i>
+                                Modificó plantel exposición
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-calendar-check me-3 text-success"></i>
+                                Programó vacunación
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Precio Frigorífico Hoy -->
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="card-title mb-0">Precio Frigorífico Hoy</h2>
+                        <p class="mb-0 mt-1 opacity-75">Última actualización: <span id="lastUpdate"></span></p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="bg-light p-4 rounded">
+                                    <h3 class="mb-3">Carnicería Canelo</h3>
+                                    <p class="mb-2"><strong>Cordero:</strong> <span class="text-success">4.18 US$/kg</span></p>
+                                    <p class="mb-0"><strong>Carnero:</strong> <span class="text-success">3.98 US$/kg</span></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="bg-light p-4 rounded">
+                                    <h3 class="mb-3">Carnicería Pepito</h3>
+                                    <p class="mb-2"><strong>Cordero:</strong> <span class="text-success">4.15 US$/kg</span></p>
+                                    <p class="mb-0"><strong>Carnero:</strong> <span class="text-success">3.98 US$/kg</span></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Actividades recientes  -->
-        <div class="col-md-4 ">
-            <!-- card de color verde -->
-             <div class="card border-success">
-                <div class="card-header bg-success text-white">
-                    <h4 class="card-title fs-1">Actividades recientes</h4>
-                    <p>Últimas acciones realizadas</p>
-                </div>
-                <div class="card-body">
-                    <ul class="">
-                        <li class="">Registro de ovejas</li>
-                        <li class="">Modifico plantel exposicion</li>
-                    </ul>
-             </div>
-        </div>
-    </div>
 
-    <!-- segunda fila del menu -->
-    <div class="row mt-3">
-        <!--   -->
-        <div class="col-12">
-            <div class="card border-success">
-                <div class="card-header bg-success text-white">
-                    <h4 class="card-title">Precio Frigorifico Hoy</h4>
-                    <p>Ultima actualizacion</p>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <h6 class="fs-1">Carniceria Canelo</h6>
-                            <p>Cordero 4.18 us$/kg</p>
-                            <p>Carnero 3.98 us$/kg</p>
+             <!-- calculadora de precio -->
+
+            <div class="col-lg-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="card-title mb-0">Calculadora de precio</h2>
+                        <p class="mb-0 mt-1 opacity-75">Estima el valor de tu ganado</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="priceCalculator">
+                            <div class="mb-3">
+                                <label for="weight" class="form-label">Peso del animal (kg)</label>
+                                <input type="number" class="form-control" id="weight" required min="1" step="0.1">
+                            </div>
+                            <div class="mb-3">
+                                <label for="animalType" class="form-label">Tipo de animal</label>
+                                <select class="form-select" id="animalType" required>
+                                    <option value="">Seleccione el tipo</option>
+                                    <option value="cordero">Cordero</option>
+                                    <option value="carnero">Carnero</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="butcher" class="form-label">Carnicería</label>
+                                <select class="form-select" id="butcher" required>
+                                    <option value="">Seleccione la carnicería</option>
+                                    <option value="canelo">Carnicería Canelo</option>
+                                    <option value="pepito">Carnicería Pepito</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Calcular Precio</button>
+                        </form>
+                        <div id="result" class="mt-3 p-3 bg-light rounded" style="display: none;">
+                            <h4 class="text-center">Precio Estimado</h4>
+                            <p class="text-center mb-0 fs-4"><span id="estimatedPrice">0.00</span> US$</p>
                         </div>
-                        <div class="col-6">
-                            <h6 class="fs-1">Carniceria pepito</h6>
-                            <p>Cordero 4.15 us$/kg</p>
-                            <p>Carnero 3.98 us$/kg</p>
-                        </div>  
                     </div>
                 </div>
             </div>
+
+
+
+
+            
         </div>
     </div>
-
-    <!-- tercera fila -->
-     <!-- fila para precio de lana actualizado -->
-
-     <!-- cuarta fila -->
-     <!-- para documentacion en la aru  -->
-
-
-     <!-- quinta fila -->
-      <!--  -->
 </div>
 
-
-
-
-{% endblock %}  
-
-
-
-
-
-<!-- 
-
-    icono para reportes 
-    <i class="fa-solid fa-chart-line"></i>
-    icono para dashboard
-    <i class="fa-solid fa-columns"></i>
-    icono para descargas
-    <i class="fa-solid fa-download"></i>
-    icono para documentacion
-    <i class="fa-solid fa-file-alt"></i>
-
-
-
--->
+<script>
+    // Actualizar la fecha de última actualización
+    document.getElementById('lastUpdate').textContent = new Date().toLocaleString();
+</script>
+{% endblock %}
