@@ -4,18 +4,6 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
 
-"""
-* Razas(nombre)
-
-*CalificadorPureza(nombre)
-
-* Establecimiento(Rut,email, contrasenia)
-* Ovejas(BU,RP,nombre,peso,Raza,edad,fechaNacimiento,Sexo,Calificador_Pureza,Observaciones,Oveja_padre,Oveja_Madre)
-* Ventas(Ovejas,FechaVenta,valor,Tipo_venta)
-*Planteleta(Oveja,Tipo_plantel)
-*Genealogia(Oveja,Oveja_padre,Oveja_madre)
-
-"""
 class Raza(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50,unique=True)
@@ -56,17 +44,8 @@ class Oveja(models.Model):
     oveja_padre = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='hijos_padre')
     oveja_madre = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='hijos_madre')
 
-
-    establecimiento = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ovejas')  # Relación con el User (Establecimiento)
-    
-
-  
-    ESTADOS = [
-        ('activa', 'Activa'),
-        ('vendida', 'Vendida'),
-        ('muerta', 'Muerta'),
-    ]
-    estado = models.CharField(max_length=10, choices=ESTADOS, default='activa')
+    establecimiento = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ovejas')
+    estado = models.CharField(max_length=10, choices=[('activa','Activa'),('vendida', 'Vendida'),('muerta', 'Muerta')], default='activa')
 
     # si la oveja es comprada  entonces sus rp padre y madre son externos a la tabla de ovejas
     rp_padre_externo = models.CharField(max_length=50, null=True, blank=True)
@@ -90,55 +69,24 @@ class Venta(models.Model):
     id = models.AutoField(primary_key=True)
     ovejas = models.ManyToManyField('Oveja', related_name='ventas', blank=True)  # Para soporte de venta por lote o individual
     fecha_venta = models.DateField()
+    peso_total =  peso_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     valor_carne = models.FloatField(null=True, blank=True)  # Solo necesario para frigorífico
     valor = models.FloatField(default=0.0)
     establecimiento = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True ,related_name='ventas')
-
-   # quiero gestionar la venta de ovinos de donacion y los tipos de venta en remate,individual o frigorifico
-    TIPOS_VENTA = [
-        ('remate', 'Remate'), # valor de venta por subasta acordada
-        ('individual', 'Individual'), # valor de venta acordada
-        ('frigorifico', 'Frigorífico'), # formula -> valor_venta = valor_carne * kg 
-        ('donacion', 'Donación'), # donacion valor 0
-    ]
-    tipo_venta = models.CharField(max_length=20, choices=TIPOS_VENTA)
+    # quiero gestionar la venta de ovinos de donacion y los tipos de venta en remate,individual o frigorifico
+    tipo_venta = models.CharField(max_length=20, choices=[('remate', 'Remate'), ('individual', 'Individual'), ('frigorifico', 'Frigorífico'),('donacion', 'Donación')])
 
     def __str__(self):
         ovejas_nombres = ", ".join(oveja.nombre for oveja in self.ovejas.all())
         return f"Venta del {self.fecha_venta} - Tipo: {self.tipo_venta} - Ovejas: {ovejas_nombres}"
     
+   
 
-    def calcular_valor_total(self):
-        if self.tipo_venta == 'frigorifico' and self.valor_carne:
-            self.valor_total = sum(oveja.peso * self.valor_carne for oveja in self.ovejas.all())
-        elif self.tipo_venta == 'donacion':
-            self.valor_total = 0.0
-        elif self.tipo_venta in ['remate', 'individual']:
-            self.valor_total = sum(oveja.valor_estimado for oveja in self.ovejas.all())
-        self.save()
-        return self.valor_total
-    # ventas por lote o por unidad
     
-    def venta_por_frigorifico(self,valor_carne):
-        if self.tipo_venta == 'frigorifico':
-            return self.oveja.peso * valor_carne
-        
-    def vender_lote_frigorifico(self,lista_ovejas:list,valor_carne)->float:
-        total = 0.0
-        #recorremos la lista de ovejas
-        for oveja in lista_ovejas:
-            # si la oveja existe y esta activa
-            if Oveja.objects.filter(id=oveja.id).exists() and oveja.estado == 'activa':
-                #acumulamos en total el valor del calculo del frigorifico
-                total += oveja.peso * valor_carne
-                #actualizamos el estado de la oveja
-                oveja.estado = 'vendida'
+    
+    
+    
 
-        return total
-    
-    def aceptar_venta(self):
-        # Cambiar estado de las ovejas a 'vendida'
-        for oveja in self.ovejas.all():
-            oveja.estado = 'vendida'
-            oveja.save()
-    
+
+
+   

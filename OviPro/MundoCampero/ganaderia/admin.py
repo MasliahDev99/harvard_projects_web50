@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User, Raza, CalificadorPureza, Oveja,Venta
+from django.contrib.admin.views.main import ChangeList
+from .forms.venta_forms import VentaForm 
 
 # Configuración personalizada para el modelo de Usuario
 class CustomUserAdmin(UserAdmin):
@@ -34,39 +36,28 @@ class CalificadorPurezaAdmin(admin.ModelAdmin):
     ordering = ('nombre',)
     list_per_page = 25
 
+
 @admin.register(Venta)
 class VentaAdmin(admin.ModelAdmin):
+    form = VentaForm
+    
     list_display = ('id', 'fecha_venta', 'establecimiento', 'tipo_venta', 'valor_total_display', 'ovejas_asociadas')
     list_filter = ('tipo_venta', 'fecha_venta', 'establecimiento')
     search_fields = ('id', 'ovejas__nombre', 'establecimiento__nombre')
     ordering = ('-fecha_venta',)
 
     def valor_total_display(self, obj):
-        return obj.calcular_valor_total()
-
+        return f"${obj.valor:.2f}" if obj.valor else "-"
     valor_total_display.short_description = "Valor Total"
 
     def ovejas_asociadas(self, obj):
-        return ", ".join([oveja.nombre for oveja in obj.ovejas.all()])
-
+        return ", ".join([str(oveja.RP) for oveja in obj.ovejas.all()])
     ovejas_asociadas.short_description = "Ovejas"
 
-    def get_fields(self, request, obj=None):
-        fields = ['establecimiento', 'fecha_venta', 'tipo_venta', 'ovejas']
-        if obj and obj.tipo_venta == 'frigorifico':
-            fields.append('valor_carne')
-        elif not obj or obj.tipo_venta != 'frigorifico':
-            fields.append('valor')
-        return fields
-
-    def save_model(self, request, obj, form, change):
-        if obj.tipo_venta == 'frigorifico' and not obj.valor_carne:
-            obj.valor_carne = 0.0
-        elif obj.tipo_venta == 'donacion':
-            obj.valor = 0.0
-        obj.calcular_valor_total()
-        super().save_model(request, obj, form, change)
-
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.request = request
+        return form
 
 
 # Registrar los modelos en el admin

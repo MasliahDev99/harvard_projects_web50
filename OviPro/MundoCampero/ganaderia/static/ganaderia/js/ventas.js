@@ -140,42 +140,42 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        const formData = {
-            tipo_venta: saleType.value,
-            por_lote: batchSale.checked,
-            ovinos: Array.from(animalSelect.selectedOptions).map(o => o.value),
-            peso_total: totalWeight.value,
-            precio_kg: pricePerKg.value || null,
-            remate_total: remateTotal.value || null,
-            fecha_venta: document.getElementById('saleDate').value,
-            valor_total: totalSaleValue.value,
-        };
-
-        console.log('Sale form submitted', formData);
-
-        fetch('/hub/dashboard/ventas/', {
+    
+        // URL para enviar los datos al servidor
+        URL = window.location.origin+'/hub/dashboard/ventas/'
+        console.log("La url del fetch es: ",URL)
+        fetch(URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken,
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify({
+                tipo_venta: saleType.value,
+                por_lote: batchSale.checked,
+                ovinos: Array.from(animalSelect.selectedOptions).map(o => o.value),
+                peso_total: totalWeight.value,
+                precio_kg: pricePerKg.value,
+                remate_total: remateTotal.value,
+                fecha_venta: saleDate.value,
+                valor_total: totalSaleValue.value,
+            })
+            
         })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Error al guardar la venta');
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            if(data.success){
+                //si fue un exito refresca la pagina
+                window.location.reload();
+            }else{
+                console.error('Error en el registro de la venta:', data.message);
             }
         })
-        .then(data => {
-            alert('La venta fue registrada con éxito.');
-            location.reload();  // Recargar la página
-        })
-        .catch(error => {
-            alert('Ha ocurrido un error en la venta');
-            console.error(error);
-        });
+        .catch(error => console.error('Error:', error))
+
+
+
 
         bootstrap.Modal.getInstance(document.getElementById('addSaleModal')).hide();
         document.getElementById('addSaleForm').reset();

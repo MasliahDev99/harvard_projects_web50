@@ -105,3 +105,14 @@ La aplicación permitirá a los usuarios gestionar su plantel ovino, incluyendo 
 * Ventas(Ovejas,FechaVenta,valor,Tipo_venta)
 *Planteleta(Oveja,Tipo_plantel)
 *Genealogia(Oveja,Oveja_padre,Oveja_madre)
+
+
+
+
+## Cosas para mejorar 
+
+Encontrar la manera de gestionar las ventas en el panel administrativo de forma correcta.
+
+*  Terminar las validaciones de registro de ovinos
+*  Terminar el registro de las ventas con sus validaciones
+*  Importante ** Refactorizar todo el proyecto** para mejorar la legibilidad

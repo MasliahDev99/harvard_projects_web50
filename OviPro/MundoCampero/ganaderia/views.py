@@ -14,6 +14,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import OvejaSerializer
+from django.views.decorators.csrf import csrf_protect
+
+
 import json
 
 
@@ -98,13 +101,42 @@ def dashboard(request):
 
 
 
-# refactorizar 
+def obtener_datos_front(request):
+    """
+    Procesa los datos enviados desde el frontend y retorna los valores por separado.
+
+    Args:
+        request: El objeto de solicitud HTTP de Django.
+
+    Returns:
+        tuple: Una tupla con los parámetros procesados del frontend.
+    """
+    # Intentamos leer los datos del request.body si está en formato JSON
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        data = {}
+
+    # Extraemos parámetros del JSON
+    tipo_venta = data.get('tipo_venta', None)
+    por_lote = data.get('por_lote', False)
+    ovinos = data.get('ovinos', [])
+    peso_total = data.get('peso_total', None)
+    precio_kg = data.get('precio_kg', None)
+    remate_total = data.get('remate_total', None)
+    fecha_venta = data.get('fecha_venta', None)
+    valor_total = data.get('valor_total', None)
+
+    return tipo_venta, por_lote, ovinos, peso_total, precio_kg, remate_total, fecha_venta, valor_total
+
+# refactorizar
+@csrf_protect
 @login_required
 def ventas(request):
     #obtenemos las ventas del establecimiento
-    ventas = Venta.objects.filter(establecimiento=request.user)
+    ventas = Venta.objects.filter(establecimiento=request.user).prefetch_related('ovejas')
     #obtenemos todos los ovinos que tiene el establecimiento registrado
-    lista_ovejas = Oveja.objects.filter(establecimiento=request.user)
+    lista_ovejas = Oveja.objects.filter(establecimiento=request.user,estado='activa')
 
 
 
@@ -117,33 +149,31 @@ def ventas(request):
     if request.method == 'POST':
         print("capturamos los datos enviados del frontend")
         try:
-            data = json.loads(request.body)
-            print(f"Datos del front\n{data}\n")
-            #datos enviados desde javascript
-            tipo_venta  = data['tipo_venta']
-            por_lote = data['por_lote',False]
-            ovinos = data['ovinos',[]]
-            peso_total= data['peso_total',None]
-            precio_kg = data['precio_kg',None]
-            remate_total = data['remate_total',None]
-            fecha_venta= data['fecha_venta']
-            valor_total= data['valor_total',None]
-
+            tipo_venta, por_lote, ovinos, peso_total, precio_kg, remate_total, fecha_venta, valor_total = obtener_datos_front(request)
             try:
-                # registramos la venta segun su tipo
-                venta = registrar_venta(tipo_venta=tipo_venta,
+                ovejas = Oveja.objects.filter(RP__in=ovinos,establecimiento = request.user)
+
+                venta = registrar_venta(
+                                        establecimiento=request.user,
+                                        lista_ovejas= ovejas,
+                                        tipo_venta=tipo_venta,
                                         fecha_venta=fecha_venta,
+                                        peso_total= peso_total,
                                         precio_kg=precio_kg,
                                         remate_total=remate_total,
                                         valor_total=valor_total,
-                                        establecimiento=request.user
+                                        
                     )
+                if venta is not None:
+                    print("El objeto venta se ha gestionado.\n")
+                else:
+                    print("La venta fue None")
             except IntegrityError:
+                print("\nEntro al try y hubo un error en 'registrar_venta'\n")
                 return JsonResponse({'Error': 'Error al registrar la venta'},status = 400)
             
             
-            #asociamos los ovejas del establecimiento con la venta
-            ovejas = Oveja.objects.filter(RP__in=ovinos, establecimiento=request.user)
+            #asociamos las ovejas vendidas del establecimiento
             venta.ovejas.set(ovejas)
             #marcamos los ovinos de la tabla de registro como vendidos
             ovejas.update(estado='vendida')
@@ -211,6 +241,12 @@ class OvejaListadoAPI(APIView):
 
     def get(self, request):
         # Filtramos las ovejas asociadas al establecimiento del usuario actual
-        ovejas = Oveja.objects.filter(establecimiento=request.user)
+        ovejas = Oveja.objects.filter(establecimiento=request.user,estado='activa')
         serializer = OvejaSerializer(ovejas, many=True)  # Usamos el serializer correcto
         return Response(serializer.data)
+
+
+"""
+    Se logro registrar las ventas, falta arreglar detalles del front
+
+"""

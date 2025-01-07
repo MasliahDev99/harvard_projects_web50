@@ -24,7 +24,7 @@
                             <th>Edad</th>
                             <th>Pureza</th>
                             <th>Tipo</th>
-                            <th>Fecha</th>
+                            <th>Fecha Vend</th>
                             <th>Sexo</th>
                             <th>Valor(USD)</th>
                         </tr>
@@ -35,10 +35,11 @@
                                 <tr>
                                     <td>{{ oveja.RP }}</td>
                                     <td>{{ oveja.peso }}</td>
-                                    <td>{{ oveja.edad_clasificada|default:"Edad no disponible" }}</td>
+                                    <td>{{ oveja.edad_clasificada}}</td>
                                     <td>{{ oveja.calificador_pureza }}</td>
                                     <td>{{ venta.tipo_venta }}</td>
                                     <td>{{ venta.fecha_venta }}</td>
+                                    <td>{{ oveja.sexo }}</td>
                                     <td>{{ venta.valor }}</td>
                                 </tr>
                             {% endfor %}

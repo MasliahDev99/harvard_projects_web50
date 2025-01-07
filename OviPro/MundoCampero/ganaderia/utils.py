@@ -49,10 +49,16 @@ def obtener_calificador(calificador_nombre):
 
 
 def obtener_todas_las_ovejas(request):
-    return Oveja.objects.filter(establecimiento = request.user)
+    """
+        Retorna la lista de todas las ovejas activas del establecimiento
+    """
+    return Oveja.objects.filter(establecimiento = request.user,estado='activa')
 
 def obtener_todos_tipos_cantidad(request):
-    user_ovejas = Oveja.objects.filter(establecimiento=request.user)
+    """
+        retorna todos los ovinos con su cantidad correspondiente a la edad y esten activas
+    """
+    user_ovejas = Oveja.objects.filter(establecimiento=request.user,estado='activa')
     
     corderos = user_ovejas.filter(edad__lte=6, sexo='Macho').count()
     corderas = user_ovejas.filter(edad__lte=6, sexo='Hembra').count()
@@ -231,22 +237,32 @@ def agregar_oveja(request):
 
 # ventas, metodo de ventas
 
-def registrar_venta(tipo_venta, fecha_venta, precio_kg, remate_total, valor_total, establecimiento):
+def registrar_venta( establecimiento,lista_ovejas,tipo_venta, fecha_venta, peso_total=None ,precio_kg=None, remate_total=None, valor_total=None):
     """
         Devuelve la instancia de la venta registrada segun su tipo
 
     """
+
+    print(f'\n{establecimiento} esta intentando registrar una venta {fecha_venta}\n')
+    print(f'Lista de ovejas {lista_ovejas}| tipo de venta: {tipo_venta} | peso total {peso_total} kg | valor de carne {precio_kg} us$/kg | valor de remate {remate_total} us$ | total {valor_total} us$\n')
     valor = remate_total if tipo_venta == 'remate' else valor_total
     valor_carne = precio_kg if tipo_venta == 'frigorifico' else None
 
-    venta = Venta.objects.create(
-        fecha_venta=fecha_venta,
-        valor_carne=valor_carne,
-        valor=valor,
-        establecimiento=establecimiento,
-        tipo_venta=tipo_venta
-    )
-    
+    #actualizamos la lista de las ovejas con las instancias de las ovejas utilizando lista comprension
+    lista_ovejas = [oveja for oveja in lista_ovejas if obtener_oveja(rp=oveja.RP)] 
+   
+    try:
+        venta = Venta.objects.create(
+            fecha_venta=fecha_venta,
+            peso_total = peso_total,
+            valor_carne=valor_carne,
+            valor=valor,
+            establecimiento=establecimiento,
+            tipo_venta=tipo_venta
+        )
+    except IntegrityError:
+        return None
+        
     return venta
 
 
