@@ -91,20 +91,7 @@ La aplicación permitirá a los usuarios gestionar su plantel ovino, incluyendo 
 
 
 
-# Consideraciones en la Base de datos
 
-
-## Modelos
-
-* Razas(nombre)
-
-*CalificadorPureza(nombre)
-
-* Establecimiento(Rut,email, contrasenia)
-* Ovejas(BU,RP,nombre,peso,Raza,edad,fechaNacimiento,Sexo,Calificador_Pureza,Observaciones,Oveja_padre,Oveja_Madre)
-* Ventas(Ovejas,FechaVenta,valor,Tipo_venta)
-*Planteleta(Oveja,Tipo_plantel)
-*Genealogia(Oveja,Oveja_padre,Oveja_madre)
 
 
 
