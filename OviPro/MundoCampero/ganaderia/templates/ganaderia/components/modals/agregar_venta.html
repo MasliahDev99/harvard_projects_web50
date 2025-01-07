@@ -9,7 +9,7 @@
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="saleType" class="form-label">Tipo de Venta</label>
-                    <select class="form-select" id="saleType" required>
+                    <select class="form-select" id="saleType" name="tipo_venta" required>
                         <option value="">Seleccione el tipo de venta</option>
                         <option value="frigorifico">Frigorífico</option>
                         <option value="remate">Remate</option>
@@ -20,7 +20,7 @@
 
                 <div class="mb-3">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="batchSale">
+                        <input class="form-check-input" type="checkbox" id="batchSale" name="porlote">
                         <label class="form-check-label" for="batchSale">
                             Venta por Lote (máximo 10 animales)
                         </label>
@@ -75,11 +75,13 @@
                     <label for="totalSaleValue" class="form-label">Valor Total de la Venta ($)</label>
                     <input type="number" class="form-control" id="totalSaleValue" readonly>
                 </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmSale">Confirmar Venta</button>
+                </div>
             </form>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" id="confirmSale">Confirmar Venta</button>
-        </div>
+        
     </div>
 </div>

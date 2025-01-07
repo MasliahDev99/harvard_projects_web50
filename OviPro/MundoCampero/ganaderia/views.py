@@ -9,10 +9,15 @@ from django.utils import timezone
 from datetime import date
 from .models import User
 from .models import *
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .serializers import OvejaSerializer
+import json
 
 
-
-from .utils import crear_establecimiento,obtener_nombre_con_rut,obtener_todas_las_ovejas,obtener_todos_tipos_cantidad,agregar_oveja
+from .utils import crear_establecimiento,obtener_nombre_con_rut,obtener_todas_las_ovejas,obtener_todos_tipos_cantidad,agregar_oveja,registrar_venta
 from .utils import calcular_edad_por_fecha_nacimiento,obtener_padre_madre,existe_oveja,obtener_raza,obtener_calificador,informacion_de_ventas
 # Create your views here.
 
@@ -91,6 +96,9 @@ def dashboard(request):
     
     return render(request, 'ganaderia/dashboard.html', context)
 
+
+
+# refactorizar 
 @login_required
 def ventas(request):
     #obtenemos las ventas del establecimiento
@@ -98,9 +106,53 @@ def ventas(request):
     #obtenemos todos los ovinos que tiene el establecimiento registrado
     lista_ovejas = Oveja.objects.filter(establecimiento=request.user)
 
+
+
+
     for venta in ventas:
         for oveja in venta.ovejas.all():
             oveja.edad_clasificada = oveja.clasificar_edad()
+
+    
+    if request.method == 'POST':
+        print("capturamos los datos enviados del frontend")
+        try:
+            data = json.loads(request.body)
+            print(f"Datos del front\n{data}\n")
+            #datos enviados desde javascript
+            tipo_venta  = data['tipo_venta']
+            por_lote = data['por_lote',False]
+            ovinos = data['ovinos',[]]
+            peso_total= data['peso_total',None]
+            precio_kg = data['precio_kg',None]
+            remate_total = data['remate_total',None]
+            fecha_venta= data['fecha_venta']
+            valor_total= data['valor_total',None]
+
+            try:
+                # registramos la venta segun su tipo
+                venta = registrar_venta(tipo_venta=tipo_venta,
+                                        fecha_venta=fecha_venta,
+                                        precio_kg=precio_kg,
+                                        remate_total=remate_total,
+                                        valor_total=valor_total,
+                                        establecimiento=request.user
+                    )
+            except IntegrityError:
+                return JsonResponse({'Error': 'Error al registrar la venta'},status = 400)
+            
+            
+            #asociamos los ovejas del establecimiento con la venta
+            ovejas = Oveja.objects.filter(RP__in=ovinos, establecimiento=request.user)
+            venta.ovejas.set(ovejas)
+            #marcamos los ovinos de la tabla de registro como vendidos
+            ovejas.update(estado='vendida')
+
+
+            return JsonResponse({'success': 'Venta registrada exitosamente'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
 
     return render(request, 'ganaderia/ventas.html',{
         'ventas': ventas,
@@ -150,3 +202,15 @@ def planteletas(request):
 @login_required
 def hub(request):
     return render(request, 'ganaderia/OvinoHub.html')
+
+
+
+# API VIEW 
+class OvejaListadoAPI(APIView):
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
+        # Filtramos las ovejas asociadas al establecimiento del usuario actual
+        ovejas = Oveja.objects.filter(establecimiento=request.user)
+        serializer = OvejaSerializer(ovejas, many=True)  # Usamos el serializer correcto
+        return Response(serializer.data)

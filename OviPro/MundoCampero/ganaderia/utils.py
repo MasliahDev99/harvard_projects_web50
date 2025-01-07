@@ -231,6 +231,24 @@ def agregar_oveja(request):
 
 # ventas, metodo de ventas
 
+def registrar_venta(tipo_venta, fecha_venta, precio_kg, remate_total, valor_total, establecimiento):
+    """
+        Devuelve la instancia de la venta registrada segun su tipo
+
+    """
+    valor = remate_total if tipo_venta == 'remate' else valor_total
+    valor_carne = precio_kg if tipo_venta == 'frigorifico' else None
+
+    venta = Venta.objects.create(
+        fecha_venta=fecha_venta,
+        valor_carne=valor_carne,
+        valor=valor,
+        establecimiento=establecimiento,
+        tipo_venta=tipo_venta
+    )
+    
+    return venta
+
 
 def informacion_de_ventas(request)->dict:
     """

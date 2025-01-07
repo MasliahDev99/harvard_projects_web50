@@ -1,82 +1,222 @@
 {% extends 'ganaderia/layout.html'%}
 
 {% block body %}
+<div class="container-fluid py-5 bg-light min-vh-100">
+    <h1 class="display-4 text-center mb-5">Plantel de Ovinos</h1>
 
-    <div class="container min-vh-100">
-        <h3 class="display-4 text-center">Plantel</h3>
+    <ul class="nav nav-tabs mb-4" id="plantelTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="exposicion-tab" data-bs-toggle="tab" data-bs-target="#exposicion" type="button" role="tab" aria-controls="exposicion" aria-selected="true">Plantel de Exposición</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="ventas-tab" data-bs-toggle="tab" data-bs-target="#ventas" type="button" role="tab" aria-controls="ventas" aria-selected="false">Plantel de Ventas</button>
+        </li>
+    </ul>
 
-        <div class="row">
-            <!-- Plantel de exposición -->
-            <div class="col-md-6 col-12">
-                <h2 class="display-5 text-center">Plantel de exposición</h2>
-                <table class="table table-striped mb-4">
-                    <thead>
-                        <tr>
-                            <th>Numero</th>
-                            <th>Alias (opcional)</th>
-                            <th>Peso (kg)</th>
-                            <th>Edad</th>
-                            <th>Pedigree (sí/no)</th>
-                            <th>Raza</th>
-                            <th>Género</th>
-                            <th>Tipo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>303</td>
-                            <td>-</td>
-                            <td>78</td>
-                            <td class="text-truncate">2 meses</td>
-                            <td>SÍ</td>
-                            <td>Texel</td>
-                            <td>Macho</td>
-                            <td>Cordero</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- Plantel de ventas -->
-            <div class="col-md-6 col-12">
-                <h2 class="display-5 text-center">Plantel de ventas</h2>
-                <table class="table table-striped mb-4">
-                    <thead>
-                        <tr>
-                            <th>Numero</th>
-                            <th>Alias (opcional)</th>
-                            <th>Peso (kg)</th>
-                            <th>Edad</th>
-                            <th>Pedigree (sí/no)</th>
-                            <th>Raza</th>
-                            <th>Género</th>
-                            <th>Tipo</th>
-                            <th>Defectos</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>317</td>
-                            <td>-</td>
-                            <td>74</td>
-                            <td class="text-truncate">2 meses</td>
-                            <td>SÍ</td>
-                            <td>Texel</td>
-                            <td>Hembra</td>
-                            <td>Cordera</td>
-                            <td>No</td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div class="tab-content" id="plantelTabsContent">
+        <!-- Plantel de exposición -->
+        <div class="tab-pane fade show active" id="exposicion" role="tabpanel" aria-labelledby="exposicion-tab">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h3 mb-0">Plantel de Exposición</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Alias</th>
+                                    <th>Peso (kg)</th>
+                                    <th>Edad</th>
+                                    <th>Pedigree</th>
+                                    <th>Raza</th>
+                                    <th>Género</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>303</td>
+                                    <td>-</td>
+                                    <td>78</td>
+                                    <td>2 meses</td>
+                                    <td><span class="badge bg-success">SÍ</span></td>
+                                    <td>Texel</td>
+                                    <td>Macho</td>
+                                    <td>Cordero</td>
+                                </tr>
+                                <!-- Agrega más filas según sea necesario -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Botones de acciones -->
-        <div class="text-center mt-4">
-            <a href="#" class="btn btn-success">＋ Agregar oveja</a>
-            <a href="#" class="btn btn-danger">− Eliminar</a>
-            <a href="#" class="btn btn-warning">Modificar</a>
-            <a href="#" class="btn btn-secondary">Descargar tabla</a>
+        <!-- Plantel de ventas -->
+        <div class="tab-pane fade" id="ventas" role="tabpanel" aria-labelledby="ventas-tab">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h2 class="h3 mb-0">Plantel de Ventas</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Alias</th>
+                                    <th>Peso (kg)</th>
+                                    <th>Edad</th>
+                                    <th>Pedigree</th>
+                                    <th>Raza</th>
+                                    <th>Género</th>
+                                    <th>Tipo</th>
+                                    <th>Defectos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>317</td>
+                                    <td>-</td>
+                                    <td>74</td>
+                                    <td>2 meses</td>
+                                    <td><span class="badge bg-success">SÍ</span></td>
+                                    <td>Texel</td>
+                                    <td>Hembra</td>
+                                    <td>Cordera</td>
+                                    <td><span class="badge bg-secondary">No</span></td>
+                                </tr>
+                                <!-- Agrega más filas según sea necesario -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Botones de acciones -->
+    <div class="d-flex justify-content-center mt-5 gap-3">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSheepModal">
+            <i class="bi bi-plus-circle me-2"></i>Agregar oveja
+        </button>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSheepModal">
+            <i class="bi bi-trash me-2"></i>Eliminar
+        </button>
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modifySheepModal">
+            <i class="bi bi-pencil me-2"></i>Modificar
+        </button>
+        <button class="btn btn-secondary" id="downloadTable">
+            <i class="bi bi-download me-2"></i>Descargar tabla
+        </button>
+    </div>
+</div>
+
+<!-- Modales para las acciones (agregar, eliminar, modificar) -->
+<!-- Ejemplo de modal para agregar oveja -->
+<div class="modal fade" id="addSheepModal" tabindex="-1" aria-labelledby="addSheepModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSheepModalLabel">Agregar Nueva Oveja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para agregar oveja -->
+                <form id="addSheepForm">
+                    <div class="mb-3">
+                        <label class="form-label">Seleccione el plantel:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="plantelType" id="exposicionRadio" value="exposicion" checked>
+                            <label class="form-check-label" for="exposicionRadio">
+                                Exposición
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="plantelType" id="ventaRadio" value="venta">
+                            <label class="form-check-label" for="ventaRadio">
+                                Venta
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="exposicionFields">
+                        <div class="mb-3">
+                            <label for="sheepSelect" class="form-label">Seleccione la oveja:</label>
+                            <select class="form-select" id="sheepSelect" required>
+                                <option value="">Seleccione una oveja</option>
+                                <option value="1">Oveja #001 - Texel - 78kg</option>
+                                <option value="2">Oveja #002 - Merino - 65kg</option>
+                                <option value="3">Oveja #003 - Suffolk - 82kg</option>
+                                <!-- Agrega más opciones según sea necesario -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="ventaFields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="sheepSelectVenta" class="form-label">Seleccione la oveja para venta:</label>
+                            <select class="form-select" id="sheepSelectVenta" required>
+                                <option value="">Seleccione una oveja</option>
+                                <option value="1">Oveja #001 - Texel - 78kg</option>
+                                <option value="2">Oveja #002 - Merino - 65kg</option>
+                                <option value="3">Oveja #003 - Suffolk - 82kg</option>
+                                <!-- Agrega más opciones según sea necesario -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="priceRange" class="form-label">Rango de precio (USD):</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="minPrice" placeholder="Mínimo" min="200" max="500" required>
+                                <span class="input-group-text">-</span>
+                                <input type="number" class="form-control" id="maxPrice" placeholder="Máximo" min="200" max="500" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Agrega modales similares para eliminar y modificar -->
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const plantelTypeRadios = document.querySelectorAll('input[name="plantelType"]');
+        const exposicionFields = document.getElementById('exposicionFields');
+        const ventaFields = document.getElementById('ventaFields');
+    
+        plantelTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'exposicion') {
+                    exposicionFields.style.display = 'block';
+                    ventaFields.style.display = 'none';
+                } else {
+                    exposicionFields.style.display = 'none';
+                    ventaFields.style.display = 'block';
+                }
+            });
+        });
+    
+        document.getElementById('addSheepForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Aquí puedes agregar la lógica para procesar el formulario
+            console.log('Formulario enviado');
+            // Cierra el modal después de procesar
+            var modal = bootstrap.Modal.getInstance(document.getElementById('addSheepModal'));
+            modal.hide();
+        });
+    });
+    </script>
 
 {% endblock %}
