@@ -8,12 +8,10 @@
             <form id="addOvinoForm" action="{% url 'ganaderia:ovejas' %}" method="POST">
                 {% csrf_token %}
                 <div class="row g-3">
-                    <!-- Nuevo campo Nombre del animal -->
                     <div class="col-md-6">
                         <label for="nombre_animal" class="form-label">Nombre del animal</label>
                         <input type="text" class="form-control" id="nombre_animal" name="nombre_animal" required>
                     </div>
-                    
                     <div class="col-md-6">
                         <label for="BU" class="form-label">BU</label>
                         <input type="text" class="form-control" id="BU" name="BU" required>
@@ -56,33 +54,32 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-12">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" class="form-check-input" id="purchased" name="purchased">
-                            <label class="form-check-label" for="purchased">¿Oveja comprada?</label>
+                    <div class="col-12" id="parentSection">
+                        <div class="row">
+                            <div class="col-md-12 purchased-hidden">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="purchased" name="purchased">
+                                    <label class="form-check-label" for="purchased">¿Oveja comprada?</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 purchased-hidden">
+                                <label for="oveja_padre" class="form-label">RP padre</label>
+                                <input type="text" class="form-control" id="oveja_padre" name="oveja_padre" placeholder="(opcional)">
+                            </div>
+                            <div class="col-md-6 purchased-hidden">
+                                <label for="oveja_madre" class="form-label">RP madre</label>
+                                <input type="text" class="form-control" id="oveja_madre" name="oveja_madre" placeholder="(opcional)">
+                            </div>
+                            <div class="col-md-6 purchased-visible" style="display: none;">
+                                <label for="rp_padre_externo" class="form-label">RP padre externo</label>
+                                <input type="text" class="form-control" id="rp_padre_externo" name="rp_padre_externo" placeholder="(opcional)">
+                            </div>
+                            <div class="col-md-6 purchased-visible" style="display: none;">
+                                <label for="rp_madre_externo" class="form-label">RP madre externo</label>
+                                <input type="text" class="form-control" id="rp_madre_externo" name="rp_madre_externo" placeholder="(opcional)">
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Campos para RP padre y madre internos -->
-                    <div class="col-md-6 purchased-hidden">
-                        <label for="oveja_padre" class="form-label">RP padre</label>
-                        <input type="text" class="form-control" id="oveja_padre" name="oveja_padre" placeholder="(opcional)">
-                    </div>
-                    <div class="col-md-6 purchased-hidden">
-                        <label for="oveja_madre" class="form-label">RP madre</label>
-                        <input type="text" class="form-control" id="oveja_madre" name="oveja_madre" placeholder="(opcional)">
-                    </div>
-
-                    <!-- Campos para RP padre y madre externos -->
-                    <div class="col-md-6 purchased-visible" style="display: none;">
-                        <label for="rp_padre_externo" class="form-label">RP padre externo</label>
-                        <input type="text" class="form-control" id="rp_padre_externo" name="rp_padre_externo" placeholder="(opcional)">
-                    </div>
-                    <div class="col-md-6 purchased-visible" style="display: none;">
-                        <label for="rp_madre_externo" class="form-label">RP madre externo</label>
-                        <input type="text" class="form-control" id="rp_madre_externo" name="rp_madre_externo" placeholder="(opcional)">
-                    </div>
-
                     <div class="col-md-12">
                         <div class="form-check form-switch">
                             <input type="checkbox" class="form-check-input" id="obs" name="obs">
