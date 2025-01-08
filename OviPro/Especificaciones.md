@@ -113,6 +113,55 @@ La aplicación permitirá a los usuarios gestionar su plantel ovino, incluyendo 
 
 Encontrar la manera de gestionar las ventas en el panel administrativo de forma correcta.
 
-*  Terminar las validaciones de registro de ovinos
-*  Terminar el registro de las ventas con sus validaciones
 *  Importante ** Refactorizar todo el proyecto** para mejorar la legibilidad
+
+
+### Registro de ovinos
+
+* Falta pulir el registro de los ovinos en la tabla
+* Flata terminar el detalle y hacerlo 100% funcional
+* Permitir al usuario descargar la tabla de registro
+* Mostrar en el detalle su padre y madre si se agrego
+* Permitir eliminar Ovino con medidas de seguridad  
+      * en caso de eliminar un ovino se debe setear la causa, 'muerto' o error de ingreso y colocar la contrasenia de usuario para confirmar
+
+* Mejorar la ux/ui del detalle
+
+
+### Registro de ventas
+
+* Pulir detalles del formulario de venta y revisar especificaciones
+* Refactorizar 
+* Marcar con color: (ux/ui)
+    ** rojo las ventas de Frigorifico, 
+    ** verde las ventas de remate,
+    ** amarillo las ventas individuales
+    ** azules las ventas de donacion,
+
+* Agregar opcion de ver detalle y mejorar la ux/ui
+* Opcion de descargar la tabla de ventas
+* Agregar algoritmo de filtrado por tipo de venta,valor o fecha
+
+
+### Planteletas
+
+* Realizar el registro de los ovinos que van a exposicion y/o a vender
+* Actualizar el ranking top de ovinos
+
+
+
+### Arbol genealogico
+
+* proximamente...
+
+
+### Analisis de datos
+
+* Actualizar la grafica de ventas con el registro vendido
+* Actualizar la grafica de total de ovinos registrados
+* Agregar grafico de los ovinos activos, muertos, vendidos
+* Agregar una especie de log con los ovinos eliminados
+
+
+
+

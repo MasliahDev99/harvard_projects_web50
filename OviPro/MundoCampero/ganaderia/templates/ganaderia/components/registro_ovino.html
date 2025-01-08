@@ -5,7 +5,7 @@
                 <tr>
                     <!-- en la columna del numero se va mostrar el BU en caso de que no tenga RP -->
                     <th>RP</th>
-                    <th>BU</th>
+                    <th>Nombre</th>
                     <th>Peso(kg)</th>
                     <th>Edad(mese/s)</th>
                     <th>Pureza</th>
@@ -23,7 +23,7 @@
                 {% if oveja %}
                 <tr class="ovino_row" data-id="{{ oveja.id }}">
                     <td>{{oveja.RP}}</td>
-                    <td>{{oveja.BU}}</td>
+                    <td>{{oveja.nombre}}</td>
                     <td>{{oveja.peso}}</td>
                     <td>{{oveja.edad}}</td>
                     <td>{{oveja.calificador_pureza}}</td>

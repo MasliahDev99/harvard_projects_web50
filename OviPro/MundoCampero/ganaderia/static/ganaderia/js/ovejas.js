@@ -1,44 +1,20 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Capturamos todas las filas con la clase "ovino_row"
-    const rows = document.querySelectorAll('.ovino_row');
-
-    // Añadimos un event listener a cada fila
-    rows.forEach(function(row) {
-        row.addEventListener('click', function(event) {
-
-            const isButtonClicked = event.target.closest('a');
-            
-            // Si el clic fue en el botón "ver detalle", no ejecutamos el evento de la fila
-            if (isButtonClicked) {
-                return;
-            }
-
-            // Obtenemos el id de la fila seleccionada
-            const id = row.getAttribute('data-id');
-            // Mostramos el id con un alert
-            alert(`El id del ovino seleccionado es: ${id}`);
-
-            // enviamos el id al servidor backend
-
-            
-            
-        });
-    });
-});
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
     const obsCheckbox = document.getElementById('obs');
     const observacionesContainer = document.getElementById('observacionesContainer');
     const purchasedCheckbox = document.getElementById('purchased');
     const purchasedHidden = document.querySelectorAll('.purchased-hidden');
     const purchasedVisible = document.querySelectorAll('.purchased-visible');
+    const calificadorPurezaSelect = document.getElementById('calificador_pureza');
+    const purchasedSection = document.querySelector('.purchased-hidden');
+    const rpPadreSection = document.querySelectorAll('.purchased-hidden');
+    const rpMadreSection = document.querySelectorAll('.purchased-hidden');
 
+    // Muestra las observaciones si el checkbox es activado
     obsCheckbox.addEventListener('change', function() {
         observacionesContainer.style.display = this.checked ? 'block' : 'none';
     });
 
+    // Muestra/oculta los campos de acuerdo con "¿Oveja comprada?"
     purchasedCheckbox.addEventListener('change', function() {
         const isChecked = this.checked;
         purchasedHidden.forEach(field => {
@@ -47,6 +23,20 @@ document.addEventListener('DOMContentLoaded', function() {
         purchasedVisible.forEach(field => {
             field.style.display = isChecked ? 'block' : 'none';
         });
+    });
+
+    // Muestra los campos "RP padre" y "RP madre" si el calificador de pureza es "pedigree" o "pedigrí"
+    calificadorPurezaSelect.addEventListener('change', function() {
+        const selectedValue = this.value.toLowerCase();
+        if (selectedValue === "pedigree" || selectedValue === "pedigrí") {
+            rpPadreSection.forEach(field => field.style.display = 'block');
+            rpMadreSection.forEach(field => field.style.display = 'block');
+            purchasedSection.forEach(field => field.style.display = 'block');
+        } else {
+            rpPadreSection.forEach(field => field.style.display = 'none');
+            rpMadreSection.forEach(field => field.style.display = 'none');
+            purchasedSection.forEach(field => field.style.display = 'none');
+        }
     });
 
     // Validación del formulario

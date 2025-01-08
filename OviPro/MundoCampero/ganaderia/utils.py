@@ -5,11 +5,11 @@ from datetime import date,datetime
 from django.db.models import Sum
 
 
-def crear_establecimiento(username,RUT,email,password):
+def crear_establecimiento(username,RUT,codigo_criador_ARU,email,password):
     if existe_establecimiento(RUT):
         raise IntegrityError("El RUT ingresado ya existe.")
     
-    nuevo_establecimiento = User(username=username,RUT=RUT,email=email,password=password)
+    nuevo_establecimiento = User(username=username,RUT=RUT,email=email,password=password,registro_ARU_criador = codigo_criador_ARU)
     nuevo_establecimiento.set_password(password) # ciframos la contrasenia
     nuevo_establecimiento.save()
 
@@ -161,6 +161,7 @@ def agregar_oveja(request):
     # Capturamos los datos del formulario de registro de ovejas
     BU = request.POST.get('BU')
     RP = request.POST.get('RP')
+    nombre = request.POST.get('nombre_animal')
     peso = request.POST.get('peso')
     raza = request.POST.get('raza')
     fecha_nacimiento = request.POST.get('fecha_nacimiento')
@@ -210,11 +211,14 @@ def agregar_oveja(request):
 
     except ObjectDoesNotExist:
         return None, "Raza o calificador de pureza no encontrado"
-   
+    
+    #corroborar que el nombre del ovino sea unico
+
     try:
         nueva_oveja = Oveja.objects.create(
             BU=BU,
             RP=RP,
+            nombre = nombre,
             peso=peso,
             raza=raza,
             edad=edad,

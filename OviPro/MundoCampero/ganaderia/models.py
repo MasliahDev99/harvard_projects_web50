@@ -24,14 +24,21 @@ class User(AbstractUser):
     RUT = models.IntegerField(unique=True, null=True,blank=True ,validators=[MinValueValidator(1000000), MaxValueValidator(999999999999)])
     telefono = models.IntegerField(null=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
+    # identificador de criador de ARU (asociacion rural del Uruguay)
+    registro_ARU_criador = models.IntegerField(unique=True,null=True,blank=True)
     
 
 
 class Oveja(models.Model):
+    """
+        Modelo para las ovejas
+
+    
+    """
     id = models.AutoField(primary_key=True)
     BU = models.CharField(max_length=50, unique=True)
     RP = models.CharField(max_length=50, unique=True)
-    nombre = models.CharField(max_length=100,null=True)
+    nombre = models.CharField(max_length=100,null=True,unique=True)
     peso = models.FloatField()
     raza = models.ForeignKey(Raza, on_delete=models.CASCADE)
     edad = models.PositiveIntegerField()

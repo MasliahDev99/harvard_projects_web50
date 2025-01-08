@@ -8,6 +8,12 @@
             <form id="addOvinoForm" action="{% url 'ganaderia:ovejas' %}" method="POST">
                 {% csrf_token %}
                 <div class="row g-3">
+                    <!-- Nuevo campo Nombre del animal -->
+                    <div class="col-md-6">
+                        <label for="nombre_animal" class="form-label">Nombre del animal</label>
+                        <input type="text" class="form-control" id="nombre_animal" name="nombre_animal" required>
+                    </div>
+                    
                     <div class="col-md-6">
                         <label for="BU" class="form-label">BU</label>
                         <input type="text" class="form-control" id="BU" name="BU" required>

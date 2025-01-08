@@ -38,16 +38,19 @@ def register_view(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         password2 = request.POST.get('confirmation')
+        codigo_criador = request.POST.get('criadorARU')
 
         if password != password2:
             return render(request,'ganaderia/register.html',{
                 "message" : 'Las contraseña deben coincidir',
             })
         
+        # corroboramos que el codigo criador de ARU no este registrado en la app
+        
         #procedemos a crear el usuario establecimiento
         try:
             nuevo_establecimiento = crear_establecimiento(
-                username=establecimiento,RUT=RUT,email=email,password=password)
+                username=establecimiento,RUT=RUT,codigo_criador_ARU=codigo_criador,email=email,password=password)
             nuevo_establecimiento.save()            
 
         except IntegrityError as e:
@@ -187,7 +190,15 @@ def ventas(request):
     return render(request, 'ganaderia/ventas.html',{
         'ventas': ventas,
         'lista_ovejas': lista_ovejas,
+
     })
+
+    """
+        Consideraciones al pasar animales de la tabla registro a vendidas
+    
+    
+    
+    """
 
 
 
