@@ -25,5 +25,6 @@ urlpatterns = [
 
 
     # API View
-    path('api/mis-ovinos/',views.OvejaListadoAPI.as_view(),name='OvinoApi'),
+    path('api/ovejas/',views.OvejaListadoAPI.as_view(),name='OvinoApi'),
+    path('api/establecimiento/',views.EstablecimientoAPI.as_view(),name='Establecimiento'),
 ]

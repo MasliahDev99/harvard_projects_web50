@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Obtener los ovinos disponibles desde el servidor
     function obtenerOvinosServidor() {
-        fetch('/api/mis-ovinos/')
+        fetch('/api/ovejas/')
             .then(response => {
                 if (!response.ok) throw new Error('Error al cargar la lista de animales.');
                 return response.json();

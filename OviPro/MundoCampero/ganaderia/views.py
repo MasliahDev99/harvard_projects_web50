@@ -13,7 +13,7 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import OvejaSerializer
+from .serializers import OvejaSerializer,VentaSerializer,EstablecimientoSerializer
 from django.views.decorators.csrf import csrf_protect
 
 
@@ -246,7 +246,7 @@ def hub(request):
 
 
 
-# API VIEW 
+# API VIEW  PARA LOS OVINOS DEL ESTABLECIMIENTO
 class OvejaListadoAPI(APIView):
     permission_classes = [IsAuthenticated] 
 
@@ -257,7 +257,22 @@ class OvejaListadoAPI(APIView):
         return Response(serializer.data)
 
 
-"""
-    Se logro registrar las ventas, falta arreglar detalles del front
+# API VIEW PARA VENTAS DEL ESTABLECIMIENTO
+class VentaListadoAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        # Filtrar las ventas del establecimiento del usuario actual
+        ventas = Venta.objects.filter(establecimiento=request.user)
+        # Usamos el serializador y pasamos el contexto con el request para poder acceder al establecimiento
+        serializer = VentaSerializer(ventas, many=True)  
+        # Devolvemos la respuesta con los datos serializados
+        return Response(serializer.data)
+    
 
-"""
+# API VIEW PARA EL ESTABLECIMIENTO 
+class EstablecimientoAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request):
+        establecimiento = User.objects.filter(RUT=request.user.RUT).first()
+        serializer = EstablecimientoSerializer(establecimiento,many=False,context={'request': request})
+        return Response(serializer.data)
