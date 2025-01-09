@@ -228,7 +228,10 @@ def ovejas(request):
 
 @login_required
 def ver_detalle(request, id_oveja):
+    # traemos una oveja en particular
     oveja = get_object_or_404(Oveja, id=id_oveja)
+    oveja.edad_clasificada = oveja.clasificar_edad()
+
     return render(request, 'ganaderia/detalle.html',{
         'oveja': oveja,
     })

@@ -4,7 +4,7 @@ const ctxOvinos = document.getElementById('myChartOvinos').getContext('2d');
 let myChart, myChartOvinos;
 
 const salesTypes = ['Remates', 'Individuales', 'Frigorífico', 'Donaciones'];
-const stageTypes = ['Corderas', 'Borregas', 'Corderos', 'Borregos'];
+const stageTypes = ['Corderas', 'Borregas', 'Corderos', 'Borregos', 'Carnero', 'Oveja'];
 
 // Función para inicializar los gráficos
 function initChart() {
@@ -35,9 +35,9 @@ function initChart() {
         data: {
             labels: stageTypes,
             datasets: [{
-                data: [0, 0, 0, 0],
-                backgroundColor: ['#28a745', '#218838', '#ffc107', '#dc3545'],
-                borderColor: ['#28a745', '#218838', '#ffc107', '#dc3545'],
+                data: [0, 0, 0, 0, 0, 0],
+                backgroundColor: ['#28a745', '#218838', '#ffc107', '#dc3545', '#17a2b8', '#6c757d'],  // Nuevos colores
+                borderColor: ['#28a745', '#218838', '#ffc107', '#dc3545', '#17a2b8', '#6c757d'],
                 borderWidth: 1,
             }]
         },
@@ -67,11 +67,14 @@ function obtenerDatosServidor() {
                 Frigorífico: 0,
                 Donaciones: 0
             };
+            
             let cantidadOvinos = {
                 Corderas: 0,
                 Borregas: 0,
                 Corderos: 0,
-                Borregos: 0
+                Borregos: 0,
+                Carneros: 0,  
+                Ovejas: 0     
             };
 
             // Procesamos los datos de ventas
@@ -87,6 +90,8 @@ function obtenerDatosServidor() {
             cantidadOvinos.Borregas = ovinos.Borregas || 0;
             cantidadOvinos.Corderos = ovinos.Corderos || 0;
             cantidadOvinos.Borregos = ovinos.Borregos || 0;
+            cantidadOvinos.Carneros = ovinos.Carneros || 0;  
+            cantidadOvinos.Ovejas = ovinos.Ovejas || 0;
 
             console.log('Cantidad de ventas:', cantidadVentas); // Para depuración
             console.log('Cantidad de ovinos:', cantidadOvinos); // Para depuración
@@ -115,7 +120,9 @@ function actualizarGraficaOvinos(cantidadOvinos) {
         cantidadOvinos.Corderas,
         cantidadOvinos.Borregas,
         cantidadOvinos.Corderos,
-        cantidadOvinos.Borregos
+        cantidadOvinos.Borregos,
+        cantidadOvinos.Carneros, 
+        cantidadOvinos.Ovejas     
     ];
     myChartOvinos.update();
 }

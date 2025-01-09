@@ -34,6 +34,8 @@
                     <h2><strong>Datos fisicos</strong></h2>
                     <div class="d-flex flex-column">
                         <span><strong>Fecha nacimiento: </strong>{{oveja.fecha_nacimiento}}</span>
+                        <span><strong>Edad: </strong>{{oveja.edad}} meses</span>
+                        <span><strong>Etapa: </strong>{{oveja.edad_clasificada}}</span>
                         <span><strong>Peso: </strong>{{oveja.peso}} kg</span>
                     </div>
                 </div>
@@ -44,8 +46,14 @@
                 <div class="col-md-6 col-12">
                     <h2><strong>Informacion genealogica</strong></h2>
                     <div class="d-flex flex-column">
-                        <span><strong>Padre: </strong>{{oveja.padre|default:"No fue registrado"}}</span>
-                        <span><strong>Madre: </strong>{{oveja.madre|default:"No fue registrado"}}</span>
+                        {% if oveja.oveja_padre and oveja.oveja_madre %}
+                        <span><strong>Padre(plantel): </strong> RP {{oveja.oveja_padre.RP|default:"No fue registrado"}}</span>
+                        <span><strong>Madre(plantel): </strong> RP {{oveja.oveja_madre.RP|default:"No fue registrado"}}</span>
+                        {% endif%}
+                        {% if oveja.rp_padre_externo and oveja.rp_madre_externo%}
+                        <span><strong>Padre externo: </strong> RP {{oveja.rp_padre_externo}}</span>
+                        <span><strong>Madre externo: </strong> RP {{oveja.rp_madre_externo}}</span>
+                        {% endif%}
                     </div>
                 </div>
 

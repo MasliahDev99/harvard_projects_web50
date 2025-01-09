@@ -16,9 +16,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isPedigree) {
             togglePurchasedFields();
         } else {
-            purchasedHidden.forEach(field => field.style.display = 'none');
+            purchasedHidden.forEach(field => {
+                if (field !== purchasedCheckbox.parentElement.parentElement) {
+                    field.style.display = 'none';
+                }
+            });
             purchasedVisible.forEach(field => field.style.display = 'none');
         }
+
+        // Always show the "oveja comprada" checkbox
+        purchasedCheckbox.parentElement.parentElement.style.display = 'block';
     }
 
     function togglePurchasedFields() {
@@ -45,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configuración inicial
     toggleParentFields();
     observacionesContainer.style.display = 'none';
+
+    // Ensure the checkbox is visible on page load
+    purchasedCheckbox.parentElement.parentElement.style.display = 'block';
 
     // Validación del formulario
     const addOvinoForm = document.getElementById('addOvinoForm');

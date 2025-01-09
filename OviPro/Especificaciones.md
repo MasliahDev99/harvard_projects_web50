@@ -91,46 +91,35 @@ La aplicación permitirá a los usuarios gestionar su plantel ovino, incluyendo 
 
 
 
-# Consideraciones en la Base de datos
 
 
-## Modelos
 
-* Razas(nombre)
-
-*CalificadorPureza(nombre)
-
-* Establecimiento(Rut,email, contrasenia)
-* Ovejas(BU,RP,nombre,peso,Raza,edad,fechaNacimiento,Sexo,Calificador_Pureza,Observaciones,Oveja_padre,Oveja_Madre)
-* Ventas(Ovejas,FechaVenta,valor,Tipo_venta)
-*Planteleta(Oveja,Tipo_plantel)
-*Genealogia(Oveja,Oveja_padre,Oveja_madre)
-
+* Luego de limpiar la base de datos y hacer los comandos para las migraciones , se cargan automaticamente las razas y calificadores de pureza.
 
 
 
 ## Cosas para mejorar 
 
-Encontrar la manera de gestionar las ventas en el panel administrativo de forma correcta.
 
 *  Importante ** Refactorizar todo el proyecto** para mejorar la legibilidad
 
+* Implementar los annotates y aggregates de django para mejorar la eficiencia de las consultas a la base de datos 
 
 ### Registro de ovinos
 
-* Falta pulir el registro de los ovinos en la tabla
-* Flata terminar el detalle y hacerlo 100% funcional
-* Permitir al usuario descargar la tabla de registro
-* Mostrar en el detalle su padre y madre si se agrego
-* Permitir eliminar Ovino con medidas de seguridad  
-      * en caso de eliminar un ovino se debe setear la causa, 'muerto' o error de ingreso y colocar la contrasenia de usuario para confirmar
+* validaciones en el registro 
+  * Validar que en caso de padres internos  , verificar que no sean del mismo sexo, y que sean borregos en adelante.
+  * No se puede registrar un ovino que nacio posterior a la fecha actual
 
-* Mejorar la ux/ui del detalle
+
+### tabla de registro
+
+* Mejoras del ux/ui
+  
 
 
 ### Registro de ventas
 
-* Pulir detalles del formulario de venta y revisar especificaciones
 * Refactorizar 
 * Marcar con color: (ux/ui)
     ** rojo las ventas de Frigorifico, 
@@ -157,11 +146,34 @@ Encontrar la manera de gestionar las ventas en el panel administrativo de forma 
 
 ### Analisis de datos
 
-* Actualizar la grafica de ventas con el registro vendido
-* Actualizar la grafica de total de ovinos registrados
-* Agregar grafico de los ovinos activos, muertos, vendidos
-* Agregar una especie de log con los ovinos eliminados
+ahora
+
+* Mejorar la ux/ui
+  * cuando no hay datos de la cantidad de ovinos que el grafico de ovinos no se muestre , igual con las vendidas, y con eso terminado dariamos finalizado la parte de analisis de datos terminada por ahora.
 
 
+* Pensar una forma mejor de mostrar la seccion de analsis de datos 
+
+
+
+
+
+BU numero identificador interno, y RP numero identificador de la ARU
+BU puede repetirse
+
+
+
+
+para borrar la base de datos comandos
+
+
+python3 manage.py flush
+
+
+rm db.sqlite3
+
+
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+find . -path "*/migrations/*.pyc" -delete
 
 
