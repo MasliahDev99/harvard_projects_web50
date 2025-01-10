@@ -16,6 +16,8 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import OvejaSerializer,VentaSerializer,EstablecimientoSerializer
 from django.views.decorators.csrf import csrf_protect
 
+from django.db.models import Count, Sum, FloatField
+from django.db.models.functions import Coalesce
 
 import json
 
@@ -132,16 +134,21 @@ def obtener_datos_front(request):
 
     return tipo_venta, por_lote, ovinos, peso_total, precio_kg, remate_total, fecha_venta, valor_total
 
-# refactorizar
+
 @csrf_protect
 @login_required
 def ventas(request):
+    """
+        Vamos a mostrar la tabla de ovinos vendidos agrupados por id
+    """
+
     #obtenemos las ventas del establecimiento
-    ventas = Venta.objects.filter(establecimiento=request.user).prefetch_related('ovejas')
+    ventas = Venta.objects.filter(establecimiento=request.user).annotate(
+        oveja_count=Count('ovejas'),
+        peso_total_calculado=Coalesce(Sum('ovejas__peso', output_field=FloatField()), 0.0)
+    ).prefetch_related('ovejas')
     #obtenemos todos los ovinos que tiene el establecimiento registrado
     lista_ovejas = Oveja.objects.filter(establecimiento=request.user,estado='activa')
-
-
 
 
     for venta in ventas:
@@ -235,7 +242,21 @@ def ver_detalle(request, id_oveja):
     return render(request, 'ganaderia/detalle.html',{
         'oveja': oveja,
     })
+@login_required
+def detalle_venta(request, id_venta):
+    venta = get_object_or_404(Venta, id=id_venta)
+    
+    # Calcular el peso total y promedio
+    peso_total = venta.ovejas.aggregate(total=Sum('peso'))['total'] or 0
+    peso_promedio = peso_total / venta.ovejas.count() if venta.ovejas.count() > 0 else 0
 
+    context = {
+        'venta': venta,
+        'peso_total': peso_total,
+        'peso_promedio': peso_promedio,
+    }
+    
+    return render(request, 'ganaderia/detalleVenta.html', context)
 
 
 @login_required

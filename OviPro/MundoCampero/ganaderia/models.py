@@ -76,7 +76,7 @@ class Venta(models.Model):
     id = models.AutoField(primary_key=True)
     ovejas = models.ManyToManyField('Oveja', related_name='ventas', blank=True)  # Para soporte de venta por lote o individual
     fecha_venta = models.DateField()
-    peso_total =  peso_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    peso_total =  models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     valor_carne = models.FloatField(null=True, blank=True)  # Solo necesario para frigorífico
     valor = models.FloatField(default=0.0)
     establecimiento = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True ,related_name='ventas')

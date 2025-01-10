@@ -17,6 +17,8 @@ urlpatterns = [
     # URLS de dashboard
     path('hub/dashboard/', views.dashboard, name='dashboard'),
     path('hub/dashboard/ventas/', views.ventas, name='ventas'),
+    path('hub/dashboard/ventas/detalle/<int:id_venta>',views.detalle_venta,name='ver_detalle_venta'),
+    
     path('hub/dashboard/ovejas/', views.ovejas, name='ovejas'),
     # URLS para ver el detalle de la oveja con id_oveja = id
     path('hub/dashboard/oveja/detalle/<int:id_oveja>/', views.ver_detalle, name='ver_detalle'),

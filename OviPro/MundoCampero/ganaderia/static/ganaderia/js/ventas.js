@@ -1,3 +1,7 @@
+
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos del DOM
     const saleType = document.getElementById('saleType');
@@ -12,6 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const remateTotal = document.getElementById('remateTotal');
     const totalSaleValue = document.getElementById('totalSaleValue');
     const confirmSaleBtn = document.getElementById('confirmSale');
+
+  
+
+
 
     // Array para almacenar los ovinos disponibles
     let ovinosDisponibles = [];

@@ -5,6 +5,10 @@ from datetime import date,datetime
 from django.db.models import Sum
 
 
+from django.template.loader import get_template
+import pdfkit
+
+
 def crear_establecimiento(username,RUT,codigo_criador_ARU,email,password):
     if existe_establecimiento(RUT):
         raise IntegrityError("El RUT ingresado ya existe.")

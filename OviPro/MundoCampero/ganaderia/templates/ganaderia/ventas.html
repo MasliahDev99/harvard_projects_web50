@@ -19,34 +19,32 @@
                 <table class="table table-hover">
                     <thead class="table-light">
                         <tr>
-                            <th>RP</th>
-                            <th>Peso(kg)</th>
-                            <th>Etapa</th>
-                            <th>Pureza</th>
                             <th>Tipo(venta)</th>
-                            <th>Fecha Vend</th>
-                            <th>Sexo</th>
+                            <th>Cantidad de ovinos</th>
+                            <th>Peso total(kg)</th>  
                             <th>Valor(USD)</th>
+                            <th>Fecha venta</th>
+                            <th>Detalle de venta</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for venta in ventas %}
-                            {% for oveja in venta.ovejas.all %}
-                                <tr>
-                                    <td>{{ oveja.RP }}</td>
-                                    <td>{{ oveja.peso }}</td>
-                                    <td>{{ oveja.edad_clasificada}}</td>
-                                    <td>{{ oveja.calificador_pureza }}</td>
-                                    <td>{{ venta.tipo_venta }}</td>
-                                    <td>{{ venta.fecha_venta }}</td>
-                                    <td>{{ oveja.sexo }}</td>
-                                    <td>{{ venta.valor }}</td>
-                                </tr>
-                            {% endfor %}
+                        <tr class="venta_row" data-id="{{ venta.id }}">
+                            <td>{{ venta.tipo_venta }}</td>
+                            <td>{{ venta.oveja_count }}</td>
+                            {% if venta.tipo_venta == 'frigorifico' %}
+                            <td>{{ venta.peso_total_calculado|floatformat:2 }}</td>
+                            {%else%}
+                            <td> {{venta.peso_total}}</td>
+                            {% endif%}
+                            <td>{{ venta.valor }}</td>
+                            <td>{{ venta.fecha_venta|date:"d/m/Y" }}</td>
+                            <td><a href="{% url 'ganaderia:ver_detalle_venta' venta.id %}" class="btn btn-sm btn-primary">ver detalle</a></td>
+                        </tr>
                         {% empty %}
-                            <tr>
-                                <td colspan="9" class="text-center">No hay ventas registradas</td>
-                            </tr>
+                        <tr>
+                            <td colspan="7" class="text-center">No hay ventas registradas</td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -68,27 +66,13 @@
     </div>
 </div>
 
-
 <!-- Add Sale Modal -->
 <div class="modal fade" id="addSaleModal" tabindex="-1" aria-labelledby="addSaleModalLabel" aria-hidden="true">
     {% include 'ganaderia/components/modals/agregar_venta.html' %}
 </div>
 
-
-
-
-
-
 {% endblock %}
 
 {% block scripts %}
-<script>
-
-
-
-
-   
-</script>
+<!-- Aquí irán los scripts necesarios de ventas.html -->
 {% endblock %}
-
-

@@ -1,0 +1,35 @@
+{% extends 'ganaderia/layout.html' %}
+
+
+
+
+{% block body %}
+
+<div class="container mt-4 min-vh-100">
+    <div class="row mb-4 align-items-center">
+        <div class="col-auto">
+            <a href="{% url 'ganaderia:ventas'  %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+    <h3 class="text-center">Detalle de la venta de id {{venta.id}} </h3>
+    <h3>Tipo de venta: {{ venta.tipo_venta }} </h3>
+    <h3>Valor: {{ venta.valor }} </h3>
+    <h3>Fecha venta: {{venta.fecha_venta}}</h3>
+    <h4>Lote: {{ venta.ovejas.count }} </h4>
+
+    <ul>
+        {% for oveja in venta.ovejas.all %}
+        <li>RP: {{  oveja.RP}}</li>
+        <li>Peso: {{ oveja.peso }}</li>
+        <a href="{% url 'ganaderia:ver_detalle' oveja.id %}" class="btn btn-sm btn-primary mt-2">ver detalle</a>
+        <hr>
+        {% endfor%}
+    </ul>
+
+    <button class="btn btn-outline-secondary">Descargar pdf</button>
+</div>
+
+
+{% endblock %}

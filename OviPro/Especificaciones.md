@@ -105,6 +105,8 @@ La aplicación permitirá a los usuarios gestionar su plantel ovino, incluyendo 
 
 * Implementar los annotates y aggregates de django para mejorar la eficiencia de las consultas a la base de datos 
 
+* plantillas de detalle
+
 ### Registro de ovinos
 
 * validaciones en el registro 
@@ -112,54 +114,35 @@ La aplicación permitirá a los usuarios gestionar su plantel ovino, incluyendo 
   * No se puede registrar un ovino que nacio posterior a la fecha actual
 
 
-### tabla de registro
-
-* Mejoras del ux/ui
   
 
 
 ### Registro de ventas
 
 * Refactorizar 
-* Marcar con color: (ux/ui)
-    ** rojo las ventas de Frigorifico, 
-    ** verde las ventas de remate,
-    ** amarillo las ventas individuales
-    ** azules las ventas de donacion,
 
-* Agregar opcion de ver detalle y mejorar la ux/ui
 * Opcion de descargar la tabla de ventas
-* Agregar algoritmo de filtrado por tipo de venta,valor o fecha
 
 
-### Planteletas
+### refactorizar modulos
 
-* Realizar el registro de los ovinos que van a exposicion y/o a vender
-* Actualizar el ranking top de ovinos
-
-
-
-### Arbol genealogico
-
-* proximamente...
-
-
-### Analisis de datos
-
-ahora
-
-* Mejorar la ux/ui
-  * cuando no hay datos de la cantidad de ovinos que el grafico de ovinos no se muestre , igual con las vendidas, y con eso terminado dariamos finalizado la parte de analisis de datos terminada por ahora.
-
-
-* Pensar una forma mejor de mostrar la seccion de analsis de datos 
+* refactorizar utils
+  -> separar responsabilidades
+* refactorizar  views
+  -> eliminar reduncias y optimizar las consultas con annotates
 
 
 
 
 
-BU numero identificador interno, y RP numero identificador de la ARU
-BU puede repetirse
+
+
+
+
+
+
+
+
 
 
 
