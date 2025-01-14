@@ -1,0 +1,22 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Confirmar</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'ganaderia:editar_ovino' oveja.id %}" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>Solamente se puede editar su peso. RP: {{oveja.RP}}</p>
+                <div class="mb-3">
+                    <label for="nuevo_peso" class="form-label">Nuevo peso(kg):</label>
+                    <input type="number" class="form-control" id="nuevo_peso" name="nuevo_peso">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-success">Confirmar</button>
+            </div>
+        </form>
+    </div>
+</div>

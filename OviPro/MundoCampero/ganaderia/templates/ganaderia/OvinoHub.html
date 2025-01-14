@@ -113,7 +113,7 @@
                     <div class="card-body">
                         <form id="priceCalculator">
                             <div class="mb-3">
-                                <label for="weight" class="form-label">Peso del animal (kg)</label>
+                                <label for="weight" class="form-label">Peso total  (kg)</label>
                                 <input type="number" class="form-control" id="weight" required min="1" step="0.1">
                             </div>
                             <div class="mb-3">
@@ -132,7 +132,7 @@
                                     <option value="pepito">Carnicería Pepito</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-success w-100">Calcular Precio</button>
+                            <button type="submit" class="btn btn-success w-100" id="calculateBtn">Calcular Precio</button>
                         </form>
                         <div id="result" class="mt-3 p-3 bg-light rounded" style="display: none;">
                             <h4 class="text-center">Precio Estimado</h4>
@@ -151,7 +151,45 @@
 </div>
 
 <script>
-    // Actualizar la fecha de última actualización
-    document.getElementById('lastUpdate').textContent = new Date().toLocaleString();
+    document.addEventListener("DOMContentLoaded", () => {
+        // Actualizar la fecha de última actualización
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleString();
+
+        // Capturar elementos del DOM
+        const form = document.getElementById('priceCalculator');
+        const weightInput = document.getElementById('weight');
+        const animalTypeSelect = document.getElementById('animalType');
+        const butcherSelect = document.getElementById('butcher');
+        const resultDiv = document.getElementById('result');
+        const estimatedPriceSpan = document.getElementById('estimatedPrice');
+
+        // Precios estáticos (en el futuro, estos vendrán de una API)
+        const prices = {
+            canelo: { cordero: 4.18, carnero: 3.98 },
+            pepito: { cordero: 4.15, carnero: 3.98 }
+        };
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            calcularPrecioFrigorifico();
+        });
+
+        function calcularPrecioFrigorifico() {
+            const weight = parseFloat(weightInput.value);
+            const animalType = animalTypeSelect.value;
+            const butcher = butcherSelect.value;
+
+            if (weight && animalType && butcher) {
+                const pricePerKg = prices[butcher][animalType];
+                const totalPrice = pricePerKg * weight;
+
+                estimatedPriceSpan.textContent = totalPrice.toFixed(2);
+                resultDiv.style.display = 'block';
+            } else {
+                resultDiv.style.display = 'none';
+            }
+        }
+    });
+
 </script>
 {% endblock %}

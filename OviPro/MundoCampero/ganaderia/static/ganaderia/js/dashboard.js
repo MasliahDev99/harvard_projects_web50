@@ -105,26 +105,60 @@ function obtenerDatosServidor() {
 
 // Función para actualizar el gráfico de ventas
 function actualizarGraficaVentas(cantidadVentas) {
-    myChart.data.datasets[0].data = [
-        cantidadVentas.Remates,
-        cantidadVentas.Individuales,
-        cantidadVentas.Frigorífico,
-        cantidadVentas.Donaciones
-    ];
-    myChart.update();
+    const noVentasLabel = document.getElementById('noVentasLabel'); // Un elemento HTML para mensajes dinámicos
+    // si la cantidad de ventas es 0 entonces mostrar un label 'No hay ventas registradas'
+    if (hayVentas(cantidadVentas)){
+            noVentasLabel.style.display = 'none';
+            myChart.data.datasets[0].data = [
+                cantidadVentas.Remates,
+                cantidadVentas.Individuales,
+                cantidadVentas.Frigorífico,
+                cantidadVentas.Donaciones
+            ];
+            myChart.update();
+    }else{
+        noVentasLabel.style.display = 'block';
+    }
 }
 
 // Función para actualizar el gráfico de ovinos
 function actualizarGraficaOvinos(cantidadOvinos) {
-    myChartOvinos.data.datasets[0].data = [
-        cantidadOvinos.Corderas,
-        cantidadOvinos.Borregas,
-        cantidadOvinos.Corderos,
-        cantidadOvinos.Borregos,
-        cantidadOvinos.Carneros, 
-        cantidadOvinos.Ovejas     
-    ];
-    myChartOvinos.update();
+    const noOvinosLabel = document.getElementById('noOvinosLabel'); // Un elemento HTML para mensajes dinámicos
+    if (hayOvinos(cantidadOvinos)){
+            noOvinosLabel.style.display = 'none';
+            myChartOvinos.data.datasets[0].data = [
+                cantidadOvinos.Corderas,
+                cantidadOvinos.Borregas,
+                cantidadOvinos.Corderos,
+                cantidadOvinos.Borregos,
+                cantidadOvinos.Carneros, 
+                cantidadOvinos.Ovejas     
+            ];
+            myChartOvinos.update();
+    }else{
+        noOvinosLabel.style.display='block';
+    }
+
+}
+
+
+function hayVentas(cantidadVentas){
+    // retorna true si encuentra ventas en el diccionario
+    for (const ventas in cantidadVentas){
+        if (cantidadVentas[ventas] > 0){
+            return true
+        }
+    }
+    return false
+}
+function hayOvinos(cantidadOvinos){
+    // retorna true si encuentra ovinos en el diccionario
+    for (const ovinos in cantidadOvinos){
+        if(cantidadOvinos[ovinos] > 0){
+            return true
+        }
+    }
+    return false
 }
 
 // Inicializamos los gráficos y cargamos los datos cuando la página esté lista

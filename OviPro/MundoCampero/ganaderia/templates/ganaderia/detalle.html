@@ -71,21 +71,39 @@
                 <button class="btn btn-outline-primary mt-5">Descargar Hoja de vida</button>
                 <button class="btn btn-outline-primary mt-5">Descargar Certificado de pureza</button>
                 <!-- editar -->
-                <a href="#" class="btn btn-outline-primary mt-5">Editar</a>
-                <button class="btn btn-outline-danger mt-5">Eliminar Ovino</button>
+                <button  class="btn btn-outline-primary mt-5" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
+                
+                <button type="button" class="btn btn-danger mt-5" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    Eliminar
+                </button>
+              
             </div>
-            
-            
-
-          
+        
         </div>
+
+    <!-- Modal de eliminacion -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        {% include 'ganaderia/components/modals/eliminar_ovino.html' %}
+    </div>
+
+    <!-- Modal de Editar -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        {% include 'ganaderia/components/modals/editar_ovino.html' %}
+    </div>
         
 
-
+    
         
     </div>
 
+   
 
 
+    {% block script %}
+    
 
+
+    {% endblock %}
 {% endblock %}
+
+

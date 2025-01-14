@@ -58,6 +58,13 @@ class Oveja(models.Model):
     rp_padre_externo = models.CharField(max_length=50, null=True, blank=True)
     rp_madre_externo = models.CharField(max_length=50, null=True, blank=True)
 
+
+    #para venta individual agregaremos un atributo de precio
+    valor_venta_ind = models.FloatField(null=True,blank=True)
+
+    # En caso que el estado del ovino sea "muerta" guardaremos la fecha de "muerte" 
+    fecha_muerte = models.DateField(null=True, blank=True)  
+
     def __str__(self):
         return self.nombre if self.nombre else self.RP
     

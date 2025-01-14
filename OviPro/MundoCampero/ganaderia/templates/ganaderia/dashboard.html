@@ -22,6 +22,7 @@
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Planteletas</h5>
                     <p class="card-text">Plantel de venta y exposición</p>
+                    <p class="card-text">Proximamente...</p>
                     <div class="mt-auto">
                         <ul class="list-unstyled mb-3">
                             <li><a href="#" class="text-decoration-none">Plantel de exposición</a></li>
@@ -39,6 +40,7 @@
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Árbol genealógico</h5>
                     <p class="card-text">Descendencia de ovinos</p>
+                    <p class="card-text">Proximamente...</p>
                     <div class="mt-auto">
                         <p class="mb-3">Total de registros: <strong>30</strong></p>
                         <a href="{% url 'ganaderia:index'%}" class="btn btn-primary w-100">Ver detalles</a>
@@ -55,7 +57,9 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title text-center mb-4">Distribución de Ventas</h5>
+                    <p id="noVentasLabel" class="text-center" style="display: none;">No hay ventas registradas.</p>
                     <canvas id="myChart" height="250"></canvas>
+                    
                 </div>
             </div>
         </div>
@@ -63,7 +67,9 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title text-center mb-4">Distribución de Ovinos</h5>
+                    <p id="noOvinosLabel" class="text-center" style="display: none;">No hay ovinos registradas.</p>
                     <canvas id="myChartOvinos" height="250"></canvas>
+                    
                 </div>
             </div>
         </div>

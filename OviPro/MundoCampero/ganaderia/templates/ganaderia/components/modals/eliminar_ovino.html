@@ -1,0 +1,42 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'ganaderia:eliminar_oveja' oveja.id %}" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>¿Está seguro que desea eliminar el ovino con RP: {{oveja.RP}}?</p>
+                <div class="mb-3">
+                    <label for="deleteReason" class="form-label">Motivo de eliminación:</label>
+                    <select class="form-select" id="deleteReason" name="delete_reason" required>
+                        <option value="">Seleccione un motivo</option>
+                        <option value="muerte">Muerte</option>
+                        <option value="error">Error de ingreso</option>
+                    </select>
+                </div>
+                <div id="deathReasonContainer" class="mb-3" style="display: none;">
+                    <label for="deathReason" class="form-label">Motivo de la muerte:</label>
+                    <textarea class="form-control" id="deathReason" name="death_reason" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('deleteReason').addEventListener('change', function() {
+        var deathReasonContainer = document.getElementById('deathReasonContainer');
+        if (this.value === 'muerte') {
+            deathReasonContainer.style.display = 'block';
+        } else {
+            deathReasonContainer.style.display = 'none';
+        }
+    });
+</script>

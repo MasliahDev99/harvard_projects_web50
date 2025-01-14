@@ -22,6 +22,9 @@ urlpatterns = [
     path('hub/dashboard/ovejas/', views.ovejas, name='ovejas'),
     # URLS para ver el detalle de la oveja con id_oveja = id
     path('hub/dashboard/oveja/detalle/<int:id_oveja>/', views.ver_detalle, name='ver_detalle'),
+    path('hub/dashboard/ovejas/detalle/eliminar/<int:id_oveja>/',views.eliminar_oveja,name='eliminar_oveja'),
+    path('hub/dashboard/ovejas/detalle/editar/<int:id_oveja>/',views.editar_oveja,name="editar_ovino"),
+
     path('hub/dashboard/planteletas/', views.planteletas, name='planteletas'),
 
 

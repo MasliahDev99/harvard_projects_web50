@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render , redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.urls import reverse
 from django.contrib import messages
 from django.utils import timezone
@@ -76,7 +77,11 @@ def login_view(request):
             if establecimiento is not None:
                 login(request,establecimiento)
                 return redirect('ganaderia:dashboard')
-            
+            else:
+                messages.error(request, 'Credenciales inválidas. Por favor, intente nuevamente.')
+        else:
+                messages.error(request, 'No se encontró un establecimiento con ese RUT.')
+    
     return render(request, 'ganaderia/login.html')
 
 @login_required
@@ -217,12 +222,15 @@ def ovejas(request):
     calificadores = CalificadorPureza.objects.all()
     
     if request.method == 'POST':
-        nueva_oveja, mensaje = agregar_oveja(request)
+        nueva_oveja, mensajes = agregar_oveja(request)
+
         if nueva_oveja:
-            messages.success(request, mensaje)
+            messages.success(request, mensajes[0])
         else:
-            messages.error(request, mensaje)
+            for mensaje in mensajes:
+                messages.error(request, mensaje)
         return redirect('ganaderia:ovejas')
+    
 
     for oveja in ovejas:
         oveja.edad_clasificada = oveja.clasificar_edad()
@@ -242,6 +250,49 @@ def ver_detalle(request, id_oveja):
     return render(request, 'ganaderia/detalle.html',{
         'oveja': oveja,
     })
+
+@login_required
+def eliminar_oveja(request,id_oveja):
+    oveja = get_object_or_404(Oveja,id=id_oveja)
+    if request.method == 'POST':
+        motivo_eliminacion = request.POST.get('delete_reason')
+        observacion = request.POST.get('death_reason')
+
+        if motivo_eliminacion == 'muerte': 
+            # si el motivo es por fallecimiento entonces, guardamos en observacion del ovino su motivo y cambiamos el estado
+            oveja.estado = 'muerta'
+            oveja.observaciones = observacion
+            # fecha de muerte 
+            oveja.fecha_muerte = date.today()
+            oveja.save()
+            
+        elif motivo_eliminacion == 'error':
+            # si el motivo fue por error entonces se elimina la oveja
+            oveja.delete()
+        else:
+            messages.error(request, 'Motivo de eliminación no válido.')
+            return redirect('ganaderia:ver_detalle', id_oveja=id_oveja)
+
+        messages.success(request,f'El ovino RP: {oveja.RP} ha sido eliminado con exito')
+        return redirect('ganaderia:ovejas')
+    return redirect('ganaderia:ver_detalle',id_oveja=id_oveja)
+
+
+@login_required
+def editar_oveja(request,id_oveja):
+    #solamente permite editar su peso
+    oveja = get_object_or_404(Oveja,id=id_oveja)
+    if request.method == 'POST':
+        nuevo_peso = request.POST.get('nuevo_peso')
+
+        oveja.peso = nuevo_peso
+        oveja.save()
+        messages.success(request,f'El ovino RP: {oveja.RP} ha sido actualizado exitosamente')
+        return redirect('ganaderia:ver_detalle',id_oveja=id_oveja)
+    return redirect('ganaderia:ver_detalle',id_oveja=id_oveja)
+    
+
+
 @login_required
 def detalle_venta(request, id_venta):
     venta = get_object_or_404(Venta, id=id_venta)

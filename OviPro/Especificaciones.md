@@ -92,44 +92,18 @@ La aplicación permitirá a los usuarios gestionar su plantel ovino, incluyendo 
 
 
 
+### Antes de terminar el proyecto para entrega en harvard
 
+* Refactorizar y colocar comentarios en ingles
+* Generar una profunda documentacion en README.MD
+* Grabar la pantalla mostrando el proyecto
 
-* Luego de limpiar la base de datos y hacer los comandos para las migraciones , se cargan automaticamente las razas y calificadores de pureza.
-
-
-
-## Cosas para mejorar 
-
-
-*  Importante ** Refactorizar todo el proyecto** para mejorar la legibilidad
-
-* Implementar los annotates y aggregates de django para mejorar la eficiencia de las consultas a la base de datos 
-
-* plantillas de detalle
-
-### Registro de ovinos
-
-* validaciones en el registro 
-  * Validar que en caso de padres internos  , verificar que no sean del mismo sexo, y que sean borregos en adelante.
-  * No se puede registrar un ovino que nacio posterior a la fecha actual
-
+* Importante:
+  * Terminar la funcionalidad de eliminar ovino y eliminar venta
+  * Corregir el valor individual en la venta ind de los ovinos en lotes
+  * Agregar mensajes de errores 
 
   
-
-
-### Registro de ventas
-
-* Refactorizar 
-
-* Opcion de descargar la tabla de ventas
-
-
-### refactorizar modulos
-
-* refactorizar utils
-  -> separar responsabilidades
-* refactorizar  views
-  -> eliminar reduncias y optimizar las consultas con annotates
 
 
 

@@ -30,7 +30,9 @@
                     <td>{{oveja.raza}}</td>
                     <td>{{oveja.sexo}}</td>
                     <td>{{oveja.edad_clasificada}}</td>
+                    {% if oveja.estado != 'muerta'%}
                     <td><a href="{% url 'ganaderia:ver_detalle' oveja.id %}" class="btn btn-sm btn-primary">ver detalle</a></td>
+                    {% endif %}
                 </tr>
                 {% endif %}
                 {% empty %}
