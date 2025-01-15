@@ -331,6 +331,15 @@ def hub(request):
     return render(request, 'ganaderia/OvinoHub.html')
 
 
+@login_required
+def analisis_ventas(request):
+    return render(request, 'ganaderia/components/dashboard/DatosVentas.html')
+
+
+@login_required
+def analisis_ovinos(request):
+    return render(request, 'ganaderia/components/dashboard/DatosOvinos.html')
+
 
 # API VIEW  PARA LOS OVINOS DEL ESTABLECIMIENTO
 class OvejaListadoAPI(APIView):

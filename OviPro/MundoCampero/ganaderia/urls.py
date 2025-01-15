@@ -27,7 +27,9 @@ urlpatterns = [
 
     path('hub/dashboard/planteletas/', views.planteletas, name='planteletas'),
 
-
+    # dashboard analisis de datos
+    path('hub/dashboard/analisis/ventas/', views.analisis_ventas, name='analisis_ventas'),
+path('hub/dashboard/analisis/ovinos/', views.analisis_ovinos, name='analisis_ovinos'),
 
     # API View
     path('api/ovejas/',views.OvejaListadoAPI.as_view(),name='OvinoApi'),

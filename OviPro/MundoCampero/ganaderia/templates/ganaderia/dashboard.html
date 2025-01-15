@@ -50,26 +50,34 @@
         </div>
     </div>
 
-    <h2 class="display-5 text-center mt-5 mb-4">Análisis de datos</h2>
+    <h2 class="display-5 text-center mt-5 mb-4 ">Análisis de datos</h2>
 
     <div class="row g-4">
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title text-center mb-4">Distribución de Ventas</h5>
-                    <p id="noVentasLabel" class="text-center" style="display: none;">No hay ventas registradas.</p>
-                    <canvas id="myChart" height="250"></canvas>
-                    
+                    <h5 class="card-title text-center mb-4">Analisis de ventas</h5>
+                    <ul>
+                        <li>Distribución de ventas</li>
+                        <li>Rendimiento de ventas</li>
+                        <li>Promedio de ventas anuales</li>
+                        <li>Proyecciones</li>
+                    </ul>
+                    <a href="{% url 'ganaderia:analisis_ventas'%}" class="btn btn-primary">Ver</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title text-center mb-4">Distribución de Ovinos</h5>
-                    <p id="noOvinosLabel" class="text-center" style="display: none;">No hay ovinos registradas.</p>
-                    <canvas id="myChartOvinos" height="250"></canvas>
-                    
+                    <h5 class="card-title text-center mb-4">Analisis de Ovinos</h5>
+                    <ul>
+                        <li>Distribución de ovinos</li>
+                        <li>Nacimientos</li>
+                        <li>Promedio de ovejas Top</li>
+                        <li>Promedio de peso de ovejas</li>
+                    </ul>
+                    <a href="{% url 'ganaderia:analisis_ovinos'%}" class="btn btn-primary">Ver</a>
                 </div>
             </div>
         </div>

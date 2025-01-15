@@ -1,0 +1,111 @@
+{% extends 'ganaderia/layout.html' %}
+
+{% load static %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col-auto">
+            <a href="{% url 'ganaderia:dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+        <div class="col">
+            <h1 class="text-center">Análisis de Ovinos</h1>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Distribución de Ovinos -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Distribución de Ovinos</h5>
+                    <p id="noOvinosDistribucionLabel" class="text-center" style="display: none;">No hay ovinos registrados.</p>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                        <canvas id="myChartOvinos" style="max-height: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nacimientos -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Nacimientos</h5>
+                    <p id="noOvinosNacimientosLabel" class="text-center" style="display: none;">No hay datos de nacimientos.</p>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                        <canvas id="nacimientosOvinos" style="max-height: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crecimiento del Rebaño -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Crecimiento del Rebaño</h5>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                        <p class="text-muted">Gráfica de crecimiento próximamente...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas de Salud -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Estadísticas de Salud</h5>
+                    <div class="flex-grow-1">
+                        <p class="text-success fw-bold">98% <small class="text-muted">de ovinos saludables</small></p>
+                        <p class="text-muted mt-3">Desglose detallado próximamente...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rendimiento de Lana -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Rendimiento de Lana</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <span class="text-muted">Producción total de lana:</span>
+                            <br><strong class="fs-5">1,500 kg</strong>
+                        </li>
+                        <li class="mb-2">
+                            <span class="text-muted">Promedio por ovino:</span>
+                            <br><strong class="fs-5">3.5 kg</strong>
+                        </li>
+                        <li>
+                            <span class="text-muted">Calidad promedio:</span>
+                            <br><strong class="fs-5">Alta <small class="text-muted">(21 micrones)</small></strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Genealogía -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Genealogía</h5>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                        <p class="text-muted">Árbol genealógico interactivo próximamente...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'ganaderia/js/analisis_ovinos.js' %}"></script>
+{% endblock %}
