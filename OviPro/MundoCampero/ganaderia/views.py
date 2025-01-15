@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib import messages
+from django.contrib.messages import get_messages
 from django.utils import timezone
 from datetime import date
 from .models import User
@@ -216,22 +217,30 @@ def ventas(request):
 
 @login_required
 def ovejas(request):
-    ovejas = obtener_todas_las_ovejas(request)
 
+
+    storage = get_messages(request)
+    for _ in storage:  # Iterar por el almacenamiento para limpiarlo
+        pass
+    ovejas = obtener_todas_las_ovejas(request)
     razas = Raza.objects.all()
-    calificadores = CalificadorPureza.objects.all()
-    
+    calificadores = CalificadorPureza.objects.all()  
+
+    modal_abierto = False
+    errores = []
+
     if request.method == 'POST':
         nueva_oveja, mensajes = agregar_oveja(request)
-
+        print(mensajes)
         if nueva_oveja:
             messages.success(request, mensajes[0])
+            return redirect('ganaderia:ovejas')
         else:
             for mensaje in mensajes:
                 messages.error(request, mensaje)
-        return redirect('ganaderia:ovejas')
+            errores = mensajes
+            modal_abierto = True
     
-
     for oveja in ovejas:
         oveja.edad_clasificada = oveja.clasificar_edad()
 
@@ -239,6 +248,8 @@ def ovejas(request):
         'ovejas': ovejas,
         'razas': razas,
         'calificadores': calificadores,
+        'modal_abierto': modal_abierto,
+        'errores':errores,
     })
 
 @login_required
