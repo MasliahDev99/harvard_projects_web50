@@ -1,5 +1,7 @@
 {% extends 'ganaderia/layout.html'%}
 
+
+{% load static %}
 {% block body %}
 <div class="container-fluid py-5 bg-light min-vh-100">
     <h1 class="display-4 text-center mb-5">Plantel de Ovinos</h1>
@@ -124,6 +126,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+
                 <!-- Formulario para agregar oveja -->
                 <form id="addSheepForm">
                     <div class="mb-3">
@@ -147,9 +150,9 @@
                             <label for="sheepSelect" class="form-label">Seleccione la oveja:</label>
                             <select class="form-select" id="sheepSelect" required>
                                 <option value="">Seleccione una oveja</option>
-                                <option value="1">Oveja #001 - Texel - 78kg</option>
-                                <option value="2">Oveja #002 - Merino - 65kg</option>
-                                <option value="3">Oveja #003 - Suffolk - 82kg</option>
+                                {% for oveja in ovejas %}
+                                <option value="{{oveja.RP}}">{{oveja.RP}} - {{oveja.nombre}} - {{oveja.edad}} mes/es - {{oveja.peso}}kg</option>
+                                {% endfor%}
                                 <!-- Agrega más opciones según sea necesario -->
                             </select>
                         </div>
@@ -160,9 +163,9 @@
                             <label for="sheepSelectVenta" class="form-label">Seleccione la oveja para venta:</label>
                             <select class="form-select" id="sheepSelectVenta" required>
                                 <option value="">Seleccione una oveja</option>
-                                <option value="1">Oveja #001 - Texel - 78kg</option>
-                                <option value="2">Oveja #002 - Merino - 65kg</option>
-                                <option value="3">Oveja #003 - Suffolk - 82kg</option>
+                                {% for oveja in ovejas %}
+                                <option value="{{oveja.RP}}">{{oveja.RP}} - {{oveja.nombre}} - {{oveja.edad}} mes/es - {{oveja.peso}}kg</option>
+                                {% endfor%}
                                 <!-- Agrega más opciones según sea necesario -->
                             </select>
                         </div>
@@ -185,38 +188,10 @@
     </div>
 </div>
 
-<!-- Agrega modales similares para eliminar y modificar -->
+
 
 {% endblock %}
 
 {% block scripts %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const plantelTypeRadios = document.querySelectorAll('input[name="plantelType"]');
-        const exposicionFields = document.getElementById('exposicionFields');
-        const ventaFields = document.getElementById('ventaFields');
-    
-        plantelTypeRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === 'exposicion') {
-                    exposicionFields.style.display = 'block';
-                    ventaFields.style.display = 'none';
-                } else {
-                    exposicionFields.style.display = 'none';
-                    ventaFields.style.display = 'block';
-                }
-            });
-        });
-    
-        document.getElementById('addSheepForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Aquí puedes agregar la lógica para procesar el formulario
-            console.log('Formulario enviado');
-            // Cierra el modal después de procesar
-            var modal = bootstrap.Modal.getInstance(document.getElementById('addSheepModal'));
-            modal.hide();
-        });
-    });
-    </script>
-
+<script src="{% static 'ganaderia/js/planteletas.js' %}"></script>
 {% endblock %}

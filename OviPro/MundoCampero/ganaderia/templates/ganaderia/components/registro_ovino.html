@@ -22,7 +22,11 @@
             {% for oveja in ovejas %}
                 {% if oveja %}
                 <tr class="ovino_row" data-id="{{ oveja.id }}">
+                    {% if oveja.RP%}
                     <td>{{oveja.RP}}</td>
+                    {% else %}
+                    <td>None</td>
+                    {% endif %}
                     <td>{{oveja.nombre}}</td>
                     <td>{{oveja.peso}}</td>
                     <td>{{oveja.edad}}</td>

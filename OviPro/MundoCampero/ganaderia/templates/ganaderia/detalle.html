@@ -1,109 +1,137 @@
 {% extends 'ganaderia/layout.html' %}
 
-
-
 {% block body %}
+<div class="container py-5">
+    <div class="row mb-4 align-items-center">
+        <div class="col-auto">
+            <a href="{% url 'ganaderia:ovejas' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+        <div class="col">
+            <h1 class="display-4 text-center">
+                Detalle del Ovino {% if oveja.RP %}RP: {{oveja.RP}}{% else %}ID: {{oveja.id}}{% endif %}
+            </h1>
+        </div>
+    </div>
 
-    <div class="container min-vh-100 mt-5">
-        <div class="row mb-4 align-items-center">
-            <div class="col-auto">
-                <a href="{% url 'ganaderia:ovejas' %}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </a>
-            </div>
-            <div class="col">
-                <h1 class="display-4 text-center">Detalle del Ovino RP: {{oveja.RP}}</h1>
+    <div class="row g-4">
+        <!-- Información Básica -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Información Básica</h2>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>RP:</strong>
+                            <span>{{oveja.RP|default:"No registrado"}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>BU:</strong>
+                            <span>{{oveja.BU|default:"No registrado"}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Sexo:</strong>
+                            <span>{{oveja.sexo}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Raza:</strong>
+                            <span>{{oveja.raza}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Pureza:</strong>
+                            <span>{{oveja.calificador_pureza}}</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-            
-        <!-- mostramos informacion basica y datos fisicos -->
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-12 mb-2">
-                    <h2><strong>informacion basica</strong></h2>
-                    
-                    <div class="d-flex flex-column">
-                        <span><strong>RP: </strong>{{oveja.RP}}</span>
-                        <span><strong>BU: </strong>{{oveja.BU}}</span>
-                        <span><strong>Sexo: </strong>{{oveja.sexo}}</span>
-                        <span><strong>Raza: </strong>{{oveja.raza}}</span>
-                        <span><strong>Pureza: </strong>{{oveja.calificador_pureza}}</span>
-                    </div>
-                </div>
-                <div class="col-md-6 col-12 mb-2">
-                    <h2><strong>Datos fisicos</strong></h2>
-                    <div class="d-flex flex-column">
-                        <span><strong>Fecha nacimiento: </strong>{{oveja.fecha_nacimiento}}</span>
-                        <span><strong>Edad: </strong>{{oveja.edad}} meses</span>
-                        <span><strong>Etapa: </strong>{{oveja.edad_clasificada}}</span>
-                        <span><strong>Peso: </strong>{{oveja.peso}} kg</span>
-                    </div>
+
+        <!-- Datos Físicos -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Datos Físicos</h2>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Fecha de Nacimiento:</strong>
+                            <span>{{oveja.fecha_nacimiento}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Edad:</strong>
+                            <span>{{oveja.edad}} meses</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Etapa:</strong>
+                            <span>{{oveja.edad_clasificada}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Peso:</strong>
+                            <span>{{oveja.peso}} kg</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
-
-            <!-- informacion genealogica y observaciones -->
-            <div class="row mt-4">
-                <div class="col-md-6 col-12">
-                    <h2><strong>Informacion genealogica</strong></h2>
-                    <div class="d-flex flex-column">
-                        {% if oveja.oveja_padre and oveja.oveja_madre %}
-                        <span><strong>Padre(plantel): </strong> RP {{oveja.oveja_padre.RP|default:"No fue registrado"}}</span>
-                        <span><strong>Madre(plantel): </strong> RP {{oveja.oveja_madre.RP|default:"No fue registrado"}}</span>
-                        {% endif%}
-                        {% if oveja.rp_padre_externo and oveja.rp_madre_externo%}
-                        <span><strong>Padre externo: </strong> RP {{oveja.rp_padre_externo}}</span>
-                        <span><strong>Madre externo: </strong> RP {{oveja.rp_madre_externo}}</span>
-                        {% endif%}
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-12">
-                    <h2><strong>observaciones</strong></h2>
-                    <div class="d-flex flex-column">
-                        <span>{{oveja.observaciones|default:"No hay observaciones"}}</span>   
-                    </div>
-                </div>
-
-            </div>
-
-            <!--  -->
-            <div class="d-flex flex-row gap-2">
-                <button class="btn btn-outline-primary mt-5">Descargar Hoja de vida</button>
-                <button class="btn btn-outline-primary mt-5">Descargar Certificado de pureza</button>
-                <!-- editar -->
-                <button  class="btn btn-outline-primary mt-5" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
-                
-                <button type="button" class="btn btn-danger mt-5" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                    Eliminar
-                </button>
-              
-            </div>
-        
         </div>
 
-    <!-- Modal de eliminacion -->
+        <!-- Información Genealógica -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Información Genealógica</h2>
+                    {% if oveja.calificador_pureza == 'pedigri' %}
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>Padre (plantel):</strong>
+                                <span>RP {{oveja.padre|default:"No registrado"}}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>Madre (plantel):</strong>
+                                <span>RP {{oveja.madre|default:"No registrado"}}</span>
+                            </li>
+                        </ul>
+                        {% if not oveja.padre or not oveja.madre %}
+                            <div class="text-center mt-3">
+                                <a href="#" class="btn btn-sm btn-success">Añadir campos</a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-center">Esta información solo está disponible para ovinos con calificador de pureza pedigri.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Observaciones</h2>
+                    <p class="card-text">{{oveja.observaciones|default:"No hay observaciones registradas."}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="d-flex flex-wrap justify-content-center gap-2 mt-5">
+        <button class="btn btn-outline-primary">Descargar Hoja de Vida</button>
+        <button class="btn btn-outline-primary">Descargar Certificado de Pureza</button>
+        <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#editModal">Editar</button>
+        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            Eliminar
+        </button>
+    </div>
+
+    <!-- Modal de Eliminación -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         {% include 'ganaderia/components/modals/eliminar_ovino.html' %}
     </div>
 
-    <!-- Modal de Editar -->
+    <!-- Modal de Edición -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         {% include 'ganaderia/components/modals/editar_ovino.html' %}
     </div>
-        
-
-    
-        
-    </div>
-
-   
-
-
-    {% block script %}
-    
-
-
-    {% endblock %}
+</div>
 {% endblock %}
-
 

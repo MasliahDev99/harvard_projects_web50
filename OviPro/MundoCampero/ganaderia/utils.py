@@ -8,6 +8,28 @@ from django.db.models import Sum
 from django.template.loader import get_template
 import pdfkit
 
+"""
+    Este archivo tiene de finalidad tener metodos utiles para utilizarlas en views.py
+
+    metodods:
+        -crear_establecimiento()
+        -existe_establecimiento()
+        -obtener_establecimiento_por_id()
+        -obtener_nombre_con_RUT()
+        -obtener_raza()
+        -obtener_todas_las_ovejas()
+        -obtener_todo_tipo_cantidad()
+        -obtener_oveja()
+        -existe_oveja()
+        -calcular_edad_por_fecha_nacimiento()
+        -obtener_padre_madre()
+        ...
+
+
+
+
+"""
+
 
 def crear_establecimiento(username,RUT,codigo_criador_ARU,email,password):
     if existe_establecimiento(RUT):
@@ -77,12 +99,10 @@ def obtener_todos_tipos_cantidad(request):
     return corderos, corderas, borregos, borregas, carneros, ovejas, total_ovejas
 
 
-def obtener_oveja(rp=None, bu=None, id=None):
+def obtener_oveja(rp=None, id=None):
     try:
         if rp:
             return Oveja.objects.get(RP=rp)
-        if bu:
-            return Oveja.objects.get(BU=bu)
         if id:
             return Oveja.objects.get(id=id)
         else:
@@ -129,37 +149,43 @@ def obtener_padre_madre(rp_padre, rp_madre):
     madre = Oveja.objects.filter(rp=rp_madre).first() if rp_madre else None
     return padre, madre
 
-def set_padre_madre_externo(padre_externo,madre_externo,oveja):
-    # seteamos los valores de padre externo y madre a una oveja
-    oveja.rp_padre_externo = padre_externo
-    oveja.rp_madre_externo = madre_externo
-    oveja.save()
 
 
-def validar_padre_madre(oveja_padre, oveja_madre,RP):
-    """
-        Valida que el padre y madre no sean iguales y que la oveja no sea su propio padre o madre
 
-        futuro : usar la api de ARU para esten registrados en la base de datos de ARU
-    """
-    if oveja_padre == oveja_madre or RP in [oveja_padre, oveja_madre]:
-            return None, None
     
-    #buscamos en la base de datos de ovejas
-    padre = obtener_oveja(rp=oveja_padre)
-    madre = obtener_oveja(rp=oveja_madre)
+def validar_padre_madre(oveja_padre, oveja_madre, RP, establecimiento):
+    """
+    Valida que el padre y madre no sean iguales y que la oveja no sea su propio padre o madre.
+    Registra los padres como ovejas externas si no están en la base de datos.
+    """
+    errores = []
 
-    if not padre or not madre:
-        #si no lo encontro en la base de datos, se busca en la base de datos de ARU
-        # y registra los padres  como padre externo y madre externo
+    # Verificar si padre y madre son iguales
+    if oveja_padre == oveja_madre:
+        errores.append("El padre y la madre no pueden ser el mismo animal.")
 
-        return None, None
+    # Verificar si el ovino es su propio padre o madre
+    if RP in [oveja_padre, oveja_madre]:
+        errores.append("El ovino no puede ser su propio padre o madre.")
 
-    return padre, madre
+    
 
-def existe_nombre(nombre):
-    return Oveja.objects.filter(nombre__iexact=nombre).exists()
- 
+    if errores:
+        return None, None, errores
+
+    return []
+
+def existe_nombre(nombre,establecimiento):
+    return Oveja.objects.filter(nombre__iexact=nombre,establecimiento=establecimiento).exists()
+
+def generar_nombre_unico():
+    import uuid
+    return f"SinNombre-{uuid.uuid4().hex[:8]}" 
+
+
+def existe_establecimiento(nombre):
+    return Oveja.objects.filter(nombre__iexact=nombre).exists() 
+
 
 def validar_fecha_nacimiento(fecha_nacimiento):
     if fecha_nacimiento > date.today():
@@ -167,92 +193,130 @@ def validar_fecha_nacimiento(fecha_nacimiento):
     return None
 
 def obtener_datos_formulario_ov(request):
-    #Este metodo captura los datos del formulario de registro de ovinos y retorna los valores
-    BU = request.POST.get('BU')
-    RP = request.POST.get('RP')
-    nombre = request.POST.get('nombre_animal')
-    peso = request.POST.get('peso')
-    raza = request.POST.get('raza')
-    fecha_nacimiento = request.POST.get('fecha_nacimiento')
-    sexo = request.POST.get('sexo')
-    calificador_pureza = request.POST.get('calificador_pureza')
-    observacion_seleccionada = request.POST.get('obs') == 'on'
-    oveja_comprada = request.POST.get('purchased') == 'on'
+    """
+    Captura los datos enviados desde el formulario de registro de ovinos y los retorna.
+    Si algunos campos no están presentes, establece valores predeterminados como `None` o `False`.
 
-    return BU,RP,nombre,peso,raza,fecha_nacimiento,sexo,calificador_pureza,observacion_seleccionada,oveja_comprada
+    Args:
+        request (HttpRequest): La solicitud HTTP que contiene los datos del formulario.
+
+    Returns:
+        tuple: Valores capturados del formulario.
+    """
+    BU = request.POST.get('BU', None)  # Puede ser None si no se especifica
+    RP = request.POST.get('RP', None)  # Si no se proporciona, será None
+    nombre = request.POST.get('nombre_animal', None)  # Igual para el nombre
+    peso = request.POST.get('peso', None)  # Puede ser None si no se ingresa
+    raza = request.POST.get('raza', None)
+    fecha_nacimiento = request.POST.get('fecha_nacimiento', None)
+    sexo = request.POST.get('sexo', None)
+    calificador_pureza = request.POST.get('calificador_pureza', None)
+    observacion_seleccionada = request.POST.get('obs') == 'on'  # Captura como booleano
+    oveja_comprada = request.POST.get('purchased') == 'on'  # Captura como booleano
+
+    return BU, RP, nombre, peso, raza, fecha_nacimiento, sexo, calificador_pureza, observacion_seleccionada, oveja_comprada
 
 
 
 
 def agregar_oveja(request):
+    """
+    Método para agregar ovejas.
 
-    #creamos una lista para almacenar los errores obtenidos en el registro
-    
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP que contiene los datos enviados desde el formulario.
+
+    Returns:
+        tuple:
+            - Oveja (Oveja): Instancia de la oveja creada (si no hay errores).
+            - list: Lista de mensajes de error.
+
+    Raises:
+        IntegrityError: Si ocurre un problema al guardar los datos en la base de datos.
+
+    Ejemplo:
+        request = {
+            'POST': {
+                'BU': '123',
+                'RP': '456',
+                'nombre': 'Oveja1',
+                ...
+            },
+            'user': <User object>
+        }
+        oveja, errores = agregar_oveja(request)
+    """
     errores = []
 
-    # Capturamos los datos del formulario de registro de ovejas
-    BU,RP,nombre,peso,raza,fecha_nacimiento,sexo,calificador_pureza,observacion_seleccionada,oveja_comprada = obtener_datos_formulario_ov(request)
-    # Seteamos los valores de observaciones, oveja_padre y oveja_madre en None
+    # Capturar datos del formulario
+    BU, RP, nombre, peso, raza, fecha_nacimiento, sexo, calificador_pureza, observacion_seleccionada, oveja_comprada = obtener_datos_formulario_ov(request)
     observaciones = None
     establecimiento = request.user
 
+    # Verificar si la oveja ya existe por RP
+    if RP and existe_oveja(RP=RP):
+        errores.append(f"Ya existe una oveja con RP {RP}.")
 
-    # Verificamos si existe la oveja en la base de datos
-    if existe_oveja(RP=RP,BU=BU):
-        errores.append(f"Ya existe una oveja con RP {RP} o BU {BU}.")
+    oveja_padre, oveja_madre = None, None
 
-    # Seteamos los valores de rp_padre_externo y rp_madre_externo en None si no se seleccionó la oveja comprada
-    rp_padre_externo = request.POST.get('rp_padre_externo') if oveja_comprada else None
-    rp_madre_externo = request.POST.get('rp_madre_externo') if oveja_comprada else None
-
-    oveja_padre, oveja_madre = None, None  # Aquí se soluciona el error
-
-    if not oveja_comprada:
+    # Validación para raza 'pedigri'
+    if raza == 'pedigri':
         oveja_padre = request.POST.get('oveja_padre')
         oveja_madre = request.POST.get('oveja_madre')
-        # Validamos que oveja padre y madre existan y validamos que madre y padre no sean iguales
-        oveja_padre, oveja_madre = validar_padre_madre(oveja_padre, oveja_madre, RP)
-        if oveja_padre is None and oveja_madre is None:
-            # Si no hay padres, no mostramos un error por el momento
-        
-            pass
-        elif not oveja_padre or not oveja_madre:
-            errores.append("Oveja padre o madre no encontrada")
-        
+        if not RP:
+            errores.append("El campo RP es obligatorio para pureza pedigri.")
+        # Validar los padres
+        oveja_padre, oveja_madre, errores_validacion = validar_padre_madre(oveja_padre, oveja_madre, RP)
+        if errores_validacion:
+            errores.extend(errores_validacion)
 
-    fecha_nacimiento = date.fromisoformat(fecha_nacimiento)
-    if fecha_nacimiento > date.today():
-        errores.append("La fecha de nacimiento no puede ser mayor a la fecha actual")
-        
+    # Validar oveja comprada
+    origen = None
+    if oveja_comprada:
+        origen = request.POST.get('origen')
+        if not origen:
+            origen = 'No especificado.'
+
+    # Validar fecha de nacimiento
+    try:
+        fecha_nacimiento = date.fromisoformat(fecha_nacimiento)
+        if fecha_nacimiento > date.today():
+            errores.append("La fecha de nacimiento no puede ser mayor a la fecha actual.")
+    except ValueError:
+        errores.append("Formato de fecha no válido. Use el formato YYYY-MM-DD.")
+
+    # Si no hay errores hasta ahora, calcular la edad
     if not errores:
-        # Calculamos la edad de la oveja
         edad = calcular_edad_por_fecha_nacimiento(fecha_nacimiento)
 
-    # Capturamos el valor booleano de observaciones
+    # Obtener observaciones
     observaciones = request.POST.get('observaciones') if observacion_seleccionada else None
-    
-    # Obtenemos las instancias de raza y calificador de pureza
+
+    # Obtener raza y calificador de pureza
     try:
         raza = obtener_raza(raza)
         calificador_pureza = obtener_calificador(calificador_pureza)
-
     except ObjectDoesNotExist:
-        errores.append("Raza o calificador de pureza no encontrado")
-        
-    
-    #corroborar que el nombre del ovino sea unico
-    if existe_nombre(nombre=nombre):
-        errores.append(f"Ya existe un ovino registrado con ese nombre: {nombre}.")
-    
+        errores.append("Raza o calificador de pureza no encontrado.")
 
+    # si no se ingreso nombre, le agregamos uno  por defecto y si ingreso revisamos que no exista
+    if not nombre:
+        nombre = generar_nombre_unico()
+    else:
+        if existe_nombre(nombre=nombre, establecimiento=establecimiento):
+            errores.append(f"Ya existe un ovino registrado con ese nombre: {nombre} en este establecimiento.")
+
+    # Si hay errores, retornar antes de crear la oveja
     if errores:
-        return None,errores
+        return None, errores
 
+    # Intentar crear la oveja
     try:
+        
         nueva_oveja = Oveja.objects.create(
             BU=BU,
             RP=RP,
-            nombre = nombre,
+            nombre=nombre,
             peso=peso,
             raza=raza,
             edad=edad,
@@ -260,17 +324,31 @@ def agregar_oveja(request):
             sexo=sexo,
             calificador_pureza=calificador_pureza,
             observaciones=observaciones,
-            oveja_padre=oveja_padre,
-            oveja_madre=oveja_madre,
+            padre=oveja_padre,
+            madre=oveja_madre,
             establecimiento=establecimiento,
-            rp_padre_externo=rp_padre_externo,
-            rp_madre_externo=rp_madre_externo,
+            establecimiento_origen=origen,
         )
-        errores.clear()
         return nueva_oveja, ["Oveja registrada correctamente"]
     except IntegrityError as e:
         return None, [f"Error al registrar la oveja: {str(e)}"]
 
+
+def set_rp(nuevo_RP: str, id_oveja: int):
+    try:
+        oveja = Oveja.objects.get(id=id_oveja)
+    except Oveja.DoesNotExist:
+        return False, [f"No se encontró ninguna oveja con el ID {id_oveja}."]
+    
+    if Oveja.objects.filter(RP=nuevo_RP).exists():
+        return False, [f"Error: Ya existe un ovino con RP: {nuevo_RP} ."]
+    
+    oveja.RP = nuevo_RP
+    oveja.save()
+    return True, [f"RP actualizado correctamente a {nuevo_RP} para el ovino con ID {id_oveja}."]
+
+
+    
 
 
 

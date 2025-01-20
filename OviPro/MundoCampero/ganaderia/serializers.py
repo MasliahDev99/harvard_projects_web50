@@ -18,14 +18,11 @@ class OvejaSerializer(serializers.ModelSerializer):
             'sexo',
             'calificador_pureza',
             'observaciones',
-            'oveja_padre',
-            'oveja_madre',
+            'padre',
+            'madre',
             'establecimiento',
             'estado',
-            'rp_padre_externo',
-            'rp_madre_externo',
-
-
+            'establecimiento_origen',
             ]
     
 class VentaSerializer(serializers.ModelSerializer):

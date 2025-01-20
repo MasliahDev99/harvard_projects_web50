@@ -25,7 +25,7 @@ import json
 
 
 from .utils import crear_establecimiento,obtener_nombre_con_rut,obtener_todas_las_ovejas,obtener_todos_tipos_cantidad,agregar_oveja,registrar_venta
-from .utils import calcular_edad_por_fecha_nacimiento,obtener_padre_madre,existe_oveja,obtener_raza,obtener_calificador,informacion_de_ventas
+from .utils import calcular_edad_por_fecha_nacimiento,obtener_padre_madre,existe_oveja,obtener_raza,obtener_calificador,informacion_de_ventas,set_rp
 # Create your views here.
 
 def index(request):
@@ -290,18 +290,48 @@ def eliminar_oveja(request,id_oveja):
 
 
 @login_required
-def editar_oveja(request,id_oveja):
-    #solamente permite editar su peso
-    oveja = get_object_or_404(Oveja,id=id_oveja)
+def editar_oveja(request, id_oveja):
+    oveja = get_object_or_404(Oveja, id=id_oveja, establecimiento=request.user)
+    errores = []
+    modal_abierto = False
+
     if request.method == 'POST':
         nuevo_peso = request.POST.get('nuevo_peso')
+        nuevo_rp = request.POST.get('nuevo_rp')
 
-        oveja.peso = nuevo_peso
-        oveja.save()
-        messages.success(request,f'El ovino RP: {oveja.RP} ha sido actualizado exitosamente')
-        return redirect('ganaderia:ver_detalle',id_oveja=id_oveja)
-    return redirect('ganaderia:ver_detalle',id_oveja=id_oveja)
-    
+        try:
+            oveja.peso = float(nuevo_peso)
+        except (ValueError, TypeError):
+            errores.append('El peso debe ser un número válido.')
+
+        if not oveja.RP and nuevo_rp:
+            # exitoso -> Bool, mensaje -> list[str]
+            exitoso, mensajes = set_rp(nuevo_RP=nuevo_rp, id_oveja=id_oveja)
+            #si no fue exitoso, agregamos a la lista de errores los mensajes y reiniciamos el RP
+            if not exitoso:
+                errores.extend(mensajes)
+                oveja.RP = None  # Resetea el RP si es invalido
+            else:
+                #si fue exitoso 
+                messages.success(request,mensajes[0])
+                return redirect('ganaderia:ver_detalle',id_oveja=id_oveja)
+        
+        if errores:
+            for mensaje in errores:
+                messages.error(request, mensaje)
+            modal_abierto = True
+        else:
+            oveja.save()
+            messages.success(request, 'El ovino ha sido actualizado exitosamente.')
+            return redirect('ganaderia:ver_detalle', id_oveja=id_oveja)
+
+    context = {
+        'oveja': oveja,
+        'modal_abierto': modal_abierto,
+        'errores': errores,
+    }
+    return render(request, 'ganaderia/detalle.html', context)
+
 
 
 @login_required
@@ -323,7 +353,11 @@ def detalle_venta(request, id_venta):
 
 @login_required
 def planteletas(request):
-    return render(request, 'ganaderia/planteletas.html')
+    ovejas = obtener_todas_las_ovejas(request)
+
+    return render(request, 'ganaderia/planteletas.html',{
+        'ovejas': ovejas,
+    })
 
 
 @login_required
@@ -371,3 +405,12 @@ class EstablecimientoAPI(APIView):
         establecimiento = User.objects.filter(RUT=request.user.RUT).first()
         serializer = EstablecimientoSerializer(establecimiento,many=False,context={'request': request})
         return Response(serializer.data)
+    
+
+"""
+    Documentar views.py
+    
+
+
+
+"""

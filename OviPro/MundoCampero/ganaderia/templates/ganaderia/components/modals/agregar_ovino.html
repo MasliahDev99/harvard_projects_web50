@@ -5,31 +5,16 @@
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="registroModal" data-modal="{% if modal_abierto %}true{% else %}false{% endif %}">
-            
-    
-
             <form id="addOvinoForm" action="{% url 'ganaderia:ovejas' %}" method="POST">
                 {% csrf_token %}
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="nombre_animal" class="form-label">Nombre del animal</label>
-                        <input type="text" class="form-control" id="nombre_animal" name="nombre_animal" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="BU" class="form-label">BU</label>
-                        <input type="text" class="form-control" id="BU" name="BU" required>
-                    </div>
                     <div class="col-md-6">
                         <label for="RP" class="form-label">RP (Registro Permanente)</label>
                         <input type="text" class="form-control" id="RP" name="RP" placeholder="(opcional)">
                     </div>
                     <div class="col-md-6">
-                        <label for="peso" class="form-label">Peso (kg)</label>
-                        <input type="number" class="form-control" id="peso" name="peso" step="0.1" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
-                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                        <label for="BU" class="form-label">BU</label>
+                        <input type="text" class="form-control" id="BU" name="BU" placeholder="Identificador interno (opcional)">
                     </div>
                     <div class="col-md-6">
                         <label for="raza" class="form-label">Raza</label>
@@ -37,6 +22,15 @@
                             <option value="">Seleccionar raza</option>
                             {% for raza in razas %}
                                 <option value="{{ raza.nombre }}">{{ raza.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="calificador_pureza" class="form-label">Calificador de pureza</label>
+                        <select class="form-select" id="calificador_pureza" name="calificador_pureza" required>
+                            <option value="">Seleccionar</option>
+                            {% for calificador in calificadores %}
+                                <option value="{{ calificador.nombre }}">{{ calificador.nombre }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -49,39 +43,38 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label for="calificador_pureza" class="form-label">Calificador de pureza</label>
-                        <select class="form-select" id="calificador_pureza" name="calificador_pureza" required>
-                            <option value="">Seleccionar</option>
-                            {% for calificador in calificadores %}
-                                <option value="{{ calificador.nombre }}">{{ calificador.nombre }}</option>
-                            {% endfor %}
-                        </select>
+                        <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
+                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
                     </div>
-                    <div class="col-12" id="parentSection">
+                    <div class="col-md-6">
+                        <label for="peso" class="form-label">Peso (kg)</label>
+                        <input type="number" class="form-control" id="peso" name="peso" step="0.1" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="nombre_animal" class="form-label">Nombre del animal</label>
+                        <input type="text" class="form-control" id="nombre_animal" name="nombre_animal">
+                    </div>
+                    <div class="col-12" id="purchasedCheckboxContainer" style="display: none;">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" id="purchased" name="purchased">
+                            <label class="form-check-label" for="purchased">¿Oveja comprada?</label>
+                        </div>
+                    </div>
+                    <div class="col-12" id="parentSection" style="display: none;">
                         <div class="row">
-                            <div class="col-md-12 purchased-hidden">
-                                <div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input" id="purchased" name="purchased">
-                                    <label class="form-check-label" for="purchased">¿Oveja comprada?</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6 purchased-hidden">
+                            <div class="col-md-6">
                                 <label for="oveja_padre" class="form-label">RP padre</label>
-                                <input type="text" class="form-control" id="oveja_padre" name="oveja_padre" placeholder="(opcional)">
+                                <input type="text" class="form-control" id="oveja_padre" name="oveja_padre" required>
                             </div>
-                            <div class="col-md-6 purchased-hidden">
+                            <div class="col-md-6">
                                 <label for="oveja_madre" class="form-label">RP madre</label>
-                                <input type="text" class="form-control" id="oveja_madre" name="oveja_madre" placeholder="(opcional)">
-                            </div>
-                            <div class="col-md-6 purchased-visible" style="display: none;">
-                                <label for="rp_padre_externo" class="form-label">RP padre externo</label>
-                                <input type="text" class="form-control" id="rp_padre_externo" name="rp_padre_externo" placeholder="(opcional)">
-                            </div>
-                            <div class="col-md-6 purchased-visible" style="display: none;">
-                                <label for="rp_madre_externo" class="form-label">RP madre externo</label>
-                                <input type="text" class="form-control" id="rp_madre_externo" name="rp_madre_externo" placeholder="(opcional)">
+                                <input type="text" class="form-control" id="oveja_madre" name="oveja_madre" required>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-12" id="origenContainer" style="display: none;">
+                        <label for="origen" class="form-label">Origen</label>
+                        <input type="text" class="form-control" id="origen" name="origen" placeholder="Nombre del establecimiento">
                     </div>
                     <div class="col-md-12">
                         <div class="form-check form-switch">
@@ -100,34 +93,28 @@
                 </div>
 
                 {% if errores %}
-                        <div class="alert alert-danger mt-2">
-                            <ul>
-                                {% for error in errores %}
-                                    <li>{{ error }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                    <div class="alert alert-danger mt-2">
+                        <ul>
+                            {% for error in errores %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 {% endif %}
-
             </form>
         </div>
     </div>
 </div>
 
 <script>
-
-        document.addEventListener('DOMContentLoaded', () => {
-        // Obtén el modal y verifica si debe abrirse
+    document.addEventListener('DOMContentLoaded', () => {
         const modalElement = document.querySelector('#registroModal');
         const shouldOpen = modalElement.getAttribute('data-modal') === 'true';
 
         if (shouldOpen) {
-            // Usa Bootstrap para mostrar el modal
             const modalInstance = new bootstrap.Modal(modalElement.closest('.modal'));
             modalInstance.show();
         }
     });
-        
-
-
 </script>
+
