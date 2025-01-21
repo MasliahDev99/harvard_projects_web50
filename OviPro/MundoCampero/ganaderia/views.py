@@ -333,6 +333,18 @@ def editar_oveja(request, id_oveja):
     return render(request, 'ganaderia/detalle.html', context)
 
 
+@login_required
+def descargar_tabla(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre_archivo')
+        ext = request.POST.get('extension')
+
+        #descargar_archivo(nombre,ext)
+
+    return redirect('ganaderia:ovejas')
+
+
+
 
 @login_required
 def detalle_venta(request, id_venta):
@@ -349,6 +361,7 @@ def detalle_venta(request, id_venta):
     }
     
     return render(request, 'ganaderia/detalleVenta.html', context)
+
 
 
 @login_required
@@ -409,7 +422,7 @@ class EstablecimientoAPI(APIView):
 
 """
     Documentar views.py
-    
+
 
 
 

@@ -440,3 +440,6 @@ def informacion_de_ventas(request)->dict:
         'total_donaciones': total_donaciones,
     }
     return resumen_ventas
+
+
+

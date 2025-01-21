@@ -25,6 +25,9 @@ urlpatterns = [
     path('hub/dashboard/ovejas/detalle/eliminar/<int:id_oveja>/',views.eliminar_oveja,name='eliminar_oveja'),
     path('hub/dashboard/ovejas/detalle/editar/<int:id_oveja>/',views.editar_oveja,name="editar_ovino"),
 
+    #descarga de tabla
+    path('hub/dashboard/ovejas/descarga/',views.descargar_tabla,name='tabla_registro'),
+
     path('hub/dashboard/planteletas/', views.planteletas, name='planteletas'),
 
     # dashboard analisis de datos

@@ -30,6 +30,11 @@
     <div class="modal fade" id="addOvinoModal" tabindex="-1" aria-labelledby="addOvinoModalLabel" aria-hidden="true" data-modal="{{ modal_abierto|yesno:'true,false' }}">
         {% include 'ganaderia/components/modals/agregar_ovino.html' %}
     </div>
+
+    <!-- Modal para descargar tabla de ovinos -->
+     <div class="modal fade" id="downloadTableModal" tabindex="-1" aria-labelledby="downloadTableModalLabel" aria-hidden="true">
+        {% include 'ganaderia/components/modals/descargas.html' %}
+     </div>
     
 
 </div>
