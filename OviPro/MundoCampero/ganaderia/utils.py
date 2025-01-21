@@ -9,29 +9,33 @@ from django.template.loader import get_template
 import pdfkit
 
 """
-    Este archivo tiene de finalidad tener metodos utiles para utilizarlas en views.py
-
-    metodods:
-        -crear_establecimiento()
-        -existe_establecimiento()
-        -obtener_establecimiento_por_id()
-        -obtener_nombre_con_RUT()
-        -obtener_raza()
-        -obtener_todas_las_ovejas()
-        -obtener_todo_tipo_cantidad()
-        -obtener_oveja()
-        -existe_oveja()
-        -calcular_edad_por_fecha_nacimiento()
-        -obtener_padre_madre()
-        ...
-
-
+    Purpose:
+    This file serves as a central repository for utility functions used throughout 
+    the project. These utility functions provide reusable logic for various operations, 
+    such as database queries, validations, and data processing, ensuring a clean and maintainable 
+    codebase by reducing redundancy in views or other modules.
 
 
 """
 
 
 def crear_establecimiento(username,RUT,codigo_criador_ARU,email,password):
+    """
+    Creates a new establishment (user) in the database.
+
+    Args:
+        username (str): The name of the establishment.
+        RUT (int): Unique number(12) Identification Code for the establishment.
+        codigo_criador_ARU (int): ARU (Rural Association) breeder code.
+        email (str): Email address for the establishment.
+        password (str): Password for the user account.
+
+    Returns:
+        User: The newly created user instance.
+
+    Raises:
+        IntegrityError: If an establishment with the given RUT already exists.
+    """
     if existe_establecimiento(RUT):
         raise IntegrityError("El RUT ingresado ya existe.")
     
@@ -43,11 +47,30 @@ def crear_establecimiento(username,RUT,codigo_criador_ARU,email,password):
 
 # verifica si existe el rut rut
 def existe_establecimiento(RUT):
+    """
+        Checks if an establishment exists in the database based on its RUT.
+
+        Args:
+            RUT (int): Identification Code to check.
+
+        Returns:
+            bool: True if the establishment exists, False otherwise.
+    """
     return User.objects.filter(RUT=RUT).exists()
 
 
 #obtenemos la referencia del establecimiento por el id o su Rut
 def obtener_establecimiento_por_id(id=None,RUT=None):
+    """
+    Retrieves an establishment (user) by its ID or RUT.
+
+    Args:
+        id (int, optional): The unique ID of the establishment.
+        RUT (int, optional): The unique RUT of the establishment.
+
+    Returns:
+        User: The corresponding user instance if found, otherwise None.
+    """
     if id:
         return User.objects.get(id=id)
     if RUT:
@@ -55,6 +78,15 @@ def obtener_establecimiento_por_id(id=None,RUT=None):
     return None
 
 def obtener_nombre_con_rut(RUT):
+    """
+    Retrieves the name of an establishment by its RUT.
+
+    Args:
+        RUT (int): Identification Code of the establishment.
+
+    Returns:
+        str: The name of the establishment if found, otherwise None.
+    """
     if existe_establecimiento(RUT):
         establecimiento = User.objects.get(RUT=RUT)
         return establecimiento.username
@@ -63,11 +95,33 @@ def obtener_nombre_con_rut(RUT):
 # utils -> raza y calificadores de pureza
 
 def obtener_raza(raza_nombre):
-  
+    """
+    Retrieves a breed instance by its name.
+
+    Args:
+        raza_nombre (str): Name of the breed.
+
+    Returns:
+        Raza: The corresponding breed instance.
+
+    Raises:
+        ObjectDoesNotExist: If the breed is not found.
+    """
     return Raza.objects.get(nombre=raza_nombre)
 
 def obtener_calificador(calificador_nombre):
-   
+    """
+    Retrieves a purity qualifier by its name.
+
+    Args:
+        calificador_nombre (str): Name of the qualifier.
+
+    Returns:
+        CalificadorPureza: The corresponding purity qualifier instance.
+
+    Raises:
+        ObjectDoesNotExist: If the qualifier is not found.
+    """
     return CalificadorPureza.objects.get(nombre = calificador_nombre)
 
 
@@ -76,13 +130,25 @@ def obtener_calificador(calificador_nombre):
 
 def obtener_todas_las_ovejas(request):
     """
-        Retorna la lista de todas las ovejas activas del establecimiento
+    Retrieves all active sheep associated with the logged-in user's establishment.
+
+    Args:
+        request (HttpRequest): The current HTTP request containing user information.
+
+    Returns:
+        QuerySet: A list of active sheep for the user's establishment.
     """
     return Oveja.objects.filter(establecimiento = request.user,estado='activa')
 
 def obtener_todos_tipos_cantidad(request):
     """
-        retorna todos los ovinos con su cantidad correspondiente a la edad y esten activas
+    Retrieves the count of all sheep categorized by type and age group.
+
+    Args:
+        request (HttpRequest): The current HTTP request containing user information.
+
+    Returns:
+        tuple: Counts for corderos, corderas, borregos, borregas, carneros, ovejas, and total sheep.
     """
     user_ovejas = Oveja.objects.filter(establecimiento=request.user,estado='activa')
     
@@ -100,6 +166,16 @@ def obtener_todos_tipos_cantidad(request):
 
 
 def obtener_oveja(rp=None, id=None):
+    """
+    Retrieves a sheep by its RP or ID.
+
+    Args:
+        rp (int, optional): The RP (Permanent Record) of the sheep.
+        id (int, optional): The unique ID of the sheep.
+
+    Returns:
+        Oveja: The corresponding sheep instance if found, otherwise None.
+    """
     try:
         if rp:
             return Oveja.objects.get(RP=rp)
@@ -112,7 +188,14 @@ def obtener_oveja(rp=None, id=None):
     
 def existe_oveja(RP=None, BU=None):
     """
-    Verifica si existe una oveja con el mismo RP o BU en la base de datos.
+    Checks if a sheep exists in the database based on its RP or BU.
+
+    Args:
+        RP (str, optional): The RP of the sheep.
+        BU (str, optional): The BU (Internal Identifier) of the sheep.
+
+    Returns:
+        bool: True if a sheep with the given RP or BU exists, False otherwise.
     """
     if RP and Oveja.objects.filter(RP=RP).exists():
         return True
@@ -124,9 +207,13 @@ def existe_oveja(RP=None, BU=None):
 
 def calcular_edad_por_fecha_nacimiento(fecha_nacimiento):
     """
-    Calcula la edad en meses a partir de la fecha de nacimiento.
-    :param fecha_nacimiento: Fecha de nacimiento en formato 'dd/mm/yyyy' como string.
-    :return: Edad en meses como entero.
+    Calculates the age in months from the birth date.
+
+    Args:
+        fecha_nacimiento (date): Birth date of the sheep.
+
+    Returns:
+        int: Age in months.
     """
     fecha_actual = date.today()  # Objeto date
     anios_dif = fecha_actual.year - fecha_nacimiento.year
@@ -143,7 +230,14 @@ def calcular_edad_por_fecha_nacimiento(fecha_nacimiento):
 
 def obtener_padre_madre(rp_padre, rp_madre):
     """
-    Retorna las instancias de padre y madre si existen, o None si no se encuentran.
+    Retrieves instances of the father and mother sheep if they exist.
+
+    Args:
+        rp_padre (int): RP of the father.
+        rp_madre (int): RP of the mother.
+
+    Returns:
+        tuple: Instances of the father and mother sheep, or None if not found.
     """
     padre = Oveja.objects.filter(rp=rp_padre).first() if rp_padre else None
     madre = Oveja.objects.filter(rp=rp_madre).first() if rp_madre else None
@@ -155,8 +249,16 @@ def obtener_padre_madre(rp_padre, rp_madre):
     
 def validar_padre_madre(oveja_padre, oveja_madre, RP, establecimiento):
     """
-    Valida que el padre y madre no sean iguales y que la oveja no sea su propio padre o madre.
-    Registra los padres como ovejas externas si no están en la base de datos.
+    Validates that the father and mother are not the same and that the sheep is not its own parent.
+
+    Args:
+        oveja_padre (int): RP of the father.
+        oveja_madre (int): RP of the mother.
+        RP (int): RP of the sheep being registered.
+        establecimiento: The establishment to which the sheep belongs.
+
+    Returns:
+        list: A list of validation errors, or an empty list if valid.
     """
     errores = []
 
@@ -179,6 +281,12 @@ def existe_nombre(nombre,establecimiento):
     return Oveja.objects.filter(nombre__iexact=nombre,establecimiento=establecimiento).exists()
 
 def generar_nombre_unico():
+    """
+    Generates a unique name using a UUID.
+
+    Returns:
+        str: A unique name.
+    """
     import uuid
     return f"SinNombre-{uuid.uuid4().hex[:8]}" 
 
@@ -188,20 +296,39 @@ def existe_establecimiento(nombre):
 
 
 def validar_fecha_nacimiento(fecha_nacimiento):
+    """
+    Validates that a given birth date is not in the future.
+
+    Args:
+        fecha_nacimiento (date): Birth date to validate.
+
+    Returns:
+        str or None: An error message if invalid, or None if valid.
+    """
     if fecha_nacimiento > date.today():
         return "La fecha de nacimiento no puede ser futura."
     return None
 
 def obtener_datos_formulario_ov(request):
     """
-    Captura los datos enviados desde el formulario de registro de ovinos y los retorna.
-    Si algunos campos no están presentes, establece valores predeterminados como `None` o `False`.
+    Captures data sent from the ovine registration form and returns it.
+    If some fields are not present, defaults to `None` or `False`.
 
     Args:
-        request (HttpRequest): La solicitud HTTP que contiene los datos del formulario.
+        request (HttpRequest): The HTTP request containing form data.
 
     Returns:
-        tuple: Valores capturados del formulario.
+        tuple: A tuple containing the captured values from the form:
+            - BU (int or None): The internal identifier for the ovine.
+            - RP (int or None): The permanent record identifier for the ovine.
+            - nombre (int or None): The name of the ovine.
+            - peso (int or None): The weight of the ovine in kilograms.
+            - raza (int or None): The breed of the ovine.
+            - fecha_nacimiento (str or None): The birth date of the ovine.
+            - sexo (str or None): The gender of the ovine ('Macho' or 'Hembra').
+            - calificador_pureza (str or None): The purity qualifier of the ovine.
+            - observacion_seleccionada (bool): Whether observations were marked in the form.
+            - oveja_comprada (bool): Whether the ovine was marked as purchased.
     """
     BU = request.POST.get('BU', None)  # Puede ser None si no se especifica
     RP = request.POST.get('RP', None)  # Si no se proporciona, será None
@@ -335,6 +462,18 @@ def agregar_oveja(request):
 
 
 def set_rp(nuevo_RP: str, id_oveja: int):
+    """
+    Updates the RP of a sheep with a new identifier.
+
+    Args:
+        nuevo_RP (str): The new RP to assign.
+        id_oveja (int): The ID of the sheep to update.
+
+    Returns:
+        tuple: A boolean indicating success and a list with a message:
+            - (True, [message]) if the RP is successfully updated.
+            - (False, [error message]) if the RP already exists or the sheep does not exist.
+    """
     try:
         oveja = Oveja.objects.get(id=id_oveja)
     except Oveja.DoesNotExist:
@@ -356,8 +495,21 @@ def set_rp(nuevo_RP: str, id_oveja: int):
 
 def registrar_venta( establecimiento,lista_ovejas,tipo_venta, fecha_venta, peso_total=None ,precio_kg=None, remate_total=None, valor_total=None):
     """
-        Devuelve la instancia de la venta registrada segun su tipo
+    Registers a sale for a given establishment.
 
+    Args:
+        establecimiento (User): The establishment responsible for the sale.
+        lista_ovejas (list): List of sheep involved in the sale.
+        tipo_venta (str): The type of sale ('remate', 'frigorifico', 'individual', 'donacion').
+        fecha_venta (datetime): The date of the sale.
+        peso_total (float, optional): Total weight of the sheep in kilograms.
+        precio_kg (float, optional): Price per kilogram (used for 'frigorifico' sales).
+        remate_total (float, optional): Total value for 'remate' sales.
+        valor_total (float, optional): Total sale value for other types of sales.
+
+    Returns:
+        Venta: The registered sale instance if successful.
+        None: If an `IntegrityError` occurs during registration.
     """
 
     print(f'\n{establecimiento} esta intentando registrar una venta {fecha_venta}\n')
@@ -385,25 +537,26 @@ def registrar_venta( establecimiento,lista_ovejas,tipo_venta, fecha_venta, peso_
 
 def informacion_de_ventas(request)->dict:
     """
-        Retorna un diccionario con la informacion de ventas del establecimiento
+    Returns a summary of the sales information for an establishment.
 
-        cantidad_vendida: cantidad de ventas realizadas
-        total_ventas: total de ventas realizadas
+    The summary includes the quantity and total value of sales, categorized by sale type.
 
-        cantodad_ventas_por_remate: cantidad de ventas por remate
-        cantidad_ventas_por_frigorifico: cantidad de ventas por frigorifico
-        cantidad_ventas_por_individual: cantidad de ventas por individual
-        cantidad_donaciones: cantidad de donaciones realizadas
+    Args:
+        request (HttpRequest): The HTTP request containing the user information.
 
-        total_ventas_por_remate: total de ventas por remate
-        total_ventas_por_frigorifico: total de ventas por frigorifico
-        total_ventas_por_individual: total de ventas por individual
-        total_donaciones: total de donaciones realizadas
-
+    Returns:
+        dict: A dictionary containing:
+            - cantidad_vendida (int): Total number of sales.
+            - total_ventas (float): Total value of sales.
+            - cantidad_ventas_por_remate (int): Number of 'remate' sales.
+            - cantidad_ventas_por_frigorifico (int): Number of 'frigorifico' sales.
+            - cantidad_ventas_por_individual (int): Number of 'individual' sales.
+            - cantidad_donaciones (int): Number of 'donation' sales.
+            - total_ventas_remate (float): Total value of 'remate' sales.
+            - total_ventas_frigorifico (float): Total value of 'frigorifico' sales.
+            - total_ventas_individual (float): Total value of 'individual' sales.
+            - total_donaciones (float): Total value of 'donation' sales.
     """
-     
-    
-
     # Obtenemos la cantidad de ventas por cada  tipo de venta 
     cantidad_ventas_por_remate = int(Venta.objects.filter(tipo_venta='remate', establecimiento=request.user).count())
     cantidad_ventas_por_frigorifico = int(Venta.objects.filter(tipo_venta='frigorifico', establecimiento=request.user).count())
@@ -417,16 +570,11 @@ def informacion_de_ventas(request)->dict:
     total_ventas_frigorifico = Venta.objects.filter(establecimiento=request.user, tipo_venta='frigorifico').aggregate(Sum('valor'))['valor__sum'] or 0
     total_ventas_individual = Venta.objects.filter(establecimiento=request.user, tipo_venta='individual').aggregate(Sum('valor'))['valor__sum'] or 0
     total_donaciones = Venta.objects.filter(establecimiento=request.user, tipo_venta='donacion').aggregate(Sum('valor'))['valor__sum'] or 0
-    
-
-   
+     
     # Total general
     cantidad_vendida = cantidad_ventas_por_remate + cantidad_ventas_por_frigorifico + cantidad_ventas_por_individual + cantidad_donaciones
     total_ventas = total_ventas_remate + total_ventas_frigorifico + total_ventas_individual + total_donaciones
   
-
-
-
     resumen_ventas = {
         'cantidad_vendida': cantidad_vendida,
         'total_ventas': total_ventas,

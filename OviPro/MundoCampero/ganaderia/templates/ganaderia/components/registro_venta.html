@@ -1,0 +1,36 @@
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Tipo(venta)</th>
+                    <th>Cantidad de ovinos</th>
+                    <th>Peso total(kg)</th>  
+                    <th>Valor(USD)</th>
+                    <th>Fecha venta</th>
+                    <th>Detalle de venta</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venta in ventas %}
+                <tr class="venta_row" data-id="{{ venta.id }}">
+                    <td>{{ venta.tipo_venta }}</td>
+                    <td>{{ venta.oveja_count }}</td>
+                    {% if venta.tipo_venta == 'frigorifico' %}
+                    <td>{{ venta.peso_total_calculado|floatformat:2 }}</td>
+                    {%else%}
+                    <td> {{venta.peso_total}}</td>
+                    {% endif%}
+                    <td>{{ venta.valor }}</td>
+                    <td>{{ venta.fecha_venta|date:"d/m/Y" }}</td>
+                    <td><a href="{% url 'ganaderia:ver_detalle_venta' venta.id %}" class="btn btn-sm btn-primary">ver detalle</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No hay ventas registradas</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

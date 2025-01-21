@@ -111,6 +111,18 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Lugar de Origen</h2>
+                    {% if oveja.establecimiento_origen%}
+                    <p class="card-text">Comprada en: <strong>{{oveja.establecimiento_origen}}</strong></p>
+                    {% else %}    
+                    <p class="card-text text-primary">Establecimiento local: <strong>{{oveja.establecimiento.username}}</strong></p>
+                    {%endif%}
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Botones de Acción -->

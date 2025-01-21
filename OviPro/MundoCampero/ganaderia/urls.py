@@ -1,6 +1,7 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
-
 
 app_name = 'ganaderia'
 
@@ -37,4 +38,5 @@ path('hub/dashboard/analisis/ovinos/', views.analisis_ovinos, name='analisis_ovi
     # API View
     path('api/ovejas/',views.OvejaListadoAPI.as_view(),name='OvinoApi'),
     path('api/establecimiento/',views.EstablecimientoAPI.as_view(),name='Establecimiento'),
-]
+    path('api/ventas/',views.VentaListadoAPI.as_view(),name='Venta'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

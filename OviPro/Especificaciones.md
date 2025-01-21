@@ -136,3 +136,6 @@ find . -path "*/migrations/*.pyc" -delete
 python3 manage.py makemigrations
 python3 manage.py migrate
 
+
+# crea archivo requerimientos con las dependencias
+pip freeze > requirements.txt

@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'ganaderia',
     'rest_framework',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -49,6 +51,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+]
+
+CORS_ALLOW_ALL_ORIGINS = True  # O bien configura los orígenes específicos
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Frontend en otro puerto
 ]
 
 ROOT_URLCONF = 'MundoCampero.urls'
@@ -127,8 +136,10 @@ STATIC_URL = 'static/'
 
 
 # Configuración para manejar archivos multimedia
+# Configuración para manejar archivos multimedia
 MEDIA_URL = '/media/'  # URL para acceder a las imágenes cargadas
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Carpeta donde se almacenarán las imágenes
+MEDIA_ROOT = os.path.join(BASE_DIR, 'ganaderia', 'media')  # Carpeta donde se almacenarán las imágenes
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

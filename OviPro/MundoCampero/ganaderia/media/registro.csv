@@ -1,0 +1,5 @@
+BU,RP,nombre,peso(kg),raza,edad(meses),sexo,calificador_pureza,estado,Lugar_origen
+,500,SinNombre-c832b326,77.0,Texel,3,Macho,general,activa,Colonia del Rosario
+194,501,SinNombre-af5bdad2,89.0,Texel,3,Macho,MO,activa,Colonia del Rosario
+,,Pepito,35.0,Texel,0,Macho,PO,activa,Juan pedro vecino - 095 111 111
+1,451,Rigoberta,71.0,Texel,3,Hembra,pedigri,activa,Felipe

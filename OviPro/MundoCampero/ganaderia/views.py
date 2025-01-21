@@ -23,12 +23,15 @@ from django.db.models.functions import Coalesce
 
 import json
 
-
-from .utils import crear_establecimiento,obtener_nombre_con_rut,obtener_todas_las_ovejas,obtener_todos_tipos_cantidad,agregar_oveja,registrar_venta
-from .utils import calcular_edad_por_fecha_nacimiento,obtener_padre_madre,existe_oveja,obtener_raza,obtener_calificador,informacion_de_ventas,set_rp
+from . import utils
+from . import utils_descargas
 # Create your views here.
 
 def index(request):
+    """
+        render the homepage view.
+    """
+    
     return render(request, 'ganaderia/index.html')
 
 
@@ -36,6 +39,11 @@ def index(request):
 
 
 def register_view(request):
+    """
+
+    Handles user registration, creates a new establishment if credentials are valid.
+
+    """
     if request.method == 'POST':
         establecimiento = request.POST.get('username')
         RUT = request.POST.get('RUT')
@@ -53,7 +61,7 @@ def register_view(request):
         
         #procedemos a crear el usuario establecimiento
         try:
-            nuevo_establecimiento = crear_establecimiento(
+            nuevo_establecimiento = utils.crear_establecimiento(
                 username=establecimiento,RUT=RUT,codigo_criador_ARU=codigo_criador,email=email,password=password)
             nuevo_establecimiento.save()            
 
@@ -67,12 +75,16 @@ def register_view(request):
     return render(request, 'ganaderia/register.html')
 
 def login_view(request):
+    """
+    Handles user login and authenticates the establishment based on RUT and password.
+    
+    """
     if request.method == 'POST':
         RUT = request.POST.get('rut')
         password = request.POST.get('password')
 
         #obtenemos el nombre del establecimiento
-        username = obtener_nombre_con_rut(RUT)
+        username = utils.obtener_nombre_con_rut(RUT)
         if username:
             establecimiento = authenticate(request,username=username, password = password)
             if establecimiento is not None:
@@ -87,15 +99,23 @@ def login_view(request):
 
 @login_required
 def logout_view(request):
+    """
+    Logs the user out and redirects to the homepage.
+
+    """
     logout(request)
     return render(request,'ganaderia/index.html')
 
 @login_required
 def dashboard(request):
+    """
+    Displays a summary of the establishment's sheep and sales data.
+
+    """
     #obtenemos el resumen de los ovinos que tiene el establecimiento
-    corderos, corderas, borregos, borregas, carneros, ovejas, total_ovejas = obtener_todos_tipos_cantidad(request)
+    corderos, corderas, borregos, borregas, carneros, ovejas, total_ovejas = utils.obtener_todos_tipos_cantidad(request)
     #obtenemos el resumen de las ventas del establecimiento 
-    ventas = informacion_de_ventas(request) #diccionario
+    ventas = utils.informacion_de_ventas(request) #diccionario
     
     context = {
         'corderos': corderos,
@@ -114,13 +134,8 @@ def dashboard(request):
 
 def obtener_datos_front(request):
     """
-    Procesa los datos enviados desde el frontend y retorna los valores por separado.
-
-    Args:
-        request: El objeto de solicitud HTTP de Django.
-
-    Returns:
-        tuple: Una tupla con los parámetros procesados del frontend.
+    Processes and extracts data from the frontend JSON request.
+    Returns the extracted parameters.
     """
     # Intentamos leer los datos del request.body si está en formato JSON
     try:
@@ -145,9 +160,9 @@ def obtener_datos_front(request):
 @login_required
 def ventas(request):
     """
-        Vamos a mostrar la tabla de ovinos vendidos agrupados por id
+    Displays the list of sheep sold and allows creating new sales entries.
+    
     """
-
     #obtenemos las ventas del establecimiento
     ventas = Venta.objects.filter(establecimiento=request.user).annotate(
         oveja_count=Count('ovejas'),
@@ -169,7 +184,7 @@ def ventas(request):
             try:
                 ovejas = Oveja.objects.filter(RP__in=ovinos,establecimiento = request.user)
 
-                venta = registrar_venta(
+                venta = utils.registrar_venta(
                                         establecimiento=request.user,
                                         lista_ovejas= ovejas,
                                         tipo_venta=tipo_venta,
@@ -206,23 +221,22 @@ def ventas(request):
 
     })
 
-    """
-        Consideraciones al pasar animales de la tabla registro a vendidas
-    
-    
-    
-    """
+
 
 
 
 @login_required
 def ovejas(request):
+    """
 
+    Displays all the sheep of the establishment, allows adding new ones and manages errors during the process.
+    
+    """
 
     storage = get_messages(request)
     for _ in storage:  # Iterar por el almacenamiento para limpiarlo
         pass
-    ovejas = obtener_todas_las_ovejas(request)
+    ovejas = utils.obtener_todas_las_ovejas(request)
     razas = Raza.objects.all()
     calificadores = CalificadorPureza.objects.all()  
 
@@ -230,7 +244,7 @@ def ovejas(request):
     errores = []
 
     if request.method == 'POST':
-        nueva_oveja, mensajes = agregar_oveja(request)
+        nueva_oveja, mensajes = utils.agregar_oveja(request)
         print(mensajes)
         if nueva_oveja:
             messages.success(request, mensajes[0])
@@ -254,7 +268,9 @@ def ovejas(request):
 
 @login_required
 def ver_detalle(request, id_oveja):
-    # traemos una oveja en particular
+    """
+        Display an specific sheep details of the establishment.
+    """
     oveja = get_object_or_404(Oveja, id=id_oveja)
     oveja.edad_clasificada = oveja.clasificar_edad()
 
@@ -264,6 +280,21 @@ def ver_detalle(request, id_oveja):
 
 @login_required
 def eliminar_oveja(request,id_oveja):
+    """
+    Deletes an ovine record based on the provided ID.
+
+    This function handles the deletion of an ovine either due to death or by mistake. 
+    If the reason is death, it updates the status of the ovine to "dead" and records 
+    the death reason along with the date of death. If the reason is an error, it deletes 
+    the ovine completely.
+
+    Args:
+        request: The HTTP request object.
+        id_oveja: The ID of the ovine to be deleted.
+
+    Returns:
+        HttpResponseRedirect: Redirects to the ovine details page or the ovines list page.
+    """
     oveja = get_object_or_404(Oveja,id=id_oveja)
     if request.method == 'POST':
         motivo_eliminacion = request.POST.get('delete_reason')
@@ -291,6 +322,20 @@ def eliminar_oveja(request,id_oveja):
 
 @login_required
 def editar_oveja(request, id_oveja):
+    """
+    Edits an ovine's details, such as weight and RP number.
+
+    This function allows the user to update the weight and RP number of an ovine. 
+    If the RP number is changed, it validates the new RP and updates it accordingly. 
+    If there are any validation errors, they are returned to the user for correction.
+
+    Args:
+        request: The HTTP request object.
+        id_oveja: The ID of the ovine to be edited.
+
+    Returns:
+        HttpResponse: Redirects to the ovine detail page or displays error messages if validation fails.
+    """
     oveja = get_object_or_404(Oveja, id=id_oveja, establecimiento=request.user)
     errores = []
     modal_abierto = False
@@ -306,7 +351,7 @@ def editar_oveja(request, id_oveja):
 
         if not oveja.RP and nuevo_rp:
             # exitoso -> Bool, mensaje -> list[str]
-            exitoso, mensajes = set_rp(nuevo_RP=nuevo_rp, id_oveja=id_oveja)
+            exitoso, mensajes = utils.set_rp(nuevo_RP=nuevo_rp, id_oveja=id_oveja)
             #si no fue exitoso, agregamos a la lista de errores los mensajes y reiniciamos el RP
             if not exitoso:
                 errores.extend(mensajes)
@@ -335,11 +380,22 @@ def editar_oveja(request, id_oveja):
 
 @login_required
 def descargar_tabla(request):
+    """
+    Handles the download of ovine records in the format specified by the user.
+
+    If the request is a POST, retrieves the desired file name and extension from the form, 
+    generates the file, and returns it to the user for download.
+
+    Returns:
+        HttpResponse: The requested file in the specified format.
+        HttpResponseRedirect: Redirects to the ovine page if the request is invalid.
+    """
     if request.method == 'POST':
         nombre = request.POST.get('nombre_archivo')
         ext = request.POST.get('extension')
 
-        #descargar_archivo(nombre,ext)
+        respuesta = utils_descargas.descargar_registro(request.user,'registro_ovino',nombre_archivo=nombre,extension=ext)
+        messages.success(request,f'Se ha descargado con exito el archivo {nombre}')
 
     return redirect('ganaderia:ovejas')
 
@@ -348,6 +404,19 @@ def descargar_tabla(request):
 
 @login_required
 def detalle_venta(request, id_venta):
+    """
+    Displays detailed information about a specific sale.
+
+    This function calculates the total and average weight of the sheep involved in a sale 
+    and provides this information to the user.
+
+    Args:
+        request: The HTTP request object.
+        id_venta: The ID of the sale to view.
+
+    Returns:
+        HttpResponse: The sale details along with the total and average weight of the sheep.
+    """
     venta = get_object_or_404(Venta, id=id_venta)
     
     # Calcular el peso total y promedio
@@ -366,7 +435,19 @@ def detalle_venta(request, id_venta):
 
 @login_required
 def planteletas(request):
-    ovejas = obtener_todas_las_ovejas(request)
+    """
+    Displays the list of all sheep available for planting.
+
+    This view retrieves all the sheep records for the current establishment and displays them 
+    on a planting page.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        HttpResponse: Renders the planting page with the list of sheep.
+    """
+    ovejas = utils.obtener_todas_las_ovejas(request)
 
     return render(request, 'ganaderia/planteletas.html',{
         'ovejas': ovejas,
@@ -375,21 +456,65 @@ def planteletas(request):
 
 @login_required
 def hub(request):
+    """
+    Displays the main hub of the ovine management platform.
+
+    This is the central page where users can access different sections of the platform.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        HttpResponse: Renders the ovine hub page.
+    """
     return render(request, 'ganaderia/OvinoHub.html')
 
 
 @login_required
 def analisis_ventas(request):
+    """
+    Displays the sales analysis dashboard.
+
+    This view presents a dashboard where users can analyze their sales data.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        HttpResponse: Renders the sales analysis page.
+    """
     return render(request, 'ganaderia/components/dashboard/DatosVentas.html')
 
 
 @login_required
 def analisis_ovinos(request):
+    """
+    Displays the ovine analysis dashboard.
+
+    This view presents a dashboard where users can analyze data about their sheep.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        HttpResponse: Renders the ovine analysis page.
+    """
     return render(request, 'ganaderia/components/dashboard/DatosOvinos.html')
 
 
 # API VIEW  PARA LOS OVINOS DEL ESTABLECIMIENTO
 class OvejaListadoAPI(APIView):
+    """
+    API view for listing the sheep records for the user's establishment.
+
+    This API returns all active sheep belonging to the user's establishment.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        Response: The serialized list of active sheep for the user's establishment.
+    """
     permission_classes = [IsAuthenticated] 
 
     def get(self, request):
@@ -401,6 +526,17 @@ class OvejaListadoAPI(APIView):
 
 # API VIEW PARA VENTAS DEL ESTABLECIMIENTO
 class VentaListadoAPI(APIView):
+    """
+    API view for listing the sales records for the user's establishment.
+
+    This API returns all sales records associated with the user's establishment.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        Response: The serialized list of sales for the user's establishment.
+    """
     permission_classes = [IsAuthenticated]
     def get(self, request):
         # Filtrar las ventas del establecimiento del usuario actual
@@ -413,6 +549,18 @@ class VentaListadoAPI(APIView):
 
 # API VIEW PARA EL ESTABLECIMIENTO 
 class EstablecimientoAPI(APIView):
+    """
+    API view for retrieving the user's establishment details.
+
+    This API returns the details of the user's establishment, including information 
+    like the establishment name and user information.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        Response: The serialized establishment details.
+    """
     permission_classes = [IsAuthenticated]
     def get(self,request):
         establecimiento = User.objects.filter(RUT=request.user.RUT).first()
@@ -420,10 +568,3 @@ class EstablecimientoAPI(APIView):
         return Response(serializer.data)
     
 
-"""
-    Documentar views.py
-
-
-
-
-"""

@@ -5,6 +5,13 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
 
 class Raza(models.Model):
+    """
+    Represents a breed of sheep.
+
+    Attributes:
+        id (int): The unique identifier for the breed.
+        nombre (str): The name of the breed (e.g., 'Merino', 'Texel').
+    """
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50,unique=True)
 
@@ -12,6 +19,13 @@ class Raza(models.Model):
         return self.nombre 
 
 class CalificadorPureza(models.Model):
+    """
+    Represents the purity classification of sheep.
+
+    Attributes:
+        id (int): The unique identifier for the purity classifier.
+        nombre (str): The name of the purity classification (e.g., 'pedigri', 'PO').
+    """
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50,unique=True)
 
@@ -20,6 +34,16 @@ class CalificadorPureza(models.Model):
 
 #User => Establecimiento
 class User(AbstractUser):
+    """
+    Custom user model representing an establishment or farm.
+
+    Attributes:
+        id (int): The unique identifier for the user.
+        RUT (int): The RUT (national ID) of the establishment (optional).
+        telefono (int): Phone number of the establishment (optional).
+        fecha_registro (datetime): Date and time of registration.
+        registro_ARU_criador (int): The ARU (Rural Association of Uruguay) registration number (optional).
+    """
     id = models.BigAutoField(primary_key=True)
     RUT = models.IntegerField(unique=True, null=True,blank=True ,validators=[MinValueValidator(1000000), MaxValueValidator(999999999999)])
     telefono = models.IntegerField(null=True)
@@ -31,9 +55,28 @@ class User(AbstractUser):
 
 class Oveja(models.Model):
     """
-        Modelo para las ovejas
+    Represents a sheep.
 
-    
+    Attributes:
+        id (int): The unique identifier for the sheep.
+        BU (str): The sheep's breed identification code (optional).
+        RP (str): The sheep's registry number (unique).
+        nombre (str): The sheep's name (optional).
+        nombre_aux (str): Auxiliary name for the sheep (optional).
+        peso (float): The weight of the sheep.
+        raza (ForeignKey): The breed of the sheep (related to Raza).
+        edad (int): The age of the sheep in months.
+        fecha_nacimiento (date): The birth date of the sheep.
+        sexo (str): The sex of the sheep ('Macho' for male, 'Hembra' for female).
+        calificador_pureza (ForeignKey): The purity classification of the sheep (related to CalificadorPureza).
+        observaciones (str): Any notes or observations about the sheep (optional).
+        padre (str): The father’s registry number (optional).
+        madre (str): The mother’s registry number (optional).
+        establecimiento (ForeignKey): The establishment to which the sheep belongs (related to User).
+        estado (str): The current state of the sheep ('activa', 'vendida', or 'muerta').
+        valor_venta_ind (float): The price for individual sales (optional).
+        fecha_muerte (date): The death date of the sheep (if applicable).
+        establecimiento_origen (str): The establishment from which the sheep was purchased (optional).
     """
     id = models.AutoField(primary_key=True)
     BU = models.CharField(max_length=50,null=True, blank=True)
@@ -80,6 +123,19 @@ class Oveja(models.Model):
 # modelo para tabla de ventas
 
 class Venta(models.Model):
+    """
+    Represents a sale of sheep.
+
+    Attributes:
+        id (int): The unique identifier for the sale.
+        ovejas (ManyToManyField): A list of sheep associated with the sale.
+        fecha_venta (date): The date of the sale.
+        peso_total (Decimal): The total weight of the sheep sold.
+        valor_carne (float): The value of the meat (relevant for sales to frigorificos).
+        valor (float): The total value of the sale.
+        establecimiento (ForeignKey): The establishment making the sale (related to User).
+        tipo_venta (str): The type of sale ('remate', 'individual', 'frigorifico', or 'donacion').
+    """
     id = models.AutoField(primary_key=True)
     ovejas = models.ManyToManyField('Oveja', related_name='ventas', blank=True)  # Para soporte de venta por lote o individual
     fecha_venta = models.DateField()
@@ -93,6 +149,14 @@ class Venta(models.Model):
     def __str__(self):
         ovejas_nombres = ", ".join(oveja.nombre for oveja in self.ovejas.all())
         return f"Venta del {self.fecha_venta} - Tipo: {self.tipo_venta} - Ovejas: {ovejas_nombres}"
+    
+
+
+# Falta implementar el modelo de Planteleta 
+"""
+Planteleta(id,ovejas,nombre_plantel,)
+
+"""
     
    
 
