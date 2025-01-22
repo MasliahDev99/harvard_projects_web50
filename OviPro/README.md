@@ -12,11 +12,55 @@ The sheep managment is a part of the beginning of something bigger which aims to
 
 ### Why Choose This Topic?
 
-1. It’s a unique and challenging theme compared to common course projects.  
-2. It presents technical challenges, such as integrating local APIs, dynamic data fetching, and a modern interface.  
-3. My family has ties to the agricultural sector, which inspired me to create a practical and helpful tool for this field.  
+1.	Distinctiveness: The topic is unique and goes beyond the common projects typically seen in the course.
+2.	Challenge: It presents significant technical challenges, such as dynamic data fetching through custom local APIs and designing a modern, responsive user interface.
+3.	Personal Connection: My family’s involvement in the agricultural sector inspired me to create a practical and impactful tool for this field. 
+
+### Distinctiveness and Complexity
+
+### Why Mundo campero is distinctive?
+
+Mundo Campero is distinctive because it combines:
+   * A non-traditional theme (sheep herd management) with real-world applicability.
+   * A complex backend that includes local APIs for efficient and dynamic data communication between the frontend and backend.
+
+
+### Why is Mundo Campero Complex?
+
+The project involves:
+ *	Designing and consuming custom APIs for CRUD operations on sheep and sales records.
+ *	Implementing a dashboard with dynamic graphs and statistics for data visualization.
+ *	Developing a robust authentication system with role-based access control.
+ *	Combining frontend and backend technologies to deliver a seamless experience.
+---
+
+## Project structure
+![s1](./imagenes_proyecto/estructura_app1.png)
+![s2](./imagenes_proyecto/estructura_app2.png)
+
+### Directory Overview
+
+#### **Root-Level Files**
+- **`utils.py`**: Contains utility functions used throughout the project to streamline operations or handle repetitive tasks.
+- **`urls.py`**: Defines the URL routing for the application, mapping endpoints to their respective views.
+- **`views.py`**: Houses the core logic for handling HTTP requests and responses.
+- **`models.py`**: Defines the database models, outlining the structure of the application's data.
+- **`admin.py`**: Configures how models are displayed and managed in the Django Admin interface.
+- **`serializers.py`**: Converts complex data types (e.g., models) into JSON for API consumption and vice versa.
+- **`signals.py`**: Manages Django signals for automating certain actions when specific events occur (e.g., saving a model).
+- **`utils_descargas.py`**: Provides utility functions for handling file downloads and related operations.
 
 ---
+
+#### **Template Structure**
+- **`/templates/ganaderia/`**: Root folder for all HTML templates related to the "ganaderia" module.  
+- **`/templates/ganaderia/components/`**: Contains reusable UI components to ensure modularity and reduce code repetition.
+- **`/templates/ganaderia/components/modals/`**: Templates for modal dialogs used throughout the application.
+- **`/templates/ganaderia/components/dashboard/`**: Specific components for the dashboard, such as widgets and statistics displays.
+
+---
+
+
 ## Project Preview
 
 ### Application Screenshots
@@ -48,11 +92,9 @@ The sheep managment is a part of the beginning of something bigger which aims to
 Watch the tutorial embedded in the [homepage](http://127.0.0.1:8000) or view it directly on [YouTube](https://youtu.be/h0gDXW7UJfA).
 
 ---
-## Project structure
-![s1](./imagenes_proyecto/estructura_app1.png)
-![s2](./imagenes_proyecto/estructura_app2.png)
 
----
+
+
 
 ## Project Requirements
 
@@ -178,6 +220,7 @@ The application follows an **MVC** (Model-View-Controller) architecture:
   
 4. Apply migrations:
    ```bash
+   python3 manage.py makemigrations
    python3 manage.py migrations
 
 5. Start server:
