@@ -448,6 +448,11 @@ def planteletas(request):
         HttpResponse: Renders the planting page with the list of sheep.
     """
     ovejas = utils.obtener_todas_las_ovejas(request)
+    for oveja in ovejas:
+        oveja.edad_clasificada = oveja.clasificar_edad()
+
+
+    # traemos los ovinos que esten en los planteles
 
     return render(request, 'ganaderia/planteletas.html',{
         'ovejas': ovejas,

@@ -154,7 +154,10 @@ class Venta(models.Model):
 
 # Falta implementar el modelo de Planteleta 
 """
-Planteleta(id,ovejas,nombre_plantel,)
+Planteleta(id,ovejas,tipo_plantel,)
+
+tipo_plantel = [Exposicion,aVentas]
+lista de ovejas a seleccionar , requisito que tengan certificado de pureza + RP
 
 """
     

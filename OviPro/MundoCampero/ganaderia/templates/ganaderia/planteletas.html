@@ -27,27 +27,37 @@
                         <table class="table table-hover">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Número</th>
-                                    <th>Alias</th>
+                                    <th>RP</th>
+                                    <th>Nombre</th>
                                     <th>Peso (kg)</th>
-                                    <th>Edad</th>
-                                    <th>Pedigree</th>
+                                    <th>Edad(meses)</th>
+                                    <th>Pureza</th>
                                     <th>Raza</th>
-                                    <th>Género</th>
-                                    <th>Tipo</th>
+                                    <th>Sexo</th>
+                                    <th>Etapa</th>
+                                    <th>Obs.</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>303</td>
-                                    <td>-</td>
-                                    <td>78</td>
-                                    <td>2 meses</td>
-                                    <td><span class="badge bg-success">SÍ</span></td>
-                                    <td>Texel</td>
-                                    <td>Macho</td>
-                                    <td>Cordero</td>
-                                </tr>
+                                {% for oveja in ovejas %}
+                                    {% if oveja %}
+                                    <tr class="ovino_row" data-id="{{ oveja.id }}"></tr>
+                                        <td>{{oveja.RP}}</td>
+                                        <td>{{oveja.peso}}</td>
+                                        <td>{{oveja.edad}}</td>
+                                        <td><span class="badge bg-success">{{oveja.calificador_pureza}}</span></td>
+                                        <td>{{oveja.raza}}</td>
+                                        <td>{{oveja.sexo}}</td>
+                                        <td>{{oveja.edad_clasificada}}</td>
+                                        <td>{{oveja.valor_venta_ind}}</td>
+                                        <td><span class="badge bg-secondary">{{oveja.observaciones}}</span></td>
+                                    </tr>
+                                    {% endif %}
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="9" class="text-center">No hay ovejas registradas en el plantel a Expo</td>
+                                    </tr>
+                                {% endfor%}
                                 <!-- Agrega más filas según sea necesario -->
                             </tbody>
                         </table>
@@ -66,30 +76,40 @@
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead class="table-light">
+                                
                                 <tr>
-                                    <th>Número</th>
-                                    <th>Alias</th>
+                                    <th>RP</th>
                                     <th>Peso (kg)</th>
-                                    <th>Edad</th>
-                                    <th>Pedigree</th>
+                                    <th>Edad(meses)</th>
+                                    <th>Pureza</th>
                                     <th>Raza</th>
-                                    <th>Género</th>
-                                    <th>Tipo</th>
-                                    <th>Defectos</th>
+                                    <th>Sexo</th>
+                                    <th>Etapa</th>
+                                    <th>Valor estimado(US$)</th>
+                                    <th>Obs.</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>317</td>
-                                    <td>-</td>
-                                    <td>74</td>
-                                    <td>2 meses</td>
-                                    <td><span class="badge bg-success">SÍ</span></td>
-                                    <td>Texel</td>
-                                    <td>Hembra</td>
-                                    <td>Cordera</td>
-                                    <td><span class="badge bg-secondary">No</span></td>
-                                </tr>
+                                {% for oveja in ovejas %}
+                                    {% if oveja %}
+                                    <tr class="ovino_row" data-id="{{ oveja.id }}"></tr>    
+                                        <td>{{oveja.RP}}</td>
+                                        <td>{{oveja.peso}}</td>
+                                        <td>{{oveja.edad}}</td>
+                                        <td><span class="badge bg-success">{{oveja.calificador_pureza}}</span></td>
+                                        <td>{{oveja.raza}}</td>
+                                        <td>{{oveja.sexo}}</td>
+                                        <td>{{oveja.edad_clasificada}}</td>
+                                        <td>{{oveja.valor_venta_ind}}</td>
+                                        <td><span class="badge bg-secondary">{{oveja.observaciones}}</span></td>
+                                    </tr>
+                                    {%endif%}
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="9" class="text-center">No hay ovejas registradas en el plantel a Venta</td>
+                                    </tr>
+
+                                {% endfor %}
                                 <!-- Agrega más filas según sea necesario -->
                             </tbody>
                         </table>
