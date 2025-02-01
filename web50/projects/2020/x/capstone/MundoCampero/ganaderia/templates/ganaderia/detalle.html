@@ -1,12 +1,12 @@
 {% extends 'ganaderia/layout.html' %}
 
+{% load static %}
+
 {% block body %}
 <div class="container py-5">
     <div class="row mb-4 align-items-center">
-        <div class="col-auto">
-            <a href="{% url 'ganaderia:ovejas' %}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
+        <div class="col-auto back-button-container">
+            
         </div>
         <div class="col">
             <h1 class="display-4 text-center">
@@ -154,3 +154,7 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script src="{% static 'ganaderia/js/back_button.js' %}"></script>
+{% endblock%}
