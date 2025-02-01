@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundo Campero - Revolutionizing Agriculture</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .bg-custom-green {
+            background-color: #2ecc71;
+        }
+        .text-custom-green {
+            color: #2ecc71;
+        }
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://source.unsplash.com/1600x900/?farm,agriculture');
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .roadmap-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 2rem;
+        }
+        .roadmap-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #2ecc71;
+        }
+        .roadmap-item::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 20px;
+            width: 2px;
+            height: calc(100% + 20px);
+            background-color: #2ecc71;
+        }
+        .roadmap-item:last-child::after {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-custom-green fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'ganaderia:about' %}">Mundo Campero</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pillars">Pillars</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#roadmap">Roadmap</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'ganaderia:index'%}">TuOvino</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section py-5 min-vh-100 d-flex align-items-center">
+        <div class="container text-center py-5">
+            <h1 class="display-2 fw-bold mb-3">Welcome to Mundo Campero</h1>
+            <p class="lead mb-4">Revolutionizing agriculture through innovative technology and integrated solutions</p>
+            <a href="#about" class="btn btn-success btn-lg">Learn More</a>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4 fw-bold">About Mundo Campero</h2>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <p class="lead text-center mb-4">Mundo Campero is a comprehensive platform that combines various agricultural activities into one powerful application. Our mission is to revolutionize the way farmers manage their operations, providing cutting-edge tools for livestock management, crop cultivation, agricultural marketplace, and rural employment opportunities.</p>
+                    <p class="text-center">With the integration of artificial intelligence, we aim to optimize processes and become the number one application in Uruguay for agricultural activities and the rural job market.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pillars Section -->
+    <section id="pillars" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">The Pillars of Mundo Campero</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="bi bi-piggy-bank feature-icon text-custom-green"></i>
+                            <h3 class="card-title h4 mb-3">Livestock Management</h3>
+                            <p class="card-text">Comprehensive tools for managing sheep, cattle, and pigs. Currently featuring TuOvino for sheep management with data analysis and pedigree tracking.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="bi bi-flower1 feature-icon text-custom-green"></i>
+                            <h3 class="card-title h4 mb-3">Agriculture</h3>
+                            <p class="card-text">Advanced tools for crop management, planting strategies, and process optimization. Future AI integration for crop analysis.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="bi bi-shop feature-icon text-custom-green"></i>
+                            <h3 class="card-title h4 mb-3">Rural Marketplace</h3>
+                            <p class="card-text">Upcoming platform for farmers to directly connect with consumers and businesses, revolutionizing agricultural product sales.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="bi bi-person-workspace feature-icon text-custom-green"></i>
+                            <h3 class="card-title h4 mb-3">Rural Job Board</h3>
+                            <p class="card-text">Future efficient job marketplace connecting farm owners with skilled workers in the agricultural sector.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section id="roadmap" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">Mundo Campero Roadmap</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="roadmap-item">
+                        <h4 class="fw-bold">Phase 1: Sheep Management <span class="badge bg-success">Current</span></h4>
+                        <p>TuOvino: Comprehensive sheep management system with data analysis and genealogy for pedigree sheep. <a href="{% url 'ganaderia:index' %}" class="btn btn-sm btn-outline-success mt-2">Explore TuOvino</a></p>
+                    </div>
+                    <div class="roadmap-item">
+                        <h4 class="fw-bold">Phase 2: Expanding Livestock Management</h4>
+                        <p>Introducing cattle management tools, similar to TuOvino but tailored for bovine operations.</p>
+                    </div>
+                    <div class="roadmap-item">
+                        <h4 class="fw-bold">Phase 3: Agriculture Module</h4>
+                        <p>Implementing crop management features, including planting schedules, yield analysis, and potential AI integration for crop health monitoring.</p>
+                    </div>
+                    <div class="roadmap-item">
+                        <h4 class="fw-bold">Phase 4: Rural Marketplace</h4>
+                        <p>Launching a platform for buying and selling agricultural products, connecting farmers directly with consumers and businesses.</p>
+                    </div>
+                    <div class="roadmap-item">
+                        <h4 class="fw-bold">Phase 5: Rural Job Board</h4>
+                        <p>Introducing an efficient job marketplace for the agricultural sector, helping farm owners find skilled workers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5 bg-custom-green text-white">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <h2 class="mb-4 fw-bold">Ready to revolutionize your agricultural management?</h2>
+                    <p class="lead mb-4">Join Mundo Campero today and be part of the future of agriculture in Uruguay.</p>
+                    <a href="{% url 'ganaderia:index' %}" class="btn btn-light btn-lg px-4">Get Started with TuOvino</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2023 Mundo Campero. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Navbar color change on scroll
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                document.querySelector('.navbar').classList.add('bg-custom-green');
+            } else {
+                document.querySelector('.navbar').classList.remove('bg-custom-green');
+            }
+        });
+    </script>
+</body>
+</html>
+

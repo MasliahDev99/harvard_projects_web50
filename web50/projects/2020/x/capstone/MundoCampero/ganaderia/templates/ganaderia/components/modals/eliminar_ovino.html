@@ -1,0 +1,41 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'ganaderia:eliminar_oveja' sheep.id %}" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>Are you sure you want to delete the sheep with {% if sheep.RP%}RP: {{sheep.RP}} {% else%} ID: {{sheep.id}} {%endif%}?</p>
+                <div class="mb-3">
+                    <label for="deleteReason" class="form-label">Reason for deletion:</label>
+                    <select class="form-select" id="deleteReason" name="delete_reason" required>
+                        <option value="">Select a reason</option>
+                        <option value="muerte">Death</option>
+                        <option value="error">Entry error</option>
+                    </select>
+                </div>
+                <div id="deathReasonContainer" class="mb-3" style="display: none;">
+                    <label for="deathReason" class="form-label">Reason for death:</label>
+                    <textarea class="form-control" id="deathReason" name="death_reason" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('deleteReason').addEventListener('change', function() {
+        var deathReasonContainer = document.getElementById('deathReasonContainer');
+        if (this.value === 'muerte') {
+            deathReasonContainer.style.display = 'block';
+        } else {
+            deathReasonContainer.style.display = 'none';
+        }
+    });
+</script>

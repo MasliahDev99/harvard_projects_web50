@@ -1,0 +1,114 @@
+{% extends 'ganaderia/layout.html' %}
+
+{% load static %}
+
+{% block body %}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col-auto">
+            <a href="{% url 'ganaderia:dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+        <div class="col">
+            <h1 class="text-center">Análisis de Ventas</h1>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Distribución de Ventas -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Distribución de Ventas</h5>
+                    <p id="noVentasLabel" class="text-center" style="display: none;">No hay ventas registradas.</p>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                        <canvas id="myChart" style="max-height: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rendimiento Ventas -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Rendimiento Ventas</h5>
+                    <p id="noVentasRendimientoLabel" class="text-center" style="display: none;">No hay ventas registradas.</p>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                        <p class="text-muted">Próximamente...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Promedio de ventas anuales -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Promedio de ventas anuales</h5>
+                    <p id="noVentasAnualesLabel" class="text-center" style="display: none;">No hay ventas registradas.</p>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                        <p class="text-muted">Próximamente...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tendencias -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Tendencias</h5>
+                    <div class="flex-grow-1">
+                        <p class="text-success fw-bold">+30% <small class="text-muted">respecto al mes anterior</small></p>
+                        <p class="text-muted mt-3">Análisis detallado próximamente...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Costos y Ganancias -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Costos y Ganancias</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <span class="text-muted">Ingreso por ventas totales:</span>
+                            <br><strong class="fs-5">20.000,34 US$</strong>
+                        </li>
+                        <li class="mb-2">
+                            <span class="text-muted">Promedio de ingresos por oveja vendida:</span>
+                            <br><strong class="fs-5">3.500,00 US$</strong>
+                        </li>
+                        <li>
+                            <span class="text-muted">Porcentaje de ovejas vendidas vs disponibles:</span>
+                            <br><strong class="fs-5">45% <small class="text-muted">(54 de 120)</small></strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tendencias temporales -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-4">Tendencias temporales</h5>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                        <p class="text-muted">Gráfica de ventas mensuales o anuales próximamente...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="min-vh-100"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'ganaderia/js/analisis_ventas.js' %}"></script>
+{% endblock %}

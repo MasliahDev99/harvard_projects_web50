@@ -1,0 +1,32 @@
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Sale Type</th>
+                    <th>Sheep Count</th>
+                    <th>Total Weight (kg)</th>  
+                    <th>Value (USD)</th>
+                    <th>Sale Date</th>
+                    <th>Sale Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr class="venta_row" data-id="{{ sale.id }}">
+                    <td>{{ sale.sale_type }}</td>
+                    <td>{{ sale.sheep_count }}</td>
+                    <td>{{ sale.calculated_total_weight|floatformat:2 }}</td>
+                    <td>{{ sale.total_value }}</td>
+                    <td>{{ sale.sale_date|date:"d/m/Y" }}</td>
+                    <td><a href="{% url 'ganaderia:ver_detalle_venta' sale.id %}" class="btn btn-sm btn-success">view</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No sales recorded</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

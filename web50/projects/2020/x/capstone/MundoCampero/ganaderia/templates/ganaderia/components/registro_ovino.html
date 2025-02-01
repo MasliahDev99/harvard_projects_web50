@@ -1,0 +1,49 @@
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-hover" style="cursor:pointer;">
+            <thead class="table-light">
+                <tr>
+                    <!-- en la columna del numero se va mostrar el BU en caso de que no tenga RP -->
+                    <th>RP</th>
+                    <th>Name</th>
+                    <th>Weight (kg)</th>
+                    <th>Age Group</th>
+                    <th>Purity</th>
+                    <th>Raza</th>
+                    <th>Sex</th>
+                    <th>Ver detalle</th>
+                    
+                </tr>
+    
+            </thead>
+            <tbody>
+                <!-- iteramos renderizando cada columna  -->
+            {% for sheep in sheeps %}
+                {% if sheep %}
+                <tr class="ovino_row" data-id="{{ sheep.id }}">
+                    {% if sheep.RP%}
+                    <td>{{sheep.RP}}</td>
+                    {% else %}
+                    <td>None</td>
+                    {% endif %}
+                    <td>{{sheep.name}}</td>
+                    <td>{{sheep.weight}}</td>
+                    <td>{{sheep.edad_clasificada}}</td>
+                    <td>{{sheep.purity_qualifier}}</td>
+                    <td>{{sheep.raza}}</td>
+                    <td>{{sheep.sex}}</td>
+                    {% if sheep.status != 'dead'%}
+                    <td><a href="{% url 'ganaderia:ver_detalle' sheep.id %}" class="btn btn-sm btn-success">view</a></td>
+                    {% endif %}
+                </tr>
+                {% endif %}
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center">No sheeps recorded</td>
+                </tr>
+                
+            {% endfor %}
+                
+        </table>
+    </div>
+</div>

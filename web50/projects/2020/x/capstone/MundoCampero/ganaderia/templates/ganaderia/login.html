@@ -1,0 +1,74 @@
+{% extends 'ganaderia/layout.html' %}
+
+
+
+{% block body %}
+
+<div class="container min-vh-100">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm mt-5">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Login</h2>
+                    
+                  
+
+                    <form action="{% url 'ganaderia:login' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="rut" class="form-label">Rut</label>
+                            <input type="number" class="form-control" id="rut" name="rut" placeholder="Enter your RUT" required autofocus>
+                            <small id="rutError" class="text-danger"></small> <!-- Lugar para el mensaje de error -->
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <p class="text-center mb-0">
+                        Don't have an account? <a href="{% url 'ganaderia:register' %}" class="text-decoration-none">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block script %}
+
+<script>
+    
+    const RutInput = document.getElementById('rut')
+
+
+    RutInput.addEventListener('blur',verificarRUT);
+    
+    function verificarRUT() {
+        // Valida que el RUT tenga exactamente 12 dígitos
+        const errorElement = document.getElementById('rutError');
+        const cantidadDigitos = 12;
+        if (RutInput.value.length === cantidadDigitos && /^\d+$/.test(RutInput.value)) {
+            RutInput.style.border = '2px solid green';
+            errorElement.textContent = ''; // Borra el mensaje de error
+            return true;
+        } else {
+            RutInput.style.border = '2px solid red';
+            errorElement.textContent = 'Rut debe tener 12 dígitos.';
+            return false;
+        }
+    }
+
+
+</script>
+
+
+{% endblock%}
+
+
+{% endblock %}

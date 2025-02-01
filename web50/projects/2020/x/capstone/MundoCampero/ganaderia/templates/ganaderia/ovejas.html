@@ -1,0 +1,44 @@
+{% extends 'ganaderia/layout.html'%}
+
+
+{% block body %}
+<div class="container-fluid py-4 min-vh-100">
+    <div class="row mb-4 align-items-center">
+        <div class="col-auto">
+            <a href="{% url 'ganaderia:dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        <div class="col">
+            <h1 class="display-4 text-center mb-0">Sheeps</h1>
+        </div>
+    </div>
+    <!-- tabla de registro ovino -->
+    <div class="card shadow-sm">
+        <!-- incluimos la tabla de registro de los ovinos -->
+        {% include 'ganaderia/components/registro_ovino.html' %}
+    </div>
+
+  <!-- botones de accion -->
+    <div class="mt-4 d-flex justify-content-between align-items-center">
+        <!-- incluimos los botones de accion -->
+        {% include 'ganaderia/components/botones_accion.html' %}
+        
+    </div>
+
+    <!-- Modal  de gestion de ovejas -->
+    <div class="modal fade" id="addOvinoModal" tabindex="-1" aria-labelledby="addOvinoModalLabel" aria-hidden="true" data-modal="{{ modal_open|yesno:'true,false' }}">
+        {% include 'ganaderia/components/modals/agregar_ovino.html' %}
+    </div>
+
+    <!-- Modal para descargar tabla de ovinos -->
+     <div class="modal fade" id="downloadTableModal" tabindex="-1" aria-labelledby="downloadTableModalLabel" aria-hidden="true">
+        {% include 'ganaderia/components/modals/descargas.html' %}
+     </div>
+    
+
+</div>
+    {% block script %}
+    
+    {% endblock %}
+{% endblock %}

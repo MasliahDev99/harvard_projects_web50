@@ -1,0 +1,133 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="addOvinoModalLabel">Register New Sheep</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="registroModal">
+            <form id="addOvinoForm" action="{% url 'ganaderia:ovejas' %}" method="POST">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="raza" class="form-label">Breed</label>
+                            <select class="form-select" id="raza" name="raza" required>
+                                <option value="">Select breed</option>
+                                {% for raza in razas %}
+                                    <option value="{{ raza.name }}">{{ raza.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="calificador_pureza" class="form-label">Purity Qualifier</label>
+                            <select class="form-select" id="calificador_pureza" name="calificador_pureza" required>
+                                <option value="">Select</option>
+                                {% for purity_qualifier in purity_qualifiers %}
+                                    <option value="{{ purity_qualifier.name }}">{{ purity_qualifier.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sexo" class="form-label">Sex</label>
+                            <select class="form-select" id="sexo" name="sexo" required>
+                                <option value="">Select sex</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha_nacimiento" class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <div class="mb-3" id="rpContainer" style="display: none;">
+                            <label for="RP" class="form-label">RP (Permanent Record)</label>
+                            <input type="text" class="form-control" id="RP" name="RP" placeholder="Required for pedigree">
+                        </div>
+                        <div class="mb-3">
+                            <label for="BU" class="form-label">BU</label>
+                            <input type="text" class="form-control" id="BU" name="BU" placeholder="Internal Identifier (optional)">
+                        </div>
+                        <div class="mb-3">
+                            <label for="peso" class="form-label">Weight (kg)</label>
+                            <input type="number" class="form-control" id="peso" name="peso" step="0.1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombre_animal" class="form-label">Animal Name</label>
+                            <input type="text" class="form-control" id="nombre_animal" name="nombre_animal">
+                        </div>
+                    </div>
+
+                    <!-- Parent Section (hidden by default) -->
+                    <div class="col-12" id="parentSection" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="oveja_padre" class="form-label">Father RP</label>
+                                <input type="text" class="form-control" id="oveja_padre" name="oveja_padre">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="oveja_madre" class="form-label">Mother RP</label>
+                                <input type="text" class="form-control" id="oveja_madre" name="oveja_madre">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Checkbox and Origin Field -->
+                    <div class="col-12">
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="purchased" name="purchased">
+                            <label class="form-check-label" for="purchased">Purchased Sheep?</label>
+                        </div>
+                        <div class="mb-3" id="origenContainer" style="display: none;">
+                            <label for="origen" class="form-label">Origin</label>
+                            <input type="text" class="form-control" id="origen" name="origen" placeholder="Establishment Name">
+                        </div>
+                    </div>
+
+                    <!-- Observations -->
+                    <div class="col-12">
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="obs" name="obs">
+                            <label class="form-check-label" for="obs">Observations?</label>
+                        </div>
+                        <div class="mb-3" id="observacionesContainer" style="display: none;">
+                            <label for="observaciones" class="form-label">Observations</label>
+                            <textarea class="form-control" id="observaciones" name="observaciones" rows="4" placeholder="Write your observations here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save Sheep</button>
+                </div>
+
+                {% if errores %}
+                    <div class="alert alert-danger mt-2">
+                        <ul>
+                            {% for error in errores %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalElement = document.querySelector('#registroModal');
+        const shouldOpen = modalElement.getAttribute('data-modal') === 'true';
+
+        if (shouldOpen) {
+            const modalInstance = new bootstrap.Modal(modalElement.closest('.modal'));
+            modalInstance.show();
+        }
+    });
+</script>

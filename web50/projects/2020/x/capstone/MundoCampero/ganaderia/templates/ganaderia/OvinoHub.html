@@ -1,0 +1,164 @@
+{% extends 'ganaderia/layout.html'%}
+
+{% load static %}
+{% block title %}TuOvino Hub{% endblock %}
+
+{% block body %}
+<div class="container-fluid bg-light min-vh-100 py-5">
+    <div class="container">
+        <h1 class="text-center mb-2 text-success">Welcome to TuOvino Hub</h1>
+        <p class="text-center mb-5 text-muted">Your comprehensive sheep management solution</p>
+        
+        <div class="row g-4">
+            <!-- Quick Actions -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="card-title mb-0">Quick Actions</h2>
+                        <p class="mb-0 mt-1 opacity-75">Frequently used features</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-outline-success w-100 py-3 d-flex align-items-center justify-content-center hover-scale">
+                                    <i class="fas fa-columns me-2"></i> Dashboard
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-outline-success w-100 py-3 d-flex align-items-center justify-content-center hover-scale">
+                                    <i class="fas fa-chart-line me-2"></i> Reports
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-outline-success w-100 py-3 d-flex align-items-center justify-content-center hover-scale">
+                                    <i class="fas fa-sitemap me-2"></i> Family Tree
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'ganaderia:dashboard'%}" class="btn btn-outline-success w-100 py-3 d-flex align-items-center justify-content-center hover-scale">
+                                    <i class="fas fa-file-alt me-2"></i> Documentation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="card-title mb-0">Recent Activities</h2>
+                        <p class="mb-0 mt-1 opacity-75">Latest actions performed</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-sheep me-3 text-success"></i>
+                                <div>
+                                    <strong>Sheep Registration</strong>
+                                    <small class="d-block text-muted">Today at 10:30 AM</small>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-edit me-3 text-success"></i>
+                                <div>
+                                    <strong>Exhibition Flock Updated</strong>
+                                    <small class="d-block text-muted">Yesterday at 3:45 PM</small>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-calendar-check me-3 text-success"></i>
+                                <div>
+                                    <strong>Vaccination Scheduled</strong>
+                                    <small class="d-block text-muted">2 days ago</small>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Prices Today -->
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="card-title mb-0">Market Prices Today</h2>
+                        <p class="mb-0 mt-1 opacity-75">Last update: <span id="lastUpdate"></span></p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="bg-light p-4 rounded hover-shadow">
+                                    <h3 class="mb-3">Canelo Butcher Shop</h3>
+                                    <div class="price-info">
+                                        <p class="mb-2"><strong>Lamb:</strong> <span class="text-success">4.18 USD/kg</span></p>
+                                        <p class="mb-2"><strong>Ram:</strong> <span class="text-success">3.98 USD/kg</span></p>
+                                        <p class="mb-0"><i class="fas fa-phone-alt me-2"></i>111111</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="bg-light p-4 rounded hover-shadow">
+                                    <h3 class="mb-3">Pepito Butcher Shop</h3>
+                                    <div class="price-info">
+                                        <p class="mb-2"><strong>Lamb:</strong> <span class="text-success">4.15 USD/kg</span></p>
+                                        <p class="mb-2"><strong>Ram:</strong> <span class="text-success">3.98 USD/kg</span></p>
+                                        <p class="mb-0"><i class="fas fa-phone-alt me-2"></i>222222</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Calculator -->
+            <div class="col-lg-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="card-title mb-0">Price Calculator</h2>
+                        <p class="mb-0 mt-1 opacity-75">Estimate your livestock value</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="priceCalculator" class="row g-3">
+                            <div class="col-md-4">
+                                <label for="weight" class="form-label">Total Weight (kg)</label>
+                                <input type="number" class="form-control" id="weight" required min="1" step="0.1">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="animalType" class="form-label">Animal Type</label>
+                                <select class="form-select" id="animalType" required>
+                                    <option value="">Select type</option>
+                                    <option value="cordero">Lamb</option>
+                                    <option value="carnero">Ram</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="butcher" class="form-label">Butcher Shop</label>
+                                <select class="form-select" id="butcher" required>
+                                    <option value="">Select butcher</option>
+                                    <option value="canelo">Canelo Butcher Shop</option>
+                                    <option value="pepito">Pepito Butcher Shop</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success w-100" id="calculateBtn">
+                                    <i class="fas fa-calculator me-2"></i>Calculate Price
+                                </button>
+                            </div>
+                        </form>
+                        <div id="result" class="mt-3 p-3 bg-light rounded text-center" style="display: none;">
+                            <h4>Estimated Price</h4>
+                            <p class="display-4 text-success mb-0">$<span id="estimatedPrice">0.00</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style src="{% static 'ganaderia/css/ovinoHub.css' %}"></style>
+<script src="{% static 'ganaderia/js/ovinoHub.js' %}"></script>
+{% endblock %}

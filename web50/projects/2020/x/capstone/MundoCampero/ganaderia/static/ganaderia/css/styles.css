@@ -1,0 +1,68 @@
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #45a049;
+    --light-green: #e8f5e9;
+    }
+
+    body {
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    }
+
+    .navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    }
+
+    .navbar-brand {
+    font-weight: bold;
+    color: var(--primary-color) !important;
+    }
+
+    .nav-link {
+    color: #333 !important;
+    }
+
+    .nav-link:hover {
+    color: var(--primary-color) !important;
+    }
+
+    .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    }
+
+    .hero-section {
+    background-color: var(--light-green);
+    padding: 4rem 0;
+    }
+
+    .carousel-item {
+    height: 400px;
+    }
+
+    .carousel-item img {
+    object-fit: cover;
+    height: 100%;
+    }
+
+    .feature-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    }
+
+    footer {
+    background-color: #f8f9fa;
+    padding: 2rem 0;
+    margin-top: 2rem;
+    }
+     
+.card-uniform{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between
+}

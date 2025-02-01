@@ -1,0 +1,234 @@
+{% extends 'ganaderia/layout.html'%}
+
+{% load static %}
+{% block body %}
+<div class="container-fluid py-5 bg-light min-vh-100">
+    <h1 class="display-4 text-center mb-5">Sheep Flock</h1>
+    <!-- mensaje de plantilla no funcional hasta el momento -->
+    <p class="text-muted">This template isn't work yet.</p>
+
+    <ul class="nav nav-tabs mb-4" id="plantelTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="exposicion-tab" data-bs-toggle="tab" data-bs-target="#exposicion" type="button" role="tab" aria-controls="exposicion" aria-selected="true">Exhibition Flock</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="ventas-tab" data-bs-toggle="tab" data-bs-target="#ventas" type="button" role="tab" aria-controls="ventas" aria-selected="false">Sales Flock</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="plantelTabsContent">
+        <!-- Exhibition Flock -->
+        <div class="tab-pane fade show active" id="exposicion" role="tabpanel" aria-labelledby="exposicion-tab">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h2 class="h3 mb-0">Exhibition Flock</h2>
+                    <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#newPlantelModal" data-category="exposicion">
+                        <i class="bi bi-plus-lg"></i> New Flocklet
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>RP</th>
+                                    <th>Name</th>
+                                    <th>Weight (kg)</th>
+                                    <th>Age (months)</th>
+                                    <th>Purity</th>
+                                    <th>Breed</th>
+                                    <th>Sex</th>
+                                    <th>Stage</th>
+                                    <th>Obs.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for oveja in ovejas %}
+                                    {% if oveja %}
+                                    <tr class="ovino_row" data-id="{{ oveja.id }}">
+                                        <td>{{oveja.RP}}</td>
+                                        <td>{{oveja.nombre}}</td>
+                                        <td>{{oveja.peso}}</td>
+                                        <td>{{oveja.edad}}</td>
+                                        <td><span class="badge bg-success">{{oveja.calificador_pureza}}</span></td>
+                                        <td>{{oveja.raza}}</td>
+                                        <td>{{oveja.sexo}}</td>
+                                        <td>{{oveja.edad_clasificada}}</td>
+                                        <td><span class="badge bg-secondary">{{oveja.observaciones}}</span></td>
+                                    </tr>
+                                    {% endif %}
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="9" class="text-center">No sheep registered in the Exhibition Flock</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Flock -->
+        <div class="tab-pane fade" id="ventas" role="tabpanel" aria-labelledby="ventas-tab">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h2 class="h3 mb-0">Sales Flock</h2>
+                    <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#newPlantelModal" data-category="ventas">
+                        <i class="bi bi-plus-lg"></i> New Flocklet
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>RP</th>
+                                    <th>Weight (kg)</th>
+                                    <th>Age (months)</th>
+                                    <th>Purity</th>
+                                    <th>Breed</th>
+                                    <th>Sex</th>
+                                    <th>Stage</th>
+                                    <th>Estimated Value (US$)</th>
+                                    <th>Obs.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for oveja in ovejas %}
+                                    {% if oveja %}
+                                    <tr class="ovino_row" data-id="{{ oveja.id }}">
+                                        <td>{{oveja.RP}}</td>
+                                        <td>{{oveja.peso}}</td>
+                                        <td>{{oveja.edad}}</td>
+                                        <td><span class="badge bg-success">{{oveja.calificador_pureza}}</span></td>
+                                        <td>{{oveja.raza}}</td>
+                                        <td>{{oveja.sexo}}</td>
+                                        <td>{{oveja.edad_clasificada}}</td>
+                                        <td>{{oveja.valor_venta_ind}}</td>
+                                        <td><span class="badge bg-secondary">{{oveja.observaciones}}</span></td>
+                                    </tr>
+                                    {% endif %}
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="9" class="text-center">No sheep registered in the Sales Flock</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-center mt-5 gap-3">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSheepModal">
+            <i class="bi bi-plus-circle me-2"></i>Add Sheep
+        </button>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSheepModal">
+            <i class="bi bi-trash me-2"></i>Delete
+        </button>
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modifySheepModal">
+            <i class="bi bi-pencil me-2"></i>Modify
+        </button>
+        <button class="btn btn-secondary" id="downloadTable">
+            <i class="bi bi-download me-2"></i>Download Table
+        </button>
+    </div>
+</div>
+
+<!-- Modal for creating new flocklet -->
+<div class="modal fade" id="newPlantelModal" tabindex="-1" aria-labelledby="newPlantelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newPlantelModalLabel">Create New Flocklet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newPlantelForm">
+                    <div class="mb-3">
+                        <label for="plantelTitle" class="form-label">Flocklet Title</label>
+                        <input type="text" class="form-control" id="plantelTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Available Fields</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="RP" id="fieldRP">
+                            <label class="form-check-label" for="fieldRP">RP</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Peso" id="fieldPeso">
+                            <label class="form-check-label" for="fieldPeso">Weight</label>
+                        </div>
+                        <!-- Add more fields as needed -->
+                    </div>
+                    <div class="mb-3">
+                        <label for="plantelDescription" class="form-label">Flock Description</label>
+                        <textarea class="form-control" id="plantelDescription" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="headerColor" class="form-label">Header Color</label>
+                        <input type="color" class="form-control form-control-color" id="headerColor" value="#563d7c" title="Choose color">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="savePlantel">Save Flocklet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for adding sheep -->
+<div class="modal fade" id="addSheepModal" tabindex="-1" aria-labelledby="addSheepModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSheepModalLabel">Add Sheep to Flocklet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addSheepForm">
+                    <div class="mb-3">
+                        <label class="form-label">Select Flocklet:</label>
+                        <div id="plantelCheckboxes">
+                            <!-- Flocklets will be dynamically loaded here -->
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sheepSelect" class="form-label">Select Sheep:</label>
+                        <select multiple class="form-select" id="sheepSelect" size="10">
+                            {% for oveja in ovejas %}
+                            <option value="{{oveja.id}}">{{oveja.RP}} - {{oveja.nombre}} - {{oveja.edad}} month/s - {{oveja.peso}}kg</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Selected Sheep:</label>
+                        <ul id="selectedSheepList" class="list-group">
+                            <!-- Selected sheep will be displayed here -->
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveSheepToPlantel">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'ganaderia/js/planteletas.js' %}"></script>
+<script>
+
+    
+</script>
+{% endblock %}

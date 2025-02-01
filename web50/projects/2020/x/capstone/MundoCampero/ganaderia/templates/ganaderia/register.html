@@ -1,0 +1,131 @@
+{% extends 'ganaderia/layout.html' %}
+
+
+
+{% block body %}
+
+<div class="container min-vh-100">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm mt-5">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Register</h2>
+                    
+                    {% if message %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+
+                    <form action="{% url 'ganaderia:register' %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Establecimiento</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Establecimiento" required autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="RUT" class="form-label">RUT</label>
+                            <input type="number" class="form-control" id="RUT" name="RUT" placeholder="RUT (ejemplo: 213000000234)" required>
+                            <small id="rutError" class="text-danger"></small> <!-- Lugar para el mensaje de error -->
+                        </div>
+                        <div class="mb-3">
+                            <label for="criadorARU" class="form-label">Codigo de criador</label>
+                            <input type="number" class="form-control" id="criadorARU" name="criadorARU" placeholder="Introduce su codigo de criador" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="(email@dominio.com)" required>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
+                            <small id="passwordError" class="text-danger"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmation" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirmation" name="confirmation" placeholder="Confirm password" required>
+                            <small id="confirmationError" class="text-danger"></small>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <p class="text-center mb-0">
+                        Already have an account? <a href="{% url 'ganaderia:login' %}" class="text-decoration-none">Log in here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block script %}
+
+<script>
+    // Selección de los elementos del DOM
+    const RutInput = document.getElementById('RUT');
+    const PasswordInput = document.getElementById('password');
+    const ConfirmPasswordInput = document.getElementById('confirmation');
+
+    // Validar el RUT al perder el enfoque
+    RutInput.addEventListener('blur', verificarRUT);
+
+    // Validar la contraseña al escribir y al confirmar
+    PasswordInput.addEventListener('blur', ValidarPassword);
+    ConfirmPasswordInput.addEventListener('blur', ConfirmarPassword);
+
+    function verificarRUT() {
+        // Valida que el RUT tenga exactamente 12 dígitos
+        const errorElement = document.getElementById('rutError');
+        const cantidadDigitos = 12;
+        if (RutInput.value.length === cantidadDigitos && /^\d+$/.test(RutInput.value)) {
+            RutInput.style.border = '2px solid green';
+            errorElement.textContent = ''; // Borra el mensaje de error
+            return true;
+        } else {
+            RutInput.style.border = '2px solid red';
+            errorElement.textContent = 'Rut debe tener 12 dígitos.';
+            return false;
+        }
+    }
+
+    // Validar Password
+    function ValidarPassword() {
+        const errorElement = document.getElementById('passwordError');
+        const password = PasswordInput.value;
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (regex.test(password)) {
+            PasswordInput.style.border = '2px solid green';
+            errorElement.textContent = '';
+            return true;
+        } else {
+            PasswordInput.style.border = '2px solid red';
+            errorElement.textContent = 'La contraseña debe tener al menos 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial.';
+            return false;
+        }
+    }
+
+    // Confirmar Password
+    function ConfirmarPassword() {
+        const errorElement = document.getElementById('confirmationError');
+        if (ConfirmPasswordInput.value === PasswordInput.value) {
+            ConfirmPasswordInput.style.border = '2px solid green';
+            errorElement.textContent = '';
+            return true;
+        } else {
+            ConfirmPasswordInput.style.border = '2px solid red';
+            errorElement.textContent = 'Las contraseñas no coinciden.';
+            return false;
+        }
+    }
+</script>
+
+{% endblock %}
+
+
+{% endblock %}

@@ -1,0 +1,93 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="addSaleModalLabel">Register New Sheep Sale</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="addSaleForm">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="saleType" class="form-label">Sale Type</label>
+                    <select class="form-select" id="saleType" name="sale_type" required>
+                        <option value="">Select sale type</option>
+                        <option value="slaughterhouse">Slaughterhouse</option>
+                        <option value="auction">Auction</option>
+                        <option value="individual">Individual Sale</option>
+                        <option value="donation">Donation</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="batchSale" name="by_lot">
+                        <label class="form-check-label" for="batchSale">
+                            Batch Sale (maximum 10 animals)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="animalSelect" class="form-label">Select Sheep</label>
+                    <select class="form-select" id="animalSelect" multiple>
+                        <!-- Options will be populated dynamically -->
+                        {% for sheep in active_sheeps %}
+                        <option value="{{ sheep.id }}">
+                            {% if sheep.RP %}
+                                RP: {{ sheep.RP }} - Weight: {{ sheep.weight }} kg
+                            {% else %}
+                                ID: {{ sheep.id }} - Weight: {{ sheep.weight }} kg
+                            {% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Selected Animals</label>
+                    <ul id="selectedAnimals" class="list-group">
+                        <!-- Selected animals will be displayed here -->
+                    </ul>
+                </div>
+
+                <div id="frigorificoFields" style="display: none;">
+                    <div class="mb-3">
+                        <label for="totalWeight" class="form-label">Total Weight (kg)</label>
+                        <input type="number" class="form-control" id="totalWeight" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pricePerKg" class="form-label">Price per kg ($)</label>
+                        <input type="number" class="form-control" id="pricePerKg" step="0.01" required>
+                    </div>
+                </div>
+
+                <div id="remateFields" style="display: none;">
+                    <div class="mb-3">
+                        <label for="remateTotal" class="form-label">Total Auction Value ($)</label>
+                        <input type="number" class="form-control" id="remateTotal" step="0.01" required>
+                    </div>
+                </div>
+
+                <div id="individualFields" style="display: none;">
+                    <!-- Individual sale prices will be dynamically added here -->
+                </div>
+
+                <div class="mb-3">
+                    <label for="saleDate" class="form-label">Sale Date</label>
+                    <input type="date" class="form-control" id="saleDate" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="totalSaleValue" class="form-label">Total Sale Value ($)</label>
+                    <input type="number" class="form-control" id="totalSaleValue" readonly>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmSale">Confirm Sale</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

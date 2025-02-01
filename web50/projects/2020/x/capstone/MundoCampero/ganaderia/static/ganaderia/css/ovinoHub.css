@@ -1,0 +1,18 @@
+.hover-scale {
+    transition: transform 0.2s ease;
+}
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+.hover-shadow {
+    transition: box-shadow 0.2s ease;
+}
+.hover-shadow:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+.price-info {
+    transition: all 0.3s ease;
+}
+.price-info:hover {
+    transform: translateY(-5px);
+}
