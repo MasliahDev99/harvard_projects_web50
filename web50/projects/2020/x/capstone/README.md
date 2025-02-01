@@ -220,7 +220,7 @@ The project involves:
 ![Statistics Dashboard](./imagenes_proyecto/statstic.png)
 
 ### Video Tutorial
-Watch the tutorial embedded in the [homepage](http://127.0.0.1:8000) or view it directly on [YouTube](https://youtu.be/h0gDXW7UJfA).
+Watch the tutorial embedded in the [homepage](http://127.0.0.1:8000) or view it directly on [YouTube](https://www.youtube.com/embed/6bilA_XGZe0).
 
 [Back to Indice](#indice)
 
