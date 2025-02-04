@@ -1,0 +1,111 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">
+                        <i class="fas fa-gavel me-2"></i>Create New Auction
+                    </h2>
+                    
+                    <form action="{% url 'auctions:create' %}" method="POST" enctype="multipart/form-data" id="auctionForm">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter auction title" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="starting_bid" class="form-label">Starting Bid ($)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="starting_bid" name="starting_bid" placeholder="0.00" step="0.01" min="0.01" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Describe your auction item in detail..." required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Item Image</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                            <div id="imagePreview" class="mt-2 text-center d-none">
+                                <img src="#" alt="Image preview" class="img-fluid rounded" style="max-height: 200px;">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="" disabled selected>Select Category</option>
+                                {% for category in categories %}
+                                <option value="{{ category.name }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contact" class="form-label">Contact Information</label>
+                            <input type="text" class="form-control" id="contact" name="contact" placeholder="Phone or email" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="end_date" name="end_date" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="end_time" class="form-label">End Time</label>
+                                <input type="time" class="form-control" id="end_time" name="end_time" required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-gavel me-2"></i>Create Auction
+                            </button>
+                            <a href="{% url 'auctions:index' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = imagePreview.querySelector('img');
+
+    imageInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                imagePreview.classList.remove('d-none');
+            };
+            reader.readAsDataURL(this.files[0]);
+        } else {
+            imagePreview.classList.add('d-none');
+        }
+    });
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('end_date').min = today;
+});
+</script>
+{% endblock %}

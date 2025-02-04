@@ -1,0 +1,57 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">All Pages</h1>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for entry in entries %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'encyclopedia:entry' title=entry %}" class="text-decoration-none">
+                                    {{ entry }}
+                                </a>
+                            </h5>
+                            <!-- ver la forma de mostrar el contenido truncado de cada entrada {{ content|truncatechars:20 }} -->
+                            <p class="card-text text-muted">
+                                Click to view this encyclopedia entry.
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="{% url 'encyclopedia:entry' title=entry %}" class="btn btn-outline-primary btn-sm">
+                                Read More
+                            </a>
+                            <a href="{% url 'encyclopedia:edit_page' title=entry %}" class="btn btn-outline-warning btn-sm">
+                                Edit page
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+   
+    
+    <style>
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        }
+        .card-title a {
+            color: #007bff;
+        }
+        .card-title a:hover {
+            color: #0056b3;
+        }
+    </style>
+{% endblock %}
+

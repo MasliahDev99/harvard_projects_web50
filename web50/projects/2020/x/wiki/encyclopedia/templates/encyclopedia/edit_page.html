@@ -1,0 +1,30 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Edit Page 👉{{ title }}👈</h1>
+
+    <form action="{% url 'encyclopedia:edit_page' title=title %}" method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <!-- Prefill con el valor del título existente -->
+            <input type="text" id="title" name="title" class="form-control" placeholder="Enter the title" value="{{ title }}" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="content" class="form-label">Content</label>
+            <!-- Prefill con el contenido existente -->
+            <textarea id="content" name="content" class="form-control" placeholder="Enter the content" required>{{ content }}</textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary mb-3">Save</button>
+    </form>
+</div>
+
+{% if error_message %}
+<div class="container border border-danger mt-5">
+    <p>{{ error_message }}</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Search Results
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Search Results</h1>
+
+        {% if results %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for result in results %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="{% url 'encyclopedia:entry' title=result %}" class="text-decoration-none">
+                                        {{ result }}
+                                    </a>
+                                </h5>
+                                <p class="card-text text-muted">
+                                    Click to view this encyclopedia entry.
+                                </p>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0">
+                                <a href="{% url 'encyclopedia:entry' title=result %}" class="btn btn-outline-primary btn-sm">
+                                    Read More
+                                </a>
+                                <a href="{% url 'encyclopedia:edit_page' title=result %}" class="btn btn-outline-warning btn-sm">
+                                    Edit page
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                No results found for your search query.
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        }
+        .card-title a {
+            color: #007bff;
+        }
+        .card-title a:hover {
+            color: #0056b3;
+        }
+    </style>
+{% endblock %}
+
