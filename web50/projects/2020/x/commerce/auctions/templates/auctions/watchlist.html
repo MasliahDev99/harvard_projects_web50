@@ -1,27 +1,67 @@
 {% extends "auctions/layout.html" %}
 
 {% load static %}
+
 {% block body %}
 <div class="container mt-4">
-    <a href="{% url 'auctions:index'%}">Back</a>
-    <h2 class="text-center mb-4">Your Watchlist</h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'auctions:index' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Watchlist</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Your Watchlist</h2>
+        <span class="badge bg-primary">{{ watchlists|length }} item{% if watchlists|length != 1 %}s{% endif %}</span>
+    </div>
     
     {% if watchlists %}
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {% for watchlist in watchlists %}
                 <div class="col">
                     <div class="card h-100 shadow-sm">
+                        {% if watchlist.auction.image %}
+                            <img src="{{ watchlist.auction.image.url }}" class="card-img-top" alt="{{ watchlist.auction.title }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ watchlist.auction.title }}</h5>
-                            <p class="card-text">ID: {{ watchlist.auction.id }}</p>
+                            <p class="card-text text-muted small">{{ watchlist.auction.description|truncatechars:100 }}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-secondary">ID: {{ watchlist.auction.id }}</span>
+                                <span class="badge bg-info">
+                                    <i class="fas fa-clock me-1"></i>
+                                    {% if watchlist.auction.is_active %}
+                                        {{ watchlist.auction.end_date|timeuntil }} left
+                                    {% else %}
+                                        Ended
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <p class="card-text">
+                                <strong>Current Bid:</strong> 
+                                ${% with highest_bid=watchlist.auction.bids.all|dictsortreversed:"amount"|first %}
+                                    {% if highest_bid %}
+                                        {{ highest_bid.amount }}
+                                    {% else %}
+                                        {{ watchlist.auction.starting_bid }}
+                                    {% endif %}
+                                {% endwith %}
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent">
                             <div class="d-flex justify-content-between align-items-center">
-                                <a href="#" class="btn btn-primary btn-sm">
+                                <a href="{% url 'auctions:index' %}#auctionModal{{ watchlist.auction.id }}" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#auctionModal{{ watchlist.auction.id }}">
                                     <i class="fas fa-eye me-1"></i>View Details
                                 </a>
-                                <form action="#" method="POST" class="d-inline">
+                                <form action="{% url 'auctions:add_to_watchlist' auction_id=watchlist.auction.id %}" method="POST" class="d-inline">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash-alt me-1"></i>Remove
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-times me-1"></i>Remove
                                     </button>
                                 </form>
                             </div>
@@ -32,7 +72,19 @@
         </div>
     {% else %}
         <div class="alert alert-info" role="alert">
-            Your watchlist is empty. Start adding items to keep track of your favorite auctions!
+            <h4 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Your watchlist is empty!</h4>
+            <p>Start adding items to keep track of your favorite auctions. Here's how:</p>
+            <hr>
+            <ol class="mb-0">
+                <li>Browse active auctions on the home page</li>
+                <li>Click on "View Details" for an auction you're interested in</li>
+                <li>Click the "Add to Watchlist" button in the auction details</li>
+            </ol>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'auctions:index' %}" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i>Browse Active Auctions
+            </a>
         </div>
     {% endif %}
 </div>

@@ -2,6 +2,7 @@ from django.db import IntegrityError
 from .models import User, Auction, Bid, Comment,Watchlist
 from .models import Category as Categorie
 from datetime import datetime
+from django.db.models import Prefetch
 # metodos de gestion de usuarios
 
 def create_user(username, email, password):
@@ -85,13 +86,26 @@ def delete_auction(auction_id):
 
 
 
-# obtener una subasta por parametros de busqueda
-def get_auctions_by(**kwargs):
-    return Auction.objects.filter(**kwargs)
+# obtener una subasta por parametros de busqueda ( este metodo es mas flexible) 
+def get_auctions_by(prefetch_watchlist=False, **kwargs):
+    queryset = Auction.objects.filter(**kwargs)
+    
+    # Si se requiere, prefetch los elementos relacionados
+    if prefetch_watchlist:
+        queryset = queryset.prefetch_related(
+            Prefetch('watchlisted_by', queryset=Watchlist.objects.all(), to_attr='user_watchlist')
+        )
+    
+    return queryset
 
 # obtener todas las subastas
-def get_all_auctions():
-    return Auction.objects.all()
+def get_all_auctions(prefetch_watchlist=False):
+    queryset = Auction.objects.all()
+    if prefetch_watchlist:
+        queryset = queryset.prefetch_related(
+            Prefetch('watchlisted_by', queryset=Watchlist.objects.all(), to_attr='user_watchlist')
+        )
+    return queryset
 
 # metodos de gestion de ofertas
 def create_bid(auction,user,amount):

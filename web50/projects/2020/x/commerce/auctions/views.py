@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.urls import reverse
 from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.db.models import Prefetch
 
 from .models import User
 from .models import *
@@ -20,7 +23,7 @@ def index(request):
     if user.is_authenticated:
         watchlist_count = len(utils.get_watchlist(user))
     
-    auctions = utils.get_all_auctions(is_active=True)
+    auctions = utils.get_auctions_by(prefetch_watchlist=True,is_active=True)
     highest_bids = {
         auction.id: auction.bids.order_by('-amount').first() for auction in auctions
     }
@@ -56,6 +59,9 @@ def index(request):
         "highest_bids": highest_bids,
         "watchlist_count": watchlist_count,
     })
+
+
+
 
 #funciona
 def login_view(request):

@@ -3,108 +3,102 @@
 {% load static %}
 
 {% block body %}
-<a href="{% url 'auctions:index' %}" class="btn btn-outline-secondary mb-3">Back</a>
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'auctions:index' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ auction.title }} - Comments</li>
+        </ol>
+    </nav>
 
-<div class="container">
-    <h1 class="text-center mb-3">Comments - {{ auction.title }}</h1>
-    <div class="row g-4">
+    <div class="row g-4 mb-4">
         <div class="col-md-6 col-12">
-            <img src="{{ auction.image.url }}" class="img-fluid rounded" alt="{{ auction.title }}">
+            <img src="{{ auction.image.url }}" class="img-fluid rounded shadow" alt="{{ auction.title }}">
         </div>
         <div class="col-md-6 col-12">
-            <h3 class="text-center">Description</h3>
-            <hr>
-            <textarea class="form-control" rows="5" readonly>{{ auction.description }}</textarea>
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title">{{ auction.title }}</h3>
+                    <h6 class="card-subtitle mb-2 text-muted">Description</h6>
+                    <p class="card-text">{{ auction.description }}</p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-12">
+
+    <div class="card mb-4">
+        <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="text-center mb-0">Comments</h4>
-                <button id="addCommentButton" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#addComment">Add Comment</button>
+                <h4 class="card-title mb-0">Comments</h4>
+                <button id="addCommentButton" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#addComment">
+                    <i class="fas fa-plus me-2"></i>Add Comment
+                </button>
+            </div>
+            <div class="collapse mb-3" id="addComment">
+                <form action="{% url 'auctions:auction_comments' auction_id=auction.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea class="form-control" name="comment" rows="3" placeholder="Write your comment here..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-paper-plane me-2"></i>Submit Comment
+                    </button>
+                </form>
             </div>
             <hr>
             {% for comment in comments %}
                 {% if not comment.parent %}
-                <div class="mb-3 p-3 border rounded shadow-sm">
-                    <p><strong>{{ comment.user.username }}</strong> says:</p>
-                    <p>{{ comment.content }}</p>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-link btn-sm" data-bs-toggle="collapse" data-bs-target="#replyForm{{ comment.id }}">Reply</button>
-                        <button class="btn btn-link btn-sm text-danger">Report</button>
-                    </div>
-                    <div class="collapse mt-2" id="replyForm{{ comment.id }}">
-                        <form action="{% url 'auctions:comment_reply' auction_id=auction.id comment_id=comment.id %}" method="POST">
-                            {% csrf_token %}
-                            <textarea class="form-control mb-2" name="reply" rows="2" placeholder="Write your reply here..." required></textarea>
-                            <button type="submit" class="btn btn-success btn-sm">Submit Reply</button>
-                        </form>
-                    </div>
-                    {% if comment.replies.all %}
-                        <button class="btn btn-link btn-sm" data-bs-toggle="collapse" data-bs-target="#replies{{ comment.id }}">View Replies</button>
-                        <div class="collapse" id="replies{{ comment.id }}">
-                            {% for reply in comment.replies.all %}
-                            
-                                <div class="mt-2 ms-4 p-2 border rounded shadow-sm">
-                                    <p><strong>{{ reply.user.username }}</strong> replies:</p>
-                                    <p>{{ reply.content }}</p>
-                                    <div class="d-flex justify-content-end">
-                                        <button class="btn btn-link btn-sm" data-bs-toggle="collapse" data-bs-target="#replyForm{{ reply.id }}">Reply</button>
-                                        <button class="btn btn-link btn-sm text-danger">Report</button>
-                                    </div>
-                                    <div class="collapse mt-2" id="replyForm{{ reply.id }}">
-                                        <form action="{% url 'auctions:comment_reply' auction_id=auction.id comment_id=reply.id %}" method="POST">
-                                            {% csrf_token %}
-                                            <textarea class="form-control mb-2" name="reply" rows="2" placeholder="Write your reply here..." required></textarea>
-                                            <button type="submit" class="btn btn-success btn-sm">Submit Reply</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
+                    {% include "auctions/components/comment.html" with comment=comment depth=0 %}
                 {% endif %}
             {% empty %}
                 <div class="text-center text-muted">
                     <p>Be the first to comment!</p>
                 </div>
             {% endfor %}
-            <div class="mt-4 collapse" id="addComment">
-                <form action="{% url 'auctions:auction_comments' auction_id=auction.id %}" method="POST">
-                    {% csrf_token %}
-                    <textarea class="form-control mb-2" name="comment" rows="3" placeholder="Write your comment here..." required></textarea>
-                    <button type="submit" class="btn btn-success">Submit Comment</button>
-                </form>
-            </div>
         </div>
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const addCommentButton = document.getElementById('addCommentButton');
         const addCommentCollapse = document.getElementById('addComment');
 
         addCommentCollapse.addEventListener('show.bs.collapse', function () {
-            addCommentButton.style.display = 'none';
+            addCommentButton.textContent = 'Cancel';
+            addCommentButton.classList.replace('btn-primary', 'btn-secondary');
         });
 
         addCommentCollapse.addEventListener('hide.bs.collapse', function () {
-            addCommentButton.style.display = 'inline-block';
+            addCommentButton.innerHTML = '<i class="fas fa-plus me-2"></i>Add Comment';
+            addCommentButton.classList.replace('btn-secondary', 'btn-primary');
+        });
+
+        // Edit comment functionality
+        document.querySelectorAll('.edit-comment-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const commentId = this.dataset.commentId;
+                const commentContent = document.querySelector(`#comment-content-${commentId}`);
+                const editForm = document.querySelector(`#edit-form-${commentId}`);
+                const editTextarea = editForm.querySelector('textarea');
+
+                commentContent.classList.toggle('d-none');
+                editForm.classList.toggle('d-none');
+                editTextarea.value = commentContent.textContent.trim();
+            });
+        });
+
+        // Delete comment functionality
+        document.querySelectorAll('.delete-comment-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to delete this comment?')) {
+                    e.preventDefault();
+                }
+            });
         });
     });
 </script>
-
 {% endblock %}
-
-
-<!-- 
-    mejorar ux/ui
-    
-    - mejorar el sistema de comentarios y subcomentarios, cada comentario puede tener sus replicados y responder a sus replciados las veces que se desee
-    - mostrar cantidad de respuestes que tiene un comentario
-    - si el usuario es creador de la subasta puede eliminar comentarios, solamente el creador de la subasta
-    - el usuario que comenta puede editar el comentario pero mostrara la fecha del comentario editado
-    
--->

@@ -2,6 +2,15 @@
 
 {% block body %}
 <div class="container mt-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <h2 class="mb-4"><i class="fas fa-gavel me-2"></i>Active Auctions</h2>
     {% if auctions %}
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -9,165 +18,179 @@
             <div class="col">
                 <div class="card h-100 shadow-sm">
                     {% if auction.image %}
-                        <img src="{{ auction.image.url }}" class="card-img-top img-fluid rounded" alt="{{ auction.title }}">
+                        <img src="{{ auction.image.url }}" class="card-img-top img-fluid rounded" style="height: 200px; object-fit: cover;" alt="{{ auction.title }}">
                     {% else %}
-                        <p class="text-center text-muted">No Image Available</p>
+                        <div class="text-center text-muted p-5">No Image Available</div>
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ auction.title }}</h5>
-                        <p class="card-text">{{ auction.description|truncatechars:10 }}</p>
-                        <p class="card-text"><strong>Current Bid:</strong> ${{ auction.starting_bid }}</p>
-                        <p class="card-text"><i class="fas fa-user me-2"></i>Created by: {{ auction.created_by.username }}</p>
-                        <p class="card-text"><i class="fas fa-clock me-2"></i>Ends: {{ auction.end_date }} {{ auction.end_time }}</p>
+                        <p class="card-text small">{{ auction.description|truncatechars:100 }}</p>
+                        <p class="card-text">
+                            <strong>Current Bid:</strong> 
+                            ${% with highest_bid=auction.bids.all|dictsortreversed:"amount"|first %}
+                                {% if highest_bid %}
+                                    {{ highest_bid.amount }}
+                                {% else %}
+                                    {{ auction.starting_bid }}
+                                {% endif %}
+                            {% endwith %}
+                        </p>
+                        <p class="card-text small text-muted">
+                            <i class="fas fa-user me-2"></i>{{ auction.created_by.username }}
+                            <br>
+                            <i class="fas fa-clock me-2"></i>Ends: {{ auction.end_date }} {{ auction.end_time }}
+                        </p>
                     </div>
                     <div class="card-footer bg-transparent">
                         <div class="d-flex justify-content-between align-items-center">
                             <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#auctionModal{{ auction.id }}">
-                                View Details
+                                <i class="fas fa-eye me-1"></i>View Details
                             </button>
-                            {% if user.is_authenticated %}
-                                <form action="{% url 'auctions:add_to_watchlist' auction_id=auction.id %}" method="POST" class="d-inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-outline-primary btn-sm">
-                                        {% if auction.is_watchlist %}
-                                            <i class="fas fa-heart me-1"></i>Remove from Watchlist
-                                        {% else %}
-                                            <i class="far fa-heart me-1"></i>Add to Watchlist
-                                        {% endif %}
-                                    </button>
-                                </form>
-                                {% if auction.created_by == user %}
-                                    <form action="{% url 'auctions:delete_auction' auction_id=auction.id %}" method="post" class="d-inline">
+                            <div class="btn-group">
+                                {% if user.is_authenticated %}
+                                    <form action="{% url 'auctions:add_to_watchlist' auction_id=auction.id %}" method="POST" class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger btn-sm ms-2">
-                                            <i class="fas fa-trash-alt me-1"></i>Delete
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                                            {% if auction.user_watchlist %}
+                                                <i class="fas fa-heart me-1"></i>Remove
+                                            {% else %}
+                                                <i class="far fa-heart me-1"></i>Watch
+                                            {% endif %}
                                         </button>
+                                        <!-- boton de comentarios -->
+                                        <a href="{% url 'auctions:auction_comments' auction_id=auction.id %}" class="btn btn-outline-primary btn-sm ms-1">
+                                            <i class="fas fa-comments"></i>
+                                        </a>
                                     </form>
+                                    {% if auction.created_by == user %}
+                                        <form action="{% url 'auctions:delete_auction' auction_id=auction.id %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm ms-1">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
-                            <a href="{% url 'auctions:auction_comments' auction_id=auction.id %}" class="btn btn-secondary btn-sm ms-2">
-                                <i class="fas fa-comments me-1"></i>Comments
-                            </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-                <!-- Modal for each auction -->
-                <div class="modal fade" id="auctionModal{{ auction.id }}" tabindex="-1" aria-labelledby="auctionModalLabel{{ auction.id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-light">
-                                <h5 class="modal-title" id="auctionModalLabel{{ auction.id }}">
-                                    <i class="fas fa-gavel me-2"></i>{{ auction.title }}
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% if auction.image %}
+            <!-- Modal for each auction -->
+            <div class="modal fade" id="auctionModal{{ auction.id }}" tabindex="-1" aria-labelledby="auctionModalLabel{{ auction.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="auctionModalLabel{{ auction.id }}">
+                                <i class="fas fa-gavel me-2"></i>{{ auction.title }}
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    {% if auction.image %}
                                         <img src="{{ auction.image.url }}" class="img-fluid rounded" alt="{{ auction.title }}">
-                                        {% else %}
-                                            <p class="text-center text-muted">Error</p>
-                                        {% endif %}
+                                    {% else %}
+                                        <div class="text-center text-muted p-5">No Image Available</div>
+                                    {% endif %}
+                                    
+                                    <div class="mt-3">
+                                        <div class="d-flex justify-content-between small text-muted">
+                                            <span><i class="fas fa-user me-1"></i>{{ auction.created_by.username }}</span>
+                                            <span><i class="fas fa-tag me-1"></i>{{ auction.category.name|default:"No Category" }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between small text-muted mt-1">
+                                            <span><i class="fas fa-clock me-1"></i>{{ auction.end_date }}</span>
+                                            <span>{{ auction.end_time }}</span>
+                                        </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <h6 class="card-subtitle mb-2 text-muted">Current Highest Bid</h6>
-                                                {% if auction.id in highest_bids %}
-                                                    {% with highest_bids.auction.id as highest_bid %}
-                                                        {% if highest_bid %}
-                                                            <h3 class="card-title text-primary">${{ highest_bid.amount }}</h3>
-                                                            <p class="card-text"><small class="text-muted">Bid by: {{ highest_bid.user.username }}</small></p>
-                                                        {% else %}
-                                                            <h3 class="card-title text-primary">${{ auction.starting_bid }}</h3>
-                                                            <p class="card-text"><small class="text-muted">No bids yet</small></p>
-                                                        {% endif %}
-                                                    {% endwith %}
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card bg-light mb-3">
+                                        <div class="card-body">
+                                            <h6 class="card-subtitle mb-2 text-muted">Current Highest Bid</h6>
+                                            {% with highest_bid=auction.bids.all|dictsortreversed:"amount"|first %}
+                                                <h3 class="card-title text-primary mb-0">
+                                                    ${% if highest_bid %}{{ highest_bid.amount }}{% else %}{{ auction.starting_bid }}{% endif %}
+                                                </h3>
+                                                {% if highest_bid %}
+                                                    <p class="card-text"><small class="text-muted">Bid by: {{ highest_bid.user.username }}</small></p>
                                                 {% else %}
-                                                    <h3 class="card-title text-primary">${{ auction.starting_bid }}</h3>
                                                     <p class="card-text"><small class="text-muted">No bids yet</small></p>
                                                 {% endif %}
-                                                <p class="card-text"><small class="text-muted">{{ auction.total_bids }} bid(s) so far</small></p>
-                                            </div>
+                                            {% endwith %}
                                         </div>
+                                    </div>
 
-                                        {% if user.is_authenticated %}
-                                            <form action="{% url 'auctions:index' %}" method="POST" class="mb-3">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="auction_id" value="{{ auction.id }}">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">$</span>
-                                                    <input type="number" class="form-control" name="bid_amount" placeholder="Enter your bid" min="{% if highest_bid %}{{ highest_bid.amount|add:1 }}{% else %}{{ auction.starting_bid }}{% endif %}" step="0.01" required>
-                                                    <button type="submit" class="btn btn-primary">Place Bid</button>
+                                    {% if user.is_authenticated and user != auction.created_by %}
+                                        <form action="{% url 'auctions:index' %}" method="POST" class="mb-3">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="auction_id" value="{{ auction.id }}">
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control" name="bid_amount" placeholder="Enter your bid" 
+                                                    min="{% with highest_bid=auction.bids.all|dictsortreversed:'amount'|first %}{% if highest_bid %}{{ highest_bid.amount|add:'0.01' }}{% else %}{{ auction.starting_bid|add:'0.01' }}{% endif %}{% endwith %}" 
+                                                    step="0.01" required>
+                                                <button type="submit" class="btn btn-primary">Bid</button>
+                                            </div>
+                                            <small class="text-muted">
+                                                Minimum bid: ${% with highest_bid=auction.bids.all|dictsortreversed:'amount'|first %}{% if highest_bid %}{{ highest_bid.amount|add:'0.01' }}{% else %}{{ auction.starting_bid|add:'0.01' }}{% endif %}{% endwith %}
+                                            </small>
+                                        </form>
+                                    {% elif user == auction.created_by %}
+                                        <div class="alert alert-info py-2 small">
+                                            <i class="fas fa-info-circle me-1"></i>You cannot bid on your own auction
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-warning py-2 small">
+                                            <i class="fas fa-info-circle me-1"></i>Please <a href="{% url 'auctions:login' %}">login</a> to place a bid
+                                        </div>
+                                    {% endif %}
+
+                                    {% if auction.bids.exists %}
+                                        <div class="mt-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-2">Top Bids</h6>
+                                                <button class="btn btn-sm btn-link p-0" type="button" 
+                                                        data-bs-toggle="collapse" data-bs-target="#bidHistory{{ auction.id }}">
+                                                    <i class="fas fa-chevron-down"></i>
+                                                </button>
+                                            </div>
+                                            <div class="collapse show" id="bidHistory{{ auction.id }}">
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm small mb-0">
+                                                        <tbody>
+                                                            {% for bid in auction.bids.all|dictsortreversed:"amount"|slice:":2" %}
+                                                                <tr>
+                                                                    <td>{{ bid.user.username }}</td>
+                                                                    <td class="text-primary">${{ bid.amount }}</td>
+                                                                    <td class="text-muted text-end">{{ bid.created_at|date:"M d, H:i" }}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                                {% if highest_bid %}
-                                                    <small class="text-muted">Current Highest Bid: ${{ highest_bid.amount }} | By: {{ highest_bid.user.username }}</small>
-                                                {% else %}
-                                                    <small class="text-muted">Minimum bid: ${{ auction.starting_bid }}.</small>
-                                                    <small class="text-muted">No bids yet.</small>
-                                                {% endif %}
-                                            </form>
-                                            {% else %}
-                                            <div class="alert alert-warning">
-                                                <i class="fas fa-info-circle me-2"></i>Please <a href="{% url 'auctions:login' %}">login</a> to place a bid.
                                             </div>
-                                        {% endif %}
-                                    </div>
+                                        </div>
+                                    {% endif %}
                                 </div>
+                            </div>
 
-                                <div class="mt-4">
-                                    <h5>Details</h5>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><strong><i class="fas fa-user me-2"></i>Listed by:</strong> {{ auction.created_by.username }}</p>
-                                            <p><strong><i class="fas fa-tag me-2"></i>Category:</strong> {{ auction.category.name|default:"No Category Listed" }}</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p><strong><i class="fas fa-clock me-2"></i>End Date:</strong> {{ auction.end_date }}</p>
-                                            <p><strong><i class="fas fa-clock me-2"></i>End Time:</strong> {{ auction.end_time }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="mt-3">
-                                        <h6>Description</h6>
-                                        <p>{{ auction.description }}</p>
-                                    </div>
+                            <div class="mt-3">
+                                <button class="btn btn-link btn-sm p-0" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#description{{ auction.id }}">
+                                    <h6 class="mb-0">Description <i class="fas fa-chevron-down ms-1"></i></h6>
+                                </button>
+                                <div class="collapse" id="description{{ auction.id }}">
+                                    <p class="mt-2 mb-0 small">{{ auction.description }}</p>
                                 </div>
-
-                                {% if auction.bids.all %}
-                                    <div class="mt-4">
-                                        <h5>Bid History</h5>
-                                        <hr>
-                                        <div class="table-responsive">
-                                            <table class="table table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Bidder</th>
-                                                        <th>Amount</th>
-                                                        <th>Date</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for bid in auction.bids.all|dictsortreversed:"amount" %}
-                                                        <tr>
-                                                            <td>{{ bid.user.username }}</td>
-                                                            <td>${{ bid.amount }}</td>
-                                                            <td>{{ bid.created_at|date:"M d, Y H:i" }}</td>
-                                                        </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
             {% endfor %}
         </div>
     {% else %}
@@ -179,34 +202,18 @@
 {% endblock %}
 
 {% block scripts %}
-{% endblock }
-<!-- 
-    Mejorar ux/ui del formulario modal de view_detals
-    - Actualizar correctamente las ofertas realizadas en el modal de detalle
-    - Mejorar la forma de mostrar el historial de pujas mas altas con fecha y hora
-    - Mostrar correctamente la oferta actual y en caso de no a ver la oferta inicial
-    - El historial de pujas se debe poder minimizar o cerrar
-
-    -Manejo de mensajes de errores
-        -Cuando la puja no es mayor a la actual debe emitir mensaje
-    
-    - El propio usuario no puede hacer una oferta a su propia subasta.
-
-    -Actualizar en tiempo real las ofertas realizadas y la caudicidad de la subasta 
-
-
-    To improve the user experience and interface of the auction detail modal, consider the following enhancements:
-
-        1. **Update Bid Information**: Ensure that the modal correctly displays the current highest bid and updates it in real-time. If there are no bids, show the starting bid.
-
-        2. **Enhance Bid History Display**: Improve the display of the bid history by including the date and time of each bid. Consider making the bid history collapsible for better usability.
-
-        3. **Error Message Handling**: Implement error messages that inform users when their bid is not higher than the current highest bid.
-
-        4. **Prevent Self-Bidding**: Ensure that users cannot place bids on their own auctions.
-
-        5. **Real-Time Updates**: Implement real-time updates for bids and auction expiration to keep users informed of the latest changes.
-
-        These improvements will enhance the overall functionality and user experience of the auction platform.
--->
-
+<script>
+    // Auto-collapse description on modal open
+    document.addEventListener('DOMContentLoaded', function() {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            modal.addEventListener('show.bs.modal', function() {
+                const descriptions = this.querySelectorAll('.collapse');
+                descriptions.forEach(description => {
+                    description.classList.remove('show');
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
