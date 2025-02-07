@@ -1,0 +1,71 @@
+{% extends 'auctions/layout.html' %}
+
+{% block title %}Welcome to Auctions{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Welcome to Auctions</h1>
+            <p class="lead mb-5">Discover unique items and great deals in our online auction marketplace.</p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-gavel fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Bid on Items</h3>
+                    <p class="card-text">Participate in exciting auctions and win amazing products at great prices.</p>
+                    <a href="{% url 'auctions:index' %}" class="btn btn-primary">View Active Listings</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-tag fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Sell Your Items</h3>
+                    <p class="card-text">List your items for auction and reach a wide audience of potential buyers.</p>
+                    <a href="{% url 'auctions:create' %}" class="btn btn-primary">Create Listing</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-heart fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Watch Favorites</h3>
+                    <p class="card-text">Keep track of auctions you're interested in with your personal watchlist.</p>
+                    <a href="{% url 'auctions:watchlist' %}" class="btn btn-primary">View Watchlist</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center mb-4">Featured Categories</h2>
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+                {% for category in categories %}
+                <div class="col">
+                    <a href="{% url 'auctions:category' category_name=category.name %}" class="text-decoration-none">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-folder fa-2x mb-3 text-primary"></i>
+                                <h5 class="card-title">{{ category.name }}</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <p class="text-center">No categories available.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
