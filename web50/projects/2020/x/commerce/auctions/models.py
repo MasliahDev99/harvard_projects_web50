@@ -30,10 +30,13 @@ class Auction(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="auctions")
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name="auctions")
     created_at = models.DateTimeField(auto_now_add=True)
+    
     is_active = models.BooleanField(default=True)
+    is_finished = models.BooleanField(default=False)
 
     is_watchlisted = models.BooleanField(default=False)
 
+    winner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='won_auctions')
 
     # fecha de finalizacion  y hora de finalizacion
     end_date = models.DateField(default='2023-12-31')
@@ -49,6 +52,19 @@ class Bid(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    STATUS_CHOICES = [
+        ('winner', 'Winner'),
+        ('lost', 'Lost'),
+        ('in_process', 'In Process'),
+    ]
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='in_process',
+    )
+
 
     def __str__(self):
         return f"{self.user.username} - ${self.amount}"

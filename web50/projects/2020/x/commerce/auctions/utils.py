@@ -1,9 +1,31 @@
 from django.db import IntegrityError
 from .models import User, Auction, Bid, Comment,Watchlist
 from .models import Category as Categorie
+from django.contrib import messages
 from datetime import datetime
 from django.db.models import Prefetch
-# metodos de gestion de usuarios
+from django.utils import timezone
+import pytz
+
+"""
+
+    Porpuse of utils method
+
+    create_user: crea un usuario
+
+
+
+
+
+
+"""
+
+
+
+
+
+
+
 
 def create_user(username, email, password):
     # Verifica si el usuario ya existe
@@ -60,6 +82,7 @@ def get_category_instance(category_name):
 
 # metodos de gestion de subastas
 def create_auction(title, description, starting_bid, image, category, created_by, end_date, end_time):
+   
     auction = Auction(
         title=title,
         description=description,
@@ -85,14 +108,28 @@ def delete_auction(auction_id):
     return True
 
 
+def get_user_watchlist_auctions(user,**kwargs):
+    """
+        Obtiene las subastas que estan en la lista de seguimiento del usuario.
+    """
+    return Auction.objects.filter(
+        watchlisted_by__user = user,
+        **kwargs
+    ).prefetch_related(
+        Prefetch('watchlisted_by', queryset=Watchlist.objects.filter(user=user),to_attr='user_watchlist')
+    )
+
+
 
 # obtener una subasta por parametros de busqueda ( este metodo es mas flexible) 
-def get_auctions_by(prefetch_watchlist=False, **kwargs):
+def get_auctions_by(request=None,prefetch_watchlist=False, **kwargs):
     queryset = Auction.objects.filter(**kwargs)
-    
+
+
     # Si se requiere, prefetch los elementos relacionados
     if prefetch_watchlist:
         queryset = queryset.prefetch_related(
+            #obtenemos todas las subastas que pertenecen a la lista de seguimiento del usuario
             Prefetch('watchlisted_by', queryset=Watchlist.objects.all(), to_attr='user_watchlist')
         )
     
@@ -146,6 +183,10 @@ def close_auction(auction_id):
         return True
     except Auction.DoesNotExist:
         return False
+
+
+def active_auctions_count_by_category(category):
+    return Auction.objects.filter(category=category,is_active=True).count()
 
     
 
@@ -207,6 +248,94 @@ def update_comment(comment_id,new_content):
         return True
     except Comment.DoesNotExist:
         return False
+
+
+
+
+
+
+
+# 
+# determinamos el ganador de una subasta
+def determine_auction_winner_and_close(auction):
+    highest_bid = auction.bids.order_by('-amount').first()
+    if highest_bid:
+        auction.winner = highest_bid.user  
+        auction.is_finished = True    
+    else:
+        auction.is_active = False
+
+    auction.save()
+
+def determine_auction_winners():
+    ended_auctions = Auction.objects.filter(end_date__lte=timezone.now(), winner__isnull=True)
+    for auction in ended_auctions:
+        determine_auction_winner_and_close(auction)
+    
+    
+
+def get_current_time_in_timezone(timezone_name):
+    try:
+        desired_timezone = pytz.timezone(timezone_name)
+        current_time = timezone.localtime(timezone.now(),desired_timezone)
+    except Exception as e:
+        current_time = None
+    return current_time
+
+
+def check_and_close_ended_auctions(current_time):
+    ended_auctions = get_auctions_by(is_active=True)
+    for auction in ended_auctions:
+        auction_end = timezone.make_aware(datetime.combine(auction.end_date, auction.end_time))
+        auction_end = timezone.localtime(auction_end, timezone=pytz.timezone('America/New_York'))
+        print(f"auction_end: {auction_end} - Current time: {current_time}\n")
+
+        if auction_end <= current_time:
+            determine_auction_winner_and_close(auction)
+            print(f"Auction {auction.title} has ended.")
+
+    return ended_auctions
+
+
+def handle_bid_post_request(request,user):
+   
+    auction_id = request.POST.get('auction_id')
+    bid_amount = request.POST.get('bid_amount')
+    
+    auction = get_auctions_by(id=auction_id).first()
+    
+    if auction:
+        if auction.is_active:
+            if place_bid(auction, user, float(bid_amount)):
+                messages.success(request, 'Bid placed successfully.')
+            else:
+                messages.error(request, 'Bid must be higher than the current highest bid.')
+        else:
+            messages.error(request, 'Auction is not active or does not exist.')
+    else:
+        messages.error(request, 'Auction not found.')
+
+
+
+
+
+def handle_create_post_request(request):
+    return {
+        'title': request.POST.get('title'),
+        'description': request.POST.get('description'),
+        'price': request.POST.get('starting_bid'),
+        'category': request.POST.get('category'),
+        'image_file': request.FILES.get('image'),  # Changed from 'image_file' to 'image'
+        'end_date': request.POST.get('end_date'),
+        'end_time': request.POST.get('end_time'),
+        'user': request.user,
+    }
+
+
+
+
+
+
 
     
 

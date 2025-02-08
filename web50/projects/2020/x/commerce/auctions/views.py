@@ -9,7 +9,9 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.db.models import Prefetch
-
+from datetime import datetime
+from django.utils import timezone
+import pytz
 from .models import User
 from .models import *
 
@@ -17,49 +19,72 @@ from . import utils
 
 
 
+#home
+def home(request):
+    categories = utils.get_categories()
+    return render(request,'auctions/home.html',{
+        "categories":categories,
+    })
+
+
+# active listings
+
 def index(request):
     user = request.user
     watchlist_count = 0
+    auctions = []
+    auctions_watchlisted = []
+
     if user.is_authenticated:
         watchlist_count = len(utils.get_watchlist(user))
-    
-    auctions = utils.get_auctions_by(prefetch_watchlist=True,is_active=True)
+        auctions_watchlisted = utils.get_user_watchlist_auctions(user, is_active=True)
+
+    auctions = utils.get_auctions_by(is_active=True)
     highest_bids = {
         auction.id: auction.bids.order_by('-amount').first() for auction in auctions
     }
 
     if request.method == 'POST':
-        # Capture form values: auction ID and bid amount
-        auction_id = request.POST.get('auction_id')
-        bid_amount = request.POST.get('bid_amount')
-        
-        print(f"id: {auction_id} valor: {bid_amount}")
-        # Retrieve the auction by ID
-        auction = utils.get_auctions_by(id=auction_id).first()
+       utils.handle_bid_post_request(request,user)
 
-        if auction:
-            print(f"Nombre de subasta: {auction.title}")
-            # Verify that the auction is active
-            if auction.is_active:
-                if utils.place_bid(auction, user, float(bid_amount)):
-                    messages.success(request, 'Bid placed successfully.')
-                    print(f"Se agrego con exito. ")
-                else:
-                    messages.error(request, 'Bid must be higher than the current highest bid.')
-                    print(f"Entro al else")
-            else:
-                messages.error(request, 'Auction is not active or does not exist.')
-                print(f"Entro al else final")
-        else:
-            messages.error(request, 'Auction not found.')
-            print(f"Auction not found.")
+
+    desired_timezone = 'America/Montevideo'
+    current_time = timezone.localtime(timezone.now(), timezone=pytz.timezone(desired_timezone))
+    print(f"Current time: {current_time}\n")
+
+    # check if auction is ended
+    utils.check_and_close_ended_auctions(current_time)
+
+    # Update auctions list after checking for ended ones
+    auctions = utils.get_auctions_by(is_active=True)
 
     return render(request, "auctions/index.html", {
         "auctions": auctions,
         "highest_bids": highest_bids,
         "watchlist_count": watchlist_count,
+        "auctions_watchlisted": auctions_watchlisted,
+        "current_time": current_time,
     })
 
+
+
+@login_required
+def bid_history(request):
+    user_bids = Bid.objects.filter(user=request.user).select_related('auction')
+
+    for bid in user_bids:
+        highest_bid = bid.auction.bids.order_by('-amount').first()
+        if bid.auction.is_active:
+            bid.status = 'In Process'
+        else:
+            if highest_bid == bid:
+                bid.status = 'Winner'
+            else:
+                bid.status = 'Lost'
+
+    return render(request,'auctions/auction_history.html',{
+        "user_bids": user_bids,
+    })
 
 
 
@@ -121,37 +146,31 @@ def register(request):
 @csrf_protect
 @login_required
 def create(request):
-    categories = Category.objects.all()
+    categories = utils.get_categories()
 
     if request.method == "POST":
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        price = request.POST.get('starting_bid')
-        category = request.POST.get('category')
-        image_file = request.FILES.get('image')  # Changed from 'image_file' to 'image'
-        user = request.user
+        new_auction_data = utils.handle_create_post_request(request)
 
-        category_instance = utils.get_category_instance(category)
+        category_instance = utils.get_category_instance(new_auction_data['category'])
 
         if not category_instance:
             return render(request, 'auctions/create_listing.html', {
                 "categories": categories,
-                "error_message": "La categoría seleccionada no existe."
-            })  
+                "error_message": "Category not exists."
+            })
 
-        end_date = request.POST.get('end_date')
-        end_time = request.POST.get('end_time')
-
+        # Crear la subasta
         new_auction = utils.create_auction(
-            title=title,
-            description=description,
-            starting_bid=price,
-            image=image_file,
+            title=new_auction_data['title'],
+            description=new_auction_data['description'],
+            starting_bid=new_auction_data['price'],
+            image=new_auction_data['image_file'],
             category=category_instance,
-            created_by=user,
-            end_date=end_date,
-            end_time=end_time
+            created_by=new_auction_data['user'],
+            end_date=new_auction_data['end_date'],
+            end_time=new_auction_data['end_time']
         )
+
         return redirect('auctions:index')
     else:
         return render(request, 'auctions/create_listing.html', {
@@ -166,10 +185,10 @@ def delete_auction(request,auction_id):
     auction = utils.get_auctions_by(id=auction_id).first()
     # si la subasta existe y si es el usuario creador
     if auction and auction.created_by == request.user:
-        utils.delete_auction(auction_id=auction_id)
-        return redirect('auction:index')
+        utils.close_auction(auction_id)
+        return redirect('auctions:index')
     
-    return redirect('auctions:index')
+    return redirect(request.META.get('HTTP_REFERER', 'auctions:index'))
     
 
 @login_required
@@ -220,8 +239,14 @@ def add_to_watchlist(request, auction_id):
 
 def categories(request):
     categories = utils.get_categories()
+    categories_with_active_counts = [
+        {
+            "name": category.name,
+            "active_count": utils.active_auctions_count_by_category(category),
+        } for category in categories
+    ]
     return render(request,'auctions/categories.html',{
-        "categories":categories,
+        "categories":categories_with_active_counts,
     })
 
 
@@ -231,13 +256,15 @@ def category_auctions(request, category_name):
 
     # Si la categoría existe, filtrar las subastas usando el método de utilidades
     if category:
-        auctions = utils.get_auctions_by(category=category)
+        auctions = utils.get_auctions_by(category=category,prefetch_watchlist=True,is_active=True)
+      
     else:
         auctions = []  # Si no existe la categoría, no hay subastas para mostrar
 
     return render(request, 'auctions/category_auctions.html', {
         "auctions": auctions,
         "category_name": category_name,  # Para mostrar el nombre de la categoría
+        
     })
 
 

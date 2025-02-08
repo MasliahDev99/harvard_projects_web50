@@ -1,9 +1,15 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-<a href="{% url 'auctions:index' %}" class="btn btn-outline-secondary mb-3">Back</a>
 <div class="container mt-4">
-    <h2 class=" text-center mb-4">Auctions in category: {{ category_name }}</h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ request.META.HTTP_REFERER|default:'/' }}">Previous Page</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ category_name }}</li>
+        </ol>
+    </nav>
+
+    <h2 class="text-center mb-4">Auctions in category: {{ category_name }}</h2>
 
     {% if auctions %}
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -13,7 +19,9 @@
                         {% if auction.image %}
                         <img src="{{ auction.image.url }}" class="card-img-top" alt="Image of {{ auction.title }}" style="height: 200px; object-fit: cover;">
                         {% else %}
-                            <p class="text-center text-muted">No Image Available</p>
+                            <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                                <p class="text-muted mb-0">No Image Available</p>
+                            </div>
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ auction.title }}</h5>
@@ -30,7 +38,7 @@
         </div>
     {% else %}
         <div class="alert alert-info" role="alert">
-            No auctions available in this category at the moment.
+            <i class="fas fa-info-circle me-2"></i>No auctions available in this category at the moment.
         </div>
     {% endif %}
 </div>
