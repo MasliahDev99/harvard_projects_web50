@@ -57,10 +57,21 @@ Via the Django admin interface, a site administrator should be able to:
 
 ## 1. Watchlist Button Not Updating
 ### 🛑 Problem:
-Once an item was added to the watchlist, the button was supposed to change from "Watch" to "Remove," but this was not happening.
+When a user added an auction to their watchlist, the button state was incorrectly showing 'remove' for all users.
 
 ### ✅ Solution:
-Used `prefetch_related` to optimize the query and determine if the item was in the user's watchlist in the frontend:
+Implemented filtering of auctions by the logged-in user to ensure the button state is accurate.
+
+#### **Backend (utils.py)**
+```python
+def get_user_watchlist_auctions(user, **kwargs):
+    return Auction.objects.filter(
+        watchlist__user=user,
+        **kwargs,
+    ).prefetch_related(
+        Prefetch('watchlisted_by', queryset=Watchlist.objects.filter(user=user), to_attr='user_watchlist')
+    )
+```
 
 #### **Frontend (Django Template)**
 ```django
@@ -132,6 +143,25 @@ This allows comments to be stored as parent-child relationships, making it possi
 view it directly on [YouTube](https://youtube.com/embed/).
 
 
+# API Documentation 📖
+
+### Structure
+
+- **auctions/api/serializers.py**: Defines serializers for auction and bid models, allowing conversion of model instances to JSON and vice versa.
+- **auctions/api/views.py**: Contains API views that handle HTTP requests for auctions and bids, using serializers to process data.
+- **auctions/api/urls.py**: Defines API routes, mapping URLs to corresponding views.
+
+### Possible Uses
+
+- **Auction Management**: Allows creating, reading, updating, and deleting auctions via HTTP requests, facilitating auction management from external applications or custom user interfaces.
+- **Bid Tracking**: Provides a mechanism to track bids made on each auction, allowing users to view bid history and the current state of each auction.
+
+### Planned Use
+
+- **Real-time Updates**: The API will be used to periodically check auctions nearing their end date and update their status accordingly.
+- **Winner Determination**: After an auction ends, the API will determine the winner based on the highest bid and update the frontend to display the winner.
+
+
 
 
 ## 📩 Contact & Feedback
@@ -144,4 +174,4 @@ You can reach me through the following channels:
 🐙 **GitHub:** [https://github.com/MasliahDev99](https://github.com/MasliahDev99)  
  
 
-All feedback is welcome to help improve and learn. Thanks for your time! 🚀  
+All feedback is welcome to help improve and learn. Thanks for your time! 🚀

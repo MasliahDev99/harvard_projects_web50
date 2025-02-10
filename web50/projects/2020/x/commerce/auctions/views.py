@@ -78,7 +78,7 @@ def bid_history(request):
 
     for bid in user_bids:
         highest_bid = bid.auction.bids.order_by('-amount').first()
-        if bid.auction.is_active:
+        if not bid.auction.is_finished:
             bid.status = 'In Process'
         else:
             if highest_bid == bid:

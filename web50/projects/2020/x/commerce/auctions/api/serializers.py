@@ -27,3 +27,18 @@ class BidSerializer(serializers.ModelSerializer):
             'created_at', 
             'status'
             ]
+
+class BidHistoryUserSerializer(serializers.ModelSerializer):
+    auction_title = serializers.CharField(source='auction.title',read_only=True)
+    category_name = serializers.CharField(source='auction.category.name',read_only=True)
+
+    class Meta:
+        model = Bid
+        fields = [
+            'id',
+            'auction_title',
+            'category_name',
+            'amount',
+            'created_at',
+           'status'
+        ]

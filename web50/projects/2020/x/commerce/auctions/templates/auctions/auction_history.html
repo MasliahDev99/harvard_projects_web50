@@ -41,7 +41,7 @@
                 <tr>
                     <td>{{ bid.auction.category.name }}</td>
                     <td>
-                        <a href="#">{{ bid.auction.title }}</a>
+                        <a href="{% url 'auctions:index' %}">{{ bid.auction.title }}</a>
                     </td>
                     <td>{{ bid.created_at|date:"M d, Y H:i" }}</td>
                     <td>${{ bid.amount|floatformat:2 }}</td>

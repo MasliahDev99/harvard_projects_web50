@@ -26,12 +26,25 @@
                             <h5 class="card-title">{{ auction.title }}</h5>
                             <p class="card-text">{{ auction.description|truncatechars:100 }}</p>
                             <p class="card-text"><small class="text-muted">Created by: {{ auction.created_by.username }}</small></p>
-                            <p class="card-text"><small class="text-muted">Ends: {{ auction.end_date }} {{ auction.end_time }}</small></p>
+                            {% if auction.winner %}
+                                <p class="card-text text-success"><small class="text-success">Winner: {{ auction.winner.username }}</small></p>
+                            {% elif auction.is_finished %}
+                                <p class="card-text text-danger"><small class="text-muted">Auction Ended</small></p>
+                            {% else %}
+                                <p class="card-text"><small class="text-muted">Ends: {{ auction.end_date }} {{ auction.end_time }}</small></p>
+                            {% endif %}
                         </div>
                         <div class="card-footer bg-transparent">
-                            <a href="#" class="btn btn-primary btn-sm w-100">View Details</a>
+                            
+                            <button type="button" class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#auctionModal{{ auction.id }}">
+                                View Details
+                            </button>
                         </div>
                     </div>
+                </div>
+               
+                <div class="modal fade" id="auctionModal{{ auction.id }}" tabindex="-1" aria-labelledby="auctionModalLabel{{ auction.id }}" aria-hidden="true">
+                    {% include 'auctions/components/modals/view_detail.html' %}
                 </div>
             {% endfor %}
         </div>

@@ -42,6 +42,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 endTimeElement.style.textDecoration = 'line-through';
                 endTimeElement.style.color = 'red';
 
+                let reloadFlag = sessionStorage.getItem('auction_' + auctionId + '_reloaded');
+                if (!card.classList.contains('auction-ended') && !reloadFlag) {
+                    card.classList.add('auction-ended');
+                    sessionStorage.setItem('auction_' + auctionId + '_reloaded', true);
+                    window.location.reload();
+                }
+
                 // Fetch auction details to check for a winner
                 fetch(`/api/auctions/${auctionId}/`, {
                     method: 'GET',
@@ -57,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         winnerElement.classList.remove('d-none');
                     }
                 })
+
             }   
         });
     }
