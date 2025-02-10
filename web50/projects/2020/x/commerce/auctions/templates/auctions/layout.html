@@ -30,9 +30,25 @@
             color: white;
             padding: 0.5rem 1rem;
         }
+        .dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+        .dark-mode .navbar {
+            background-color: #222 !important;
+        }
+        .dark-mode .dropdown-menu {
+            background-color: #444;
+        }
+        .dark-mode .dropdown-item {
+            color: #fff;
+        }
+        .dark-mode .dropdown-item:hover {
+            background-color: #555;
+        }
     </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" data-user-id="{{request.user.id}}">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'auctions:home' %}">
@@ -42,7 +58,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="listingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-list-ul me-1"></i>Listings
@@ -50,27 +66,33 @@
                         <ul class="dropdown-menu" aria-labelledby="listingsDropdown">
                             <li><a class="dropdown-item" href="{% url 'auctions:index' %}">Active Listings</a></li>
                             <li><a class="dropdown-item" href="{% url 'auctions:bid_history'%}">My Bid History</a></li>
+                            <li><a class="dropdown-item" href="{% url 'auctions:closed_listings' %}">My closed listings</a></li>
                             <li><a class="dropdown-item" href="{% url 'auctions:create' %}">Create Listing</a></li>
                         </ul>
                     </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'auctions:categories' %}">
-                            <i class="fas fa-tags me-1"></i>Categories
-                        </a>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+                            <label class="form-check-label text-light" for="darkModeSwitch">Dark Mode</label>
+                        </div>
                     </li>
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'auctions:watchlist' %}">
-                                <i class="fas fa-heart me-1"></i>Watchlist
-                                <span class="badge bg-danger">{{watchlist_count}}</span>
-                            </a>
-                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user me-1"></i>{{ user.username }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="#">My Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'auctions:categories' %}">
+                                    <i class="fas fa-tags me-1"></i>Categories
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'auctions:watchlist' %}">
+                                    <i class="fas fa-heart me-1"></i>Watchlist
+                                    <span class="badge bg-danger">{{watchlist_count}}</span>
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'auctions:logout' %}">Log Out</a></li>
                             </ul>
                         </li>
@@ -96,8 +118,29 @@
         {% endblock %}
     </div>
 
-  
-    {% block scripts%}{%endblock%}
+    {% block scripts %}{% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+            const body = document.body;
+
+            darkModeSwitch.addEventListener('change', () => {
+                if (darkModeSwitch.checked) {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('darkMode', 'enabled');
+                } else {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('darkMode', 'disabled');
+                }
+            });
+
+            // Check for saved dark mode preference
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                darkModeSwitch.checked = true;
+            }
+        });
+    </script>
 </body>
 </html>

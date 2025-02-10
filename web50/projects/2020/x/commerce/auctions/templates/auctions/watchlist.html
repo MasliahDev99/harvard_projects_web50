@@ -5,13 +5,7 @@
 {% block body %}
 <div class="container mt-4">
     <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <!-- arreglar , cuando el usuario refresco la pagina la pagina anterior es la actual y queda en loop -->
-                <a href="{{ request.META.HTTP_REFERER|default:'/' }} ">Previous Page</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">Watchlist</li>
-        </ol>
+        {% include 'auctions/components/goBack.html' with current_page_name="Watchlist" %}
     </nav>
 
     <div class="d-flex justify-content-between align-items-center mb-4">

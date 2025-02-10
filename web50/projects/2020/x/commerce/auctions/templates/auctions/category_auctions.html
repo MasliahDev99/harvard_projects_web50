@@ -4,8 +4,7 @@
 <div class="container mt-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ request.META.HTTP_REFERER|default:'/' }}">Previous Page</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ category_name }}</li>
+            {% include 'auctions/components/goBack.html' with current_page_name=category_name %}
         </ol>
     </nav>
 

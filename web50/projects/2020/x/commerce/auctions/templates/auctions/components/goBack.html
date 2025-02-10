@@ -1,0 +1,35 @@
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="#" onclick="goBack()" >Previous Page</a>
+    </li>
+    <li class="breadcrumb-item active" id="goBack" aria-current="page">{{current_page_name}}</li>
+</ol>
+
+<script>
+
+    function goBack(){
+        if(document.referrer){
+            window.location.href = document.referrer;
+        }else{
+            window.history.back();
+        }
+    }
+    
+    function updateBreadcrumbColor() {
+        const currentPage = document.getElementById("goBack");
+        const body = document.body;
+        const isDarkMode = body.classList.contains('dark-mode');
+
+        // Set text color based on dark mode status
+        currentPage.style.color = isDarkMode ? "white" : "black";
+    }
+    
+    // deosnt works as i want
+    document.addEventListener('DOMContentLoaded', ()=>{
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        updateBreadcrumbColor();
+        darkModeSwitch.addEventListener('change', updateBreadcrumbColor());
+    })
+
+
+</script>

@@ -22,7 +22,7 @@
                         </button>
                     {% endif %}
                     {% if user == auction.created_by or user == comment.user %}
-                        <form action="#" method="POST" class="d-inline">
+                        <form action="{% url 'auctions:delete_comment' auction_id=auction.id comment_id=comment.id%}" method="POST" class="d-inline">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-link btn-sm p-0 text-danger delete-comment-btn">
                                 Delete
@@ -32,10 +32,10 @@
                 </div>
             </div>
             
-            <form action="#" method="POST" class="d-none mt-2" id="edit-form-{{ comment.id }}">
+            <form action="{% url 'auctions:update_comment' auction_id=auction.id comment_id=comment.id%}" method="POST" class="d-none mt-2" id="edit-form-{{ comment.id }}">
                 {% csrf_token %}
                 <div class="mb-2">
-                    <textarea class="form-control" name="content" rows="3" required></textarea>
+                    <textarea class="form-control" name="new_content" rows="3" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
                 <button type="button" class="btn btn-secondary btn-sm edit-comment-btn" data-comment-id="{{ comment.id }}">Cancel</button>

@@ -1,5 +1,5 @@
 <div class="col">
-    <div class="card h-100 shadow-sm">
+    <div class="card h-100 shadow-sm" data-auction-id="{{ auction.id }}" data-end-date="{{ auction.end_date|date:'Y-m-d' }}" data-end-time="{{ auction.end_time|time:'H:i:s' }}">
         {% if auction.image %}
             <img src="{{ auction.image.url }}" class="card-img-top img-fluid rounded" style="height: 200px; object-fit: cover;" alt="{{ auction.title }}">
         {% else %}
@@ -29,9 +29,11 @@
                 <i class="fas fa-user me-2"></i>{{ auction.created_by.username }}
                 <br>
                 <i class="fas fa-clock me-2"></i>Ends: 
-                <span {% if auction.is_finished %}style="text-decoration: line-through; color: red;"{% endif %}>
+                <span class="auction-end-time" {% if auction.is_finished %}style="text-decoration: line-through; color: red;"{% endif %}>
                     {{ auction.end_date }} {{ auction.end_time }}
                 </span>
+                <br>
+                <span class="auction-countdown text-danger fw-bold"></span>
             </p>
         </div>
         <div class="card-footer bg-transparent">

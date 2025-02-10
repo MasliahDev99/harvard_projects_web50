@@ -1,5 +1,6 @@
 {% extends "auctions/layout.html" %}
 
+{% load static%}
 {% block title %}My Bid History{% endblock %}
 
 {% block body %}
@@ -63,4 +64,8 @@
         </table>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static  'auctions/js/bidHistory.js' %}"></script>
 {% endblock %}

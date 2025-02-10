@@ -13,14 +13,20 @@
         {% endfor %}
     {% endif %}
 
-    <h2 class="mb-4"><i class="fas fa-gavel me-2"></i>Active Auctions</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-gavel me-2"></i>Active Auctions</h2>
+        <a href="{% url 'auctions:create' %}" class="btn btn-primary btn-create-listing">
+            Create new listing <i class="fas fa-plus-circle ms-2"></i>
+        </a>
+    </div>
+
     {% if auctions %}
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {% for auction in auctions %}
-                {% include 'auctions/components/auction.html'%}
-                <!-- Modal for each auction   'view_detail modal'-->
+                {% include 'auctions/components/auction.html' %}
+                <!-- Modal for each auction 'view_detail modal' -->
                 <div class="modal fade" id="auctionModal{{ auction.id }}" tabindex="-1" aria-labelledby="auctionModalLabel{{ auction.id }}" aria-hidden="true">
-                    {% include 'auctions/components/modals/view_detail.html'%}
+                    {% include 'auctions/components/modals/view_detail.html' %}
                 </div>
             {% endfor %}
         </div>
@@ -34,4 +40,25 @@
 
 {% block scripts %}
 <script src="{% static 'auctions/js/index.js' %}"></script>
+<script>
+    //  handle dark mode button color change
+    function updateButtonColor() {
+        const darkModeEnabled = document.body.classList.contains('dark-mode');
+        const createButton = document.querySelector('.btn-create-listing');
+        if (darkModeEnabled) {
+            createButton.classList.remove('btn-primary');
+            createButton.classList.add('btn-light');
+        } else {
+            createButton.classList.remove('btn-light');
+            createButton.classList.add('btn-primary');
+        }
+    }
+
+    // Call the function initially and whenever dark mode is toggled
+    document.addEventListener('DOMContentLoaded', updateButtonColor);
+    const darkModeSwitch = document.getElementById('darkModeSwitch');
+    if (darkModeSwitch) {
+        darkModeSwitch.addEventListener('change', updateButtonColor);
+    }
+</script>
 {% endblock %}

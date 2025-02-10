@@ -1,59 +1,88 @@
 {% extends 'auctions/layout.html' %}
+{% load static %}
 
 {% block title %}Welcome to Auctions{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h1 class="display-4 mb-4">Welcome to Auctions</h1>
-            <p class="lead mb-5">Discover unique items and great deals in our online auction marketplace.</p>
-        </div>
-    </div>
-
-    <div class="row mb-5">
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-gavel fa-3x mb-3 text-primary"></i>
-                    <h3 class="card-title">Bid on Items</h3>
-                    <p class="card-text">Participate in exciting auctions and win amazing products at great prices.</p>
-                    <a href="{% url 'auctions:index' %}" class="btn btn-primary">View Active Listings</a>
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    <div class="bg-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-3">Welcome to Auctions</h1>
+                    <p class="lead mb-4">Discover unique items, bid on treasures, and sell your own in our vibrant online marketplace.</p>
+                    <a href="{% url 'auctions:index' %}" class="btn btn-light btn-lg">Explore Auctions</a>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-tag fa-3x mb-3 text-primary"></i>
-                    <h3 class="card-title">Sell Your Items</h3>
-                    <p class="card-text">List your items for auction and reach a wide audience of potential buyers.</p>
-                    <a href="{% url 'auctions:create' %}" class="btn btn-primary">Create Listing</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-heart fa-3x mb-3 text-primary"></i>
-                    <h3 class="card-title">Watch Favorites</h3>
-                    <p class="card-text">Keep track of auctions you're interested in with your personal watchlist.</p>
-                    <a href="{% url 'auctions:watchlist' %}" class="btn btn-primary">View Watchlist</a>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <img src="{% static 'auctions/images/hero-image.svg' %}" alt="Auction Hero" class="img-fluid">
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="text-center mb-4">Featured Categories</h2>
+    <!-- How It Works Section -->
+    <div class="container my-5">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-user-plus fa-2x"></i>
+                        </div>
+                        <h4 class="card-title">1. Sign Up</h4>
+                        <p class="card-text">Create your free account to start bidding and selling.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-search fa-2x"></i>
+                        </div>
+                        <h4 class="card-title">2. Browse</h4>
+                        <p class="card-text">Explore a wide range of items across various categories.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-gavel fa-2x"></i>
+                        </div>
+                        <h4 class="card-title">3. Bid or Sell</h4>
+                        <p class="card-text">Place bids on items you like or list your own for sale.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-trophy fa-2x"></i>
+                        </div>
+                        <h4 class="card-title">4. Win & Enjoy</h4>
+                        <p class="card-text">Win auctions, receive items, and enjoy your new treasures!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Categories Section -->
+    <div class="bg-light py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Featured Categories</h2>
             <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
                 {% for category in categories %}
                 <div class="col">
                     <a href="{% url 'auctions:category' category_name=category.name %}" class="text-decoration-none">
-                        <div class="card h-100">
+                        <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body text-center">
-                                <i class="fas fa-folder fa-2x mb-3 text-primary"></i>
+                                <i class="fas fa-folder fa-3x mb-3 text-primary"></i>
                                 <h5 class="card-title">{{ category.name }}</h5>
                             </div>
                         </div>
@@ -64,6 +93,18 @@
                     <p class="text-center">No categories available.</p>
                 </div>
                 {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action Section -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h2 class="mb-4">Ready to Start?</h2>
+                <p class="lead mb-4">Join our community of buyers and sellers today!</p>
+                <a href="{% url 'auctions:register' %}" class="btn btn-primary btn-lg me-3">Sign Up</a>
+                <a href="{% url 'auctions:login' %}" class="btn btn-outline-primary btn-lg">Log In</a>
             </div>
         </div>
     </div>

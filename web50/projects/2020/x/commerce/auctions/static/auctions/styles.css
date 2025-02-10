@@ -1,3 +1,17 @@
 body {
     padding: 10px;
 }
+
+.dark-mode .btn-create-listing.btn-light {
+    color: #000;
+    background-color: #fff;
+    border-color: #fff;
+}
+
+.dark-mode .btn-create-listing.btn-light:hover {
+    color: #000;
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+}
+
+

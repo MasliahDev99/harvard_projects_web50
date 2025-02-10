@@ -1,0 +1,51 @@
+{% extends 'auctions/layout.html' %}
+
+{% load static %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">My Closed Listings</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for auction in auctions %}
+            {% if not auction.is_active and auction.created_by == user and auction.bids.count == 0 %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        {% if auction.image %}
+                            <img src="{{ auction.image.url }}" class="card-img-top img-fluid rounded" style="height: 200px; object-fit: cover;" alt="{{ auction.title }}">
+                        {% else %}
+                            <div class="text-center text-muted p-5">No Image Available</div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ auction.title }}</h5>
+                            <p class="card-text small">{{ auction.description|truncatechars:100 }}</p>
+                            <p class="card-text">
+                                <strong>Starting Bid:</strong> ${{ auction.starting_bid }}
+                            </p>
+                            <p class="text-warning">Ended with no bids</p>
+                            <p class="card-text small text-muted">
+                                <i class="fas fa-user me-2"></i>{{ auction.created_by.username }}
+                                <br>
+                                <i class="fas fa-clock me-2"></i>Ended: 
+                                <span style="text-decoration: line-through; color: red;">
+                                    {{ auction.end_date }} {{ auction.end_time }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{% url 'auctions:auction_comments' auction_id=auction.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-comments me-1"></i>Comments
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">No closed listings found.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

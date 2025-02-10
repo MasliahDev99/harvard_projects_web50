@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render , redirect,get_object_or_404
@@ -34,6 +35,9 @@ def index(request):
     watchlist_count = 0
     auctions = []
     auctions_watchlisted = []
+    paginator = Paginator(auctions, 10) # show 10 auctions per page
+
+    page = request.POST.get('page')
 
     if user.is_authenticated:
         watchlist_count = len(utils.get_watchlist(user))
@@ -84,6 +88,17 @@ def bid_history(request):
 
     return render(request,'auctions/auction_history.html',{
         "user_bids": user_bids,
+    })
+
+@login_required
+def closed_listings(request):
+    auctions = utils.get_auctions_by(is_active=False)
+    highest_bids = {
+        auction.id: auction.bids.order_by('-amount').first() for auction in auctions
+    }
+    return render(request,'auctions/closed_listings.html',{
+        "auctions": auctions,
+        "highest_bids": highest_bids,
     })
 
 
@@ -200,10 +215,9 @@ def wathclist_view(request):
     })
     
 
+#refactorizar
 @login_required    
 def add_to_watchlist(request, auction_id):
-
-    
     # si el usuario no esta authenticado redirigimos al login
     if not request.user.is_authenticated:
         return redirect('auctions:login')
@@ -303,3 +317,31 @@ def comment_reply(request, auction_id, comment_id):
         else:
             messages.error(request, 'Reply cannot be empty.')
         return redirect('auctions:auction_comments', auction_id=auction_id)
+
+@csrf_protect
+@login_required
+def delete_comment(request, auction_id,comment_id):
+    comment = get_object_or_404(Comment,id=comment_id)
+
+    if request.user == comment.user:
+        utils.delete_comment(comment_id)
+        messages.success(request,f'Comment deleted successfully.')
+    else:
+        messages.error(request,'You do not have permission to delete this comment.')
+    return redirect('auctions:auction_comments',auction_id=auction_id)
+
+
+@csrf_protect
+@login_required
+def update_comment(request,auction_id,comment_id):
+    comment = get_object_or_404(Comment,id=comment_id)
+
+    if request.method == 'POST':
+        new_content = request.POST.get('new_content')
+        if new_content:
+            utils.update_comment(comment_id,new_content)
+            messages.success(request,'Comment updated successfully.')
+        else:
+            messages.error(request,'Comment cannot be empty.')
+        return redirect('auctions:auction_comments',auction_id=auction_id)
+
