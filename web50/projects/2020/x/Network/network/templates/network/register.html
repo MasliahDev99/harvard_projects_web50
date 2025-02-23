@@ -1,0 +1,47 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card bg-secondary text-light">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Register</h2>
+                {% if message %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                {% endif %}
+                <form action="{% url 'network:register' %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-control" type="email" name="email" placeholder="Email Address">
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-control" type="password" name="password" placeholder="Password">
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
+                    </div>
+                    <div class="d-grid">
+                        <button class="btn btn-primary" type="submit">Register</button>
+                    </div>
+                </form>
+                <p class="text-center mt-3">
+                    Already have an account? <a href="{% url 'network:login' %}" class="text-info">Log In here.</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .custom-placeholder::placeholder {
+        color: #fff !important;
+        font-family: italic;
+    }
+</style>
+
+{% endblock %}

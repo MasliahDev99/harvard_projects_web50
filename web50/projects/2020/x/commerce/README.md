@@ -140,7 +140,7 @@ This allows comments to be stored as parent-child relationships, making it possi
 
 ## 📽️ Video Tutorial
 
-view it directly on [YouTube](https://youtube.com/embed/).
+view it directly on [YouTube](https://youtu.be/o__nnPQY4NY).
 
 
 # API Documentation 📖

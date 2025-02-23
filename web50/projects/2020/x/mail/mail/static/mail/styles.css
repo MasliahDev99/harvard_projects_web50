@@ -1,3 +1,4 @@
+
 textarea {
     min-height: 400px;
 }
@@ -7,3 +8,18 @@ textarea {
 }
 
 
+
+.email-status-indicator {
+     width: 20px;
+     height: 20px;
+    border-radius: 50%;
+}
+.email-status-indicator.bg-white {
+     border: 1px solid #dee2e6;
+}
+.list-group-item.bg-white {    
+   border-left: 5px solid #007bff;
+}
+.list-group-item.bg-light {
+border-left: 5px solid transparent;
+}

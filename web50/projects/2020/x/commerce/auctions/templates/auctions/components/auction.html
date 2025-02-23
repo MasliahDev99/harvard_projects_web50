@@ -38,9 +38,9 @@
         </div>
         <div class="card-footer bg-transparent">
             <div class="d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#auctionModal{{ auction.id }}">
+                <a href="{% url 'auctions:listing_detail' auction_id=auction.id %}" class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-eye me-1"></i>View Details
-                </button>
+                </a>
                 <div class="btn-group">
                     {% if user.is_authenticated %}
                         <form action="{% url 'auctions:add_to_watchlist' auction_id=auction.id %}" method="POST" class="d-inline">

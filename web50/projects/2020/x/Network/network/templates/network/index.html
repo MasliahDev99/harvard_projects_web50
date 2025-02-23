@@ -1,0 +1,72 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="text-white text-center">Welcome to Network</h1>
+    <h3 class="text-white mb-4">All posts</h3>
+
+    {% if user.is_authenticated %}
+        <div class="card bg-dark mb-4" id="create-post-form" style="display: none;">
+            <div class="card-body text-light">
+                <h5 class="card-title">Create a New Post</h5>
+                <form action="{% url 'network:post'%}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea id="content-post" class="form-control border border-primary" name="content" rows="3" placeholder="What's on your mind?"></textarea>
+                        <p id="error-Post"></p>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="container all-post">
+        {% include 'network/components/posts.html' %}
+    </div>
+
+
+   
+
+
+    <!-- button add post bottom  -->
+    <div class="fixed-bottom d-flex justify-content-end p-4 relative">
+        {% if user.is_authenticated %}
+        <a  href="#Create-post-form" class="btn btn-primary" id="addPostButton">
+            <i class="bi bi-plus-circle"></i> Add Post
+        </a>
+        {% else %}
+        <p class="text-white">Please log in or register to add a post.</p>
+        {% endif %}
+    </div>
+
+
+    <!-- paginator -->
+
+    <nav aria-label="Page navigation" class="mt-4 mb-5">
+        {% include 'network/components/paginator.html' with base_url='network:index' base_param=None %}
+    </nav>
+    
+    <!-- Debug info -->
+    <div class="text-white text-center mb-3">
+        <small>
+            Page {{ page_posts.number }} of {{ page_posts.paginator.num_pages }}
+            ({{ page_posts.paginator.count }} total posts)
+        </small>
+    </div>
+
+    
+    <!--  -->
+
+
+    
+</div>
+
+{% block javascript %}
+<script src="{% static 'network/like.js' %}"></script>
+<script src="{% static 'network/index.js' %}"></script>
+<script src="{% static 'network/edit.js' %}"></script>
+
+{% endblock %}
+{% endblock %}

@@ -2,38 +2,81 @@
 {% load static %}
 
 {% block body %}
-    <h2>{{ request.user.email }}</h2>
+    <div class="container mt-4">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+            <div class="container-fluid">
 
-    <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
-    <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
-    <button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
-    <button class="btn btn-sm btn-outline-primary" id="archived">Archived</button>
-    <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
-    <hr>
-
-    <div id="emails-view" style="display: none;">
-    </div>
-
-    <div id="email-view" style="display: none;">
-     <!--  email detailed -->
-    </div>
-
-    <div id="compose-view">
-        <h3>New Email</h3>
-        <div id="compose-error" class="text-danger"></div>
-        <form id="compose-form">
-            <div class="form-group">
-                From: <input disabled class="form-control" value="{{ request.user.email }}">
+              <a class="navbar-brand" href="#">{{ request.user.email }}</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#emailNavbar" aria-controls="emailNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="emailNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link" id="inbox" href="#">Inbox</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="compose" href="#">Compose</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="sent" href="#">Sent</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="archived" href="#">Archived</a>
+                  </li>
+                </ul>
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div class="form-group">
-                To: <input id="compose-recipients" class="form-control">
+          </nav>
+          
+          <hr>
+        <div id="emails-view" class="d-none">
+            <h3 id="mailbox-title" class="mb-3"></h3>
+            
+            <!-- Leyenda para estados de correo -->
+            <div class="email-legend mb-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="email-status-indicator bg-white border mr-2"></div>
+                    <span>Correo no leído</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="email-status-indicator bg-light mr-2"></div>
+                    <span>Correo leído</span>
+                </div>
             </div>
-            <div class="form-group">
-                <input class="form-control" id="compose-subject" placeholder="Subject">
-            </div>
-            <textarea class="form-control" id="compose-body" placeholder="Body"></textarea>
-            <input type="submit" class="btn btn-primary mt-2"/>
-        </form>
+
+            <div id="email-list" class="list-group"></div>
+        </div>
+
+        <div id="email-view" class="d-none">
+            <div id="email-content"></div>
+            <div id="email-actions" class="mt-3"></div>
+        </div>
+
+        <div id="compose-view" class="d-none">
+            <h3>New Email</h3>
+            <div id="compose-error" class="alert alert-danger d-none"></div>
+            <form id="compose-form">
+                <div class="form-group">
+                    <label for="compose-recipients">To:</label>
+                    <input type="email" class="form-control" id="compose-recipients" required>
+                </div>
+                <div class="form-group">
+                    <label for="compose-subject">Subject:</label>
+                    <input type="text" class="form-control" id="compose-subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="compose-body">Body:</label>
+                    <textarea class="form-control" id="compose-body" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
 

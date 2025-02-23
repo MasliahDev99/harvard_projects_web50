@@ -59,6 +59,13 @@ Using JavaScript, HTML, and CSS, complete the implementation of your single-page
 - This project reinforced my knowledge in handling Fetch API requests and rendering elements dynamically using JavaScript.
 
 
+### Video Demonstration
+
+[![Watch the video](https://img.youtube.com/vi/QJN31HTQS5A/0.jpg)](https://youtu.be/QJN31HTQS5A)
+
+
+
+
 ### Future improvments
 
 - After submission, I plan to enhance the design of the Mail project and add interesting extra functionalities. Here are some ideas:

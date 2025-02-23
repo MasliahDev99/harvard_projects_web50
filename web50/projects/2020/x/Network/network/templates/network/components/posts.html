@@ -1,0 +1,49 @@
+{% for post in page_posts %}
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-dark text-light mb-3">
+            <div class="card-body">
+                <a href="{% url 'network:profile' id=post.user.id %}" class="text-decoration-none">
+                    <h5 class="card-title">@{{ post.user }}</h5>
+                </a>
+                <hr>
+                <p class="card-text" id="post-content-{{ post.id }}">{{ post.content }}</p>
+                <hr>
+                <p class="card-text">{{ post.timestamp }}</p>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <!-- Set the initial state of the like button based on whether the post is liked -->
+                    <button class="btn {% if post.id in liked %}btn-primary{% else %}btn-outline-primary{% endif %} like-button" data-post-id="{{ post.id }}">
+                        <i class="fa {% if post.id in liked %}fa-thumbs-down{% else %}fa-thumbs-up{% endif %}"></i>
+                    </button>
+                    <span class="card-text" id="like-count-{{ post.id }}">
+                        {{ post.likes }} like{{ post.likes|pluralize }}
+                    </span>
+                    {% if post.user == user %}
+                    <button class="btn btn-sm btn-warning edit-button" data-post-id="{{ post.id }}" data-bs-toggle="modal" data-bs-target="#editModal_{{ post.id }}">Edit</button>
+                    <!-- edit modal -->
+                    <div class="modal fade" id="editModal_{{ post.id }}" tabindex="-1" aria-labelledby="editModalLabel_{{ post.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content bg-dark text-light">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel_{{ post.id }}">Edit Post</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea id="edit-post-content" name="content" class="form-control bg-secondary text-light" rows="5">{{ post.content }}</textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary save-edit">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

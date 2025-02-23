@@ -1,0 +1,118 @@
+{% extends 'network/layout.html' %}
+{% load static %}
+
+{% block body %}
+<div class="container py-5">
+    <!-- Profile Card -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card bg-dark text-white shadow">
+                <div class="card-body p-4">
+                    <!-- Profile Header -->
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <img src="https://ui-avatars.com/api/?name={{ profile_user.username }}&background=random&size=128" 
+                                 class="rounded-circle border border-3 border-primary" 
+                                 alt="{{ profile_user.username }}'s avatar">
+                        </div>
+                        <h3 class="mb-1">@{{ profile_user.username }}</h3>
+                        <p class="text-muted small">Member since {{ profile_user.date_joined|date:"F Y" }}</p>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="row text-center mb-4">
+                        <div class="col-4">
+                            <div class="p-3 bg-secondary rounded">
+                                <h4 class="mb-0">{{ post_count }}</h4>
+                                <small class="text-light">Posts</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-3 bg-secondary rounded">
+                                <h4 class="mb-0">{{ followers_count }}</h4>
+                                <small class="text-light">Followers</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-3 bg-secondary rounded">
+                                <h4 class="mb-0">{{ following_count }}</h4>
+                                <small class="text-light">Following</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Follow Button -->
+                    {% if user.is_authenticated and user != profile_user %}
+                        <div class="text-center">
+                            <form action="{% url 'network:follow' profile_user.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                {% if is_following %}
+                                    <button type="submit" class="btn btn-outline-danger px-4 btn-lg">
+                                        <i class="bi bi-person-dash-fill me-2"></i>Unfollow
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-primary px-4 btn-lg">
+                                        <i class="bi bi-person-plus-fill me-2"></i>Follow
+                                    </button>
+                                {% endif %}
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts Section -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h3 class="text-white mb-4 border-bottom pb-2">
+                {% if user == profile_user %}
+                    My Posts
+                {% else %}
+                    Posts by {{ profile_user.username }}
+                {% endif %}
+            </h3>
+
+            {% for post in page_posts %}
+            <div class="card bg-dark text-white mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center">
+                            <img src="https://ui-avatars.com/api/?name={{ post.user.username }}&size=32" 
+                                 class="rounded-circle me-2" 
+                                 alt="{{ post.user.username }}">
+                            <h6 class="mb-0">@{{ post.user.username }}</h6>
+                        </div>
+                        <small class="text-muted">{{ post.timestamp|date:"F d, Y, g:i a" }}</small>
+                    </div>
+                    <p class="card-text">{{ post.content }}</p>
+                    
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center text-muted">
+                <i class="bi bi-journal-x display-4 d-block mb-3"></i>
+                <p class="text-white">No posts yet.</p>
+            </div>
+            {% endfor %}
+
+            <!-- paginator -->
+            <nav aria-label="Page navigation" class="mt-4 mb-5">
+                {% include 'network/components/paginator.html' with base_url='network:profile' base_param=profile_user.id %}
+            </nav>
+            
+        </div>
+    </div>
+</div>
+
+<!-- Add Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+{% block javascript %}
+
+<script src="{% static 'network/edit.js' %}"></script>
+
+{% endblock%}
+{% endblock%}
+
+

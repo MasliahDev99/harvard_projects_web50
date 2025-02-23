@@ -146,11 +146,17 @@ def register(request):
 
         # Attempt to create new user
         try:
-            user = utils.create_user(username,email,password)
+            user = utils.create_user(username, email, password)
+            if user is None:
+                raise ValueError("User creation failed.")
             user.save()
         except IntegrityError:
             return render(request, "auctions/register.html", {
                 "message": "Username already taken."
+            })
+        except ValueError as e:
+            return render(request, "auctions/register.html", {
+                "message": str(e)
             })
         login(request, user)
         return HttpResponseRedirect(reverse("auctions:index"))
@@ -281,7 +287,7 @@ def category_auctions(request, category_name):
         
     })
 
-
+@login_required
 def comments(request,auction_id):
     auction = utils.get_auctions_by(id=auction_id).first()
 
@@ -306,7 +312,7 @@ def comments(request,auction_id):
         "comments":comments,
     })
 
-
+@login_required
 def comment_reply(request, auction_id, comment_id):
     if request.method == 'POST':
         parent_comment = get_object_or_404(Comment, id=comment_id)
@@ -344,4 +350,33 @@ def update_comment(request,auction_id,comment_id):
         else:
             messages.error(request,'Comment cannot be empty.')
         return redirect('auctions:auction_comments',auction_id=auction_id)
+
+
+
+@csrf_protect
+@login_required
+def place_bid(request, auction_id):
+    if request.method == 'POST':
+        auction = get_object_or_404(Auction, id=auction_id)
+        bid_amount = float(request.POST.get('bid_amount', 0))
+
+  
+        highest_bid = auction.bids.order_by('-amount').first()
+        current_price = highest_bid.amount if highest_bid else auction.starting_bid
+
+        if bid_amount and float(bid_amount) > current_price:
+            success = utils.create_bid(auction, request.user, bid_amount)
+            if success:
+                messages.success(request, 'Bid placed successfully.')
+            else:
+                messages.error(request, 'Bid amount must be higher than the current price.')
+        else:
+            messages.error(request, 'Invalid bid amount.')
+    
+    return redirect('auctions:listing_detail', auction_id=auction_id)
+
+
+def listing_detail(request, auction_id):
+    auction = get_object_or_404(Auction, id=auction_id)
+    return render(request, 'auctions/components/listing_detail.html',{'auction':auction})
 
